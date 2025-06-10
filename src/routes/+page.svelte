@@ -131,8 +131,8 @@
 
 {#if showModal}
 	<div class="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
-		<div class="relative flex w-full max-w-4xl overflow-hidden rounded-lg bg-white shadow-xl">
-			<aside class="w-1/3 overflow-auto border-r border-gray-200 bg-gray-50">
+		<div class="relative flex w-full max-w-4xl flex-col overflow-hidden rounded-lg bg-white shadow-xl sm:flex-row">
+			<aside class="w-full overflow-auto border-b border-gray-200 bg-gray-50 sm:w-1/3 sm:border-b-0 sm:border-r">
 				<ul>
 					{#each features as f}
 						<li>
