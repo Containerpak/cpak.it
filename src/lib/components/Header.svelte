@@ -5,6 +5,7 @@
 
 	let query = '';
 	let showDropdown = false;
+	let showMobileMenu = false;
 
 	interface DocItem {
 		title: string;
@@ -83,7 +84,7 @@
 	$: current = $page.url.pathname;
 </script>
 
-<nav class="relative w-full bg-slate-50">
+<nav class="relative w-full bg-slate-50 max-w-full">
 	<div class="mx-auto flex max-w-7xl items-center gap-6 px-6 py-4">
 		{#if current !== '/'}
 			<button
@@ -96,13 +97,13 @@
 		<a href="/" class="flex shrink-0 items-center gap-2">
 			<img src="/cpak-brand.svg" alt="cpak logo" />
 		</a>
-		<div class="relative flex flex-grow justify-center">
+		<div class="flex flex-grow justify-end lg:justify-center">
 			<input
 				type="search"
 				bind:value={query}
 				on:input={handleInput}
 				placeholder="Search docs & apps"
-				class="h-12 w-[640px] rounded-full border border-slate-200 bg-white px-5 text-sm placeholder-gray-400 shadow-sm focus:ring-2 focus:ring-[#3E7BFF] focus:outline-none"
+				class="hidden lg:block h-12 w-full max-w-[640px] rounded-full border border-slate-200 bg-white px-5 text-sm placeholder-gray-400 shadow-sm focus:ring-2 focus:ring-[#3E7BFF] focus:outline-none"
 			/>
 			{#if showDropdown}
 				<div
@@ -147,17 +148,47 @@
 			{/if}
 		</div>
 		<div class="flex shrink-0 items-center gap-6">
-			<a href="/docs" class="text-sm font-medium text-gray-900 hover:underline">Docs</a>
+			<button
+				class="lg:hidden flex items-center justify-center rounded-full bg-transparent p-2 text-gray-700 shadow-none transition duration-200 hover:bg-white hover:shadow-sm"
+				on:click={() => (showMobileMenu = !showMobileMenu)}
+			>
+				<span class="material-symbols-outlined">menu</span>
+			</button>
+			<div class="hidden lg:flex items-center gap-6">
+				<a href="/docs" class="text-sm font-medium text-gray-900 hover:underline">Docs</a>
+				<a
+					href="https://github.com/containerpak/cpak"
+					class="text-sm font-medium text-gray-900 hover:underline">GitHub</a
+				>
+				<a
+					href="/docs/quick-start"
+					class="rounded-full bg-[#3E7BFF]/20 px-4 py-2 text-sm font-semibold text-[#3E7BFF] transition hover:bg-[#3E7BFF]/30"
+				>
+					Get started
+				</a>
+			</div>
+		</div>
+	</div>
+	{#if showMobileMenu}
+		<div class="lg:hidden absolute top-full left-0 w-full bg-white shadow-md">
+			<a href="/docs" class="block px-6 py-4 text-sm font-medium text-gray-900 hover:bg-slate-100">Docs</a>
 			<a
 				href="https://github.com/containerpak/cpak"
-				class="text-sm font-medium text-gray-900 hover:underline">GitHub</a
+				class="block px-6 py-4 text-sm font-medium text-gray-900 hover:bg-slate-100">GitHub</a
 			>
 			<a
 				href="/docs/quick-start"
-				class="rounded-full bg-[#3E7BFF]/20 px-4 py-2 text-sm font-semibold text-[#3E7BFF] transition hover:bg-[#3E7BFF]/30"
+				class="block px-6 py-4 text-sm font-medium text-[#3E7BFF] hover:bg-slate-100"
 			>
 				Get started
 			</a>
+			<input
+				type="search"
+				bind:value={query}
+				on:input={handleInput}
+				placeholder="Search docs & apps"
+				class="block w-full px-6 py-4 text-sm border-t border-slate-200 focus:ring-2 focus:ring-[#3E7BFF] focus:outline-none"
+			/>
 		</div>
-	</div>
+	{/if}
 </nav>

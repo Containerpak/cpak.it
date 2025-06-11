@@ -48,7 +48,7 @@
 		</nav>
 	</aside>
 
-	<article class="prose prose-lg prose-slate max-w-none flex-1">
+	<article class="prose prose-lg prose-slate max-w-full lg:max-w-none flex-1">
 		<header class="mb-8">
 			<h1>{art.Title}</h1>
 			<p class="text-sm text-gray-500">
