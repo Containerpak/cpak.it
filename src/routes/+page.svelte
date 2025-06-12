@@ -64,26 +64,26 @@
 
 <Header />
 
-<main class="bg-slate-50">
+<main class="bg-slate-50 dark:bg-slate-900">
 	<section class="mx-auto flex max-w-7xl flex-col items-center gap-20 px-6 pt-28 pb-36 lg:flex-row">
 		<img src="/cpak-isometric-cubes.svg" alt="Isometric cubes" class="w-96 lg:w-[28rem]" />
 		<div class="text-center lg:text-left">
-			<h1 class="text-6xl leading-tight font-extrabold tracking-tight text-gray-900 lg:text-7xl">
-				Deploy as <span class="text-[#3E7BFF]">freely</span><br />as you develop
+			<h1 class="text-6xl leading-tight font-extrabold tracking-tight text-gray-900 dark:text-white lg:text-7xl">
+				Deploy as <span class="text-[#3E7BFF] dark:text-[#6A9EFF]">freely</span><br />as you develop
 			</h1>
-			<p class="mx-auto mt-8 max-w-md text-xl text-gray-600 lg:mx-0">
-				<span class="font-semibold text-gray-900">cpak</span> is a decentralized and versatile software
+			<p class="mx-auto mt-8 max-w-md text-xl text-gray-600 dark:text-gray-400 lg:mx-0">
+				<span class="font-semibold text-gray-900 dark:text-gray-300">cpak</span> is a decentralized and versatile software
 				distribution format for any context.
 			</p>
 			<div class="mt-12 flex justify-center gap-4 lg:justify-start">
 				<a
 					href="/docs/quick-start"
-					class="rounded-full bg-[#3E7BFF] px-8 py-3 font-semibold text-white transition hover:brightness-110"
+					class="rounded-full bg-[#3E7BFF] dark:bg-[#6A9EFF] px-8 py-3 font-semibold text-white transition hover:brightness-110"
 					>Get started</a
 				>
 				<a
 					href="/store"
-					class="rounded-full border border-slate-200 bg-white px-8 py-3 text-gray-900 transition hover:bg-slate-100"
+					class="rounded-full border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 px-8 py-3 text-gray-900 dark:text-gray-200 transition hover:bg-slate-100 dark:hover:bg-slate-700"
 					>Browse store</a
 				>
 			</div>
@@ -94,11 +94,11 @@
 <div class="mx-auto grid max-w-7xl gap-16 px-6 py-24 sm:grid-cols-2 lg:grid-cols-3">
 	{#each features as f}
 		<div class="space-y-4">
-			<h3 class="text-2xl font-semibold text-gray-900">{f.title}</h3>
-			<p class="text-gray-600">{f.desc}</p>
+			<h3 class="text-2xl font-semibold text-gray-900 dark:text-gray-200">{f.title}</h3>
+			<p class="text-gray-600 dark:text-gray-400">{f.desc}</p>
 			<button
 				on:click={() => open(f.id)}
-				class="inline-flex cursor-pointer items-center text-[#4670EC] hover:text-[#435280] focus:outline-none"
+				class="inline-flex cursor-pointer items-center text-[#4670EC] dark:text-[#6A9EFF] hover:text-[#435280] dark:hover:text-[#5478B8] focus:outline-none"
 			>
 				Learn More
 				<span class="material-symbols-outlined ml-1">arrow_forward</span>
@@ -107,15 +107,15 @@
 	{/each}
 </div>
 
-<section class="border-b border-slate-300 bg-gray-100">
+<section class="border-b border-slate-300 dark:border-slate-700 bg-gray-100 dark:bg-slate-800">
 	<div
 		class="mx-auto flex max-w-7xl flex-col items-center justify-between gap-10 px-6 py-12 sm:flex-row"
 	>
 		<div class="space-y-2 text-center sm:text-left">
-			<h2 class="text-xl font-semibold">cpak runs everywhere</h2>
-			<p class="text-black">
+			<h2 class="text-xl font-semibold text-gray-900 dark:text-gray-200">cpak runs everywhere</h2>
+			<p class="text-black dark:text-gray-300">
 				Out-of-the-box support for every Linux distributions.
-				<a href="/install" class="text-blue-800 underline">How to install</a>
+				<a href="/install" class="text-blue-800 dark:text-blue-400 underline">How to install</a>
 			</p>
 		</div>
 		<div class="flex flex-wrap justify-center gap-6 sm:justify-start">
@@ -130,17 +130,17 @@
 </section>
 
 {#if showModal}
-	<div class="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
-		<div class="relative flex w-full max-w-4xl flex-col overflow-hidden rounded-lg bg-white shadow-xl sm:flex-row">
-			<aside class="w-full overflow-auto border-b border-gray-200 bg-gray-50 sm:w-1/3 sm:border-b-0 sm:border-r">
+	<div class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 dark:bg-black/70">
+		<div class="relative flex w-full max-w-4xl flex-col overflow-hidden rounded-lg bg-white dark:bg-slate-800 shadow-xl sm:flex-row">
+			<aside class="w-full overflow-auto border-b border-gray-200 dark:border-slate-700 bg-gray-50 dark:bg-slate-700 sm:w-1/3 sm:border-b-0 sm:border-r">
 				<ul>
 					{#each features as f}
 						<li>
 							<button
 								on:click={() => (active = f.id)}
-								class="w-full cursor-pointer px-4 py-3 text-left text-sm hover:bg-gray-100 {f.id ===
+								class="w-full cursor-pointer px-4 py-3 text-left text-sm hover:bg-gray-100 dark:hover:bg-slate-600 {f.id ===
 								active
-									? 'bg-white font-semibold'
+									? 'bg-white dark:bg-slate-800 font-semibold'
 									: ''}"
 							>
 								{f.title}
@@ -150,11 +150,11 @@
 				</ul>
 			</aside>
 			<div class="relative flex-1 overflow-auto p-6">
-				<button on:click={close} class="absolute top-4 right-4 text-gray-500 hover:text-gray-700">
+				<button on:click={close} class="absolute top-4 right-4 text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300">
 					<span class="material-symbols-outlined">close</span>
 				</button>
-				<h2 class="mb-4 text-2xl font-semibold text-gray-900">{activeFeature.title}</h2>
-				<p class="whitespace-pre-line text-gray-700">{activeFeature.details}</p>
+				<h2 class="mb-4 text-2xl font-semibold text-gray-900 dark:text-gray-200">{activeFeature.title}</h2>
+				<p class="whitespace-pre-line text-gray-700 dark:text-gray-400">{activeFeature.details}</p>
 			</div>
 		</div>
 	</div>

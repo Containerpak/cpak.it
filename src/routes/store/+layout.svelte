@@ -5,7 +5,7 @@
 
 <Header />
 
-<main class="min-h-screen bg-slate-50">
+<main class="min-h-screen bg-slate-50 dark:bg-slate-900">
 	<slot />
 </main>
 

@@ -52,11 +52,11 @@
 		<div class="flex items-center gap-6">
 			<img src={data.pkg.icon} alt="Icon" class="h-24 w-24 rounded-xl shadow" />
 			<div>
-				<h1 class="text-3xl font-extrabold text-gray-900">
+				<h1 class="text-3xl font-extrabold text-gray-900 dark:text-gray-100">
 					{data.pkg.name}
-					<span class="ml-2 text-lg text-gray-500">v{data.pkg.version}</span>
+					<span class="ml-2 text-lg text-gray-500 dark:text-gray-400">v{data.pkg.version}</span>
 				</h1>
-				<p class="mt-1 text-gray-700">{data.pkg.description}</p>
+				<p class="mt-1 text-gray-700 dark:text-gray-300">{data.pkg.description}</p>
 			</div>
 		</div>
 		<div class="relative flex items-stretch">
@@ -64,37 +64,39 @@
 				on:click={copyInstall}
 				class={`rounded-l-full bg-[#3E7BFF] px-4 py-2 text-white shadow transition hover:bg-[#356fdb] ${
 					copied ? 'bg-green-500' : ''
+				} dark:bg-[#2A5BB5] dark:hover:bg-[#244E9A] ${
+					copied ? 'dark:bg-green-600' : ''
 				}`}
 			>
 				{copied ? 'Copied!' : 'Install'}
 			</button>
 			<button
 				on:click={toggleDropdown}
-				class="flex items-center justify-center rounded-r-full bg-[#3E7BFF]/90 px-3 py-2 text-white shadow transition hover:bg-[#356fdb]/90"
+				class="flex items-center justify-center rounded-r-full bg-[#3E7BFF]/90 px-3 py-2 text-white shadow transition hover:bg-[#356fdb]/90 dark:bg-[#2A5BB5]/90 dark:hover:bg-[#244E9A]/90"
 			>
 				<span class="material-symbols-outlined text-sm">keyboard_arrow_down</span>
 			</button>
 			{#if showTooltip}
 				<div
-					class="absolute top-12 right-0 z-10 mb-2 rounded-lg bg-gray-800 text-gray-100 shadow-lg"
+					class="absolute top-12 right-0 z-10 mb-2 rounded-lg bg-gray-800 text-gray-100 shadow-lg dark:bg-gray-900 dark:text-gray-200"
 				>
-					<div class="flex items-center justify-between border-b border-gray-700 px-3 py-2">
+					<div class="flex items-center justify-between border-b border-gray-700 px-3 py-2 dark:border-gray-600">
 						<div class="flex items-center gap-2">
-							<span class="material-symbols-outlined text-gray-400">terminal</span>
+							<span class="material-symbols-outlined text-gray-400 dark:text-gray-500">terminal</span>
 							<span class="text-sm font-medium">Install Command</span>
 						</div>
 						<button
 							on:click={() => (showTooltip = false)}
-							class="p-1 text-gray-400 hover:text-gray-200"
+							class="p-1 text-gray-400 hover:text-gray-200 dark:text-gray-500 dark:hover:text-gray-300"
 							aria-label="Close"
 						>
 							<span class="material-symbols-outlined">close</span>
 						</button>
 					</div>
-					<pre class="mx-3 mb-0 rounded-t-lg bg-gray-800 p-3 font-mono text-sm">{cmd}</pre>
+					<pre class="mx-3 mb-0 rounded-t-lg bg-gray-800 p-3 font-mono text-sm dark:bg-gray-900">{cmd}</pre>
 					<a
 						href="/docs/quick-start"
-						class="block w-full rounded-b-lg bg-gray-700 py-2 text-center text-white transition hover:bg-gray-900"
+						class="block w-full rounded-b-lg bg-gray-700 py-2 text-center text-white transition hover:bg-gray-900 dark:bg-gray-800 dark:hover:bg-gray-700"
 					>
 						View documentation
 					</a>
@@ -125,13 +127,13 @@
 
 			<button
 				on:click={prev}
-				class="absolute top-1/2 -left-3 flex h-10 w-10 -translate-y-1/2 cursor-pointer items-center justify-center rounded-full bg-white p-2 shadow transition hover:shadow-lg"
+				class="absolute top-1/2 -left-3 flex h-10 w-10 -translate-y-1/2 cursor-pointer items-center justify-center rounded-full bg-white p-2 shadow transition hover:shadow-lg dark:bg-gray-800 dark:hover:bg-gray-700"
 			>
 				<span class="material-symbols-outlined">chevron_left</span>
 			</button>
 			<button
 				on:click={next}
-				class="absolute top-1/2 -right-3 flex h-10 w-10 -translate-y-1/2 cursor-pointer items-center justify-center rounded-full bg-white p-2 shadow transition hover:shadow-lg"
+				class="absolute top-1/2 -right-3 flex h-10 w-10 -translate-y-1/2 cursor-pointer items-center justify-center rounded-full bg-white p-2 shadow transition hover:shadow-lg dark:bg-gray-800 dark:hover:bg-gray-700"
 			>
 				<span class="material-symbols-outlined">chevron_right</span>
 			</button>
@@ -143,8 +145,9 @@
 					<!-- svelte-ignore a11y_no_static_element_interactions -->
 					<!-- svelte-ignore element_invalid_self_closing_tag -->
 					<div
-						class="h-3 w-3 cursor-pointer rounded-full bg-gray-300"
+						class="h-3 w-3 cursor-pointer rounded-full bg-gray-300 dark:bg-gray-600"
 						class:bg-gray-700={i === idx}
+						class:dark:bg-gray-400={i === idx}
 						on:click={() => go(i)}
 					/>
 				{/each}
@@ -153,24 +156,24 @@
 	{/if}
 
 	{#if risky.length}
-		<div class="flex items-start gap-3 rounded-xl bg-red-100 p-4 shadow-sm">
-			<span class="material-symbols-outlined text-red-700">warning</span>
+		<div class="flex items-start gap-3 rounded-xl bg-red-100 p-4 shadow-sm dark:bg-red-900">
+			<span class="material-symbols-outlined text-red-700 dark:text-red-300">warning</span>
 			<div>
-				<p class="font-semibold text-red-700">High-risk permissions: {risky.join(', ')}</p>
-				<p class="text-sm text-red-600">Review carefully before running untrusted packages.</p>
+				<p class="font-semibold text-red-700 dark:text-red-300">High-risk permissions: {risky.join(', ')}</p>
+				<p class="text-sm text-red-600 dark:text-red-400">Review carefully before running untrusted packages.</p>
 			</div>
 		</div>
 	{/if}
 
 	<section>
-		<h2 class="mb-4 text-2xl font-semibold text-gray-900">Permissions & Overrides</h2>
+		<h2 class="mb-4 text-2xl font-semibold text-gray-900 dark:text-gray-100">Permissions & Overrides</h2>
 		<div class="mb-4 grid gap-6 sm:grid-cols-2">
 			{#each Object.entries(overrides).filter(([_, v]) => v) as [key]}
 				<div
-					class="flex items-center justify-between rounded-xl border border-slate-200 bg-white p-4 shadow-sm"
+					class="flex items-center justify-between rounded-xl border border-slate-200 bg-white p-4 shadow-sm dark:border-slate-700 dark:bg-gray-800"
 				>
 					<span class="capitalize">{key.replace(/([A-Z])/g, ' $1')}</span>
-					<span class="rounded-full bg-yellow-100 px-2 py-1 text-sm font-medium text-yellow-800"
+					<span class="rounded-full bg-yellow-100 px-2 py-1 text-sm font-medium text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300"
 						>Enabled</span
 					>
 				</div>
@@ -179,7 +182,7 @@
 		{#if Object.entries(overrides).some(([_, v]) => !v)}
 			<button
 				on:click={() => (showDisabled = !showDisabled)}
-				class="mb-2 flex items-center gap-2 text-sm font-medium text-gray-700"
+				class="mb-2 flex items-center gap-2 text-sm font-medium text-gray-700 dark:text-gray-300"
 			>
 				<span class="material-symbols-outlined">{showDisabled ? 'expand_less' : 'expand_more'}</span
 				>
@@ -189,10 +192,10 @@
 				<div class="grid gap-6 sm:grid-cols-2">
 					{#each Object.entries(overrides).filter(([_, v]) => !v) as [key]}
 						<div
-							class="flex items-center justify-between rounded-xl border border-slate-200 bg-white p-4 shadow-sm"
+							class="flex items-center justify-between rounded-xl border border-slate-200 bg-white p-4 shadow-sm dark:border-slate-700 dark:bg-gray-800"
 						>
-							<span class="text-gray-500 capitalize">{key.replace(/([A-Z])/g, ' $1')}</span>
-							<span class="rounded-full bg-gray-100 px-2 py-1 text-sm font-medium text-gray-500"
+							<span class="text-gray-500 capitalize dark:text-gray-400">{key.replace(/([A-Z])/g, ' $1')}</span>
+							<span class="rounded-full bg-gray-100 px-2 py-1 text-sm font-medium text-gray-500 dark:bg-gray-700 dark:text-gray-400"
 								>Disabled</span
 							>
 						</div>
@@ -202,8 +205,8 @@
 		{/if}
 	</section>
 
-	<section class="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
-		<dl class="grid grid-cols-1 gap-x-8 gap-y-4 text-sm text-gray-700 sm:grid-cols-2">
+	<section class="rounded-xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-700 dark:bg-gray-800">
+		<dl class="grid grid-cols-1 gap-x-8 gap-y-4 text-sm text-gray-700 dark:text-gray-300 sm:grid-cols-2">
 			<div class="flex">
 				<dt class="w-32 font-medium">Origin</dt>
 				<dd>{data.pkg.origin}</dd>
@@ -227,27 +230,27 @@
 			<div class="flex">
 				<dt class="w-32 font-medium">Dependencies</dt>
 				<dd>
-					{#if !data.pkg.cpak.dependencies.length}<em class="text-gray-500">none</em
+					{#if !data.pkg.cpak.dependencies.length}<em class="text-gray-500 dark:text-gray-400">none</em
 						>{:else}{data.pkg.cpak.dependencies.join(', ')}{/if}
 				</dd>
 			</div>
 			<div class="flex">
 				<dt class="w-32 font-medium">Add-ons</dt>
 				<dd>
-					{#if !data.pkg.cpak.addons.length}<em class="text-gray-500">none</em
+					{#if !data.pkg.cpak.addons.length}<em class="text-gray-500 dark:text-gray-400">none</em
 						>{:else}{data.pkg.cpak.addons.join(', ')}{/if}
 				</dd>
 			</div>
 		</dl>
 	</section>
 
-	<section class="text-sm text-gray-500">
-		<h2 class="mb-2 text-lg font-medium text-gray-900">Raw Links</h2>
+	<section class="text-sm text-gray-500 dark:text-gray-400">
+		<h2 class="mb-2 text-lg font-medium text-gray-900 dark:text-gray-100">Raw Links</h2>
 		<ul class="list-inside list-disc space-y-1">
 			<li>
 				<a
 					href={data.pkg.manifest}
-					class="underline hover:text-[#3E7BFF]"
+					class="underline hover:text-[#3E7BFF] dark:hover:text-[#2A5BB5]"
 					target="_blank"
 					rel="noopener">manifest.json</a
 				>
@@ -255,7 +258,7 @@
 			<li>
 				<a
 					href={data.pkg.rawCpakJson}
-					class="underline hover:text-[#3E7BFF]"
+					class="underline hover:text-[#3E7BFF] dark:hover:text-[#2A5BB5]"
 					target="_blank"
 					rel="noopener">cpak.json</a
 				>

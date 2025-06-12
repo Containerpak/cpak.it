@@ -2,6 +2,9 @@
 @plugin '@tailwindcss/forms';
 @plugin '@tailwindcss/typography';
 
+@custom-variant dark (&:where(.dark, .dark *));
+
 body {
+    @apply bg-white text-slate-950 dark:bg-slate-900 dark:text-slate-50;
     overflow-x: hidden;
 }
