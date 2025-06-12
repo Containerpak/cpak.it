@@ -6,7 +6,7 @@
 <div class="flex min-h-screen flex-col">
 	<Header />
 
-	<main class="flex-1 overflow-auto bg-gray-50">
+	<main class="flex-1 overflow-auto bg-gray-50 dark:bg-gray-900">
 		<slot />
 	</main>
 
