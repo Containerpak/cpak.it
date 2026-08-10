@@ -1,5 +1,5 @@
 import { paraglideMiddleware } from '$lib/paraglide/server';
-
+/** @type {import('@sveltejs/kit').Handle} */
 const handleParaglide = ({ event, resolve }) =>
 	paraglideMiddleware(event.request, ({ request, locale }) => {
 		event.request = request;

@@ -1,83 +1,27 @@
 <script lang="ts">
 	import type { PageData } from './$types';
-	import { onMount, tick } from 'svelte';
-	import { error } from '@sveltejs/kit';
+	import { renderMarkdown } from '$lib/docs';
 
-	export let data: PageData;
-	const art = data.art;
-	if (!art.Body) throw error(404, 'Article not found');
-
-	// genera TOC dinamico
-	let contentEl: HTMLDivElement;
-	type TocEntry = { id: string; text: string; level: number };
-	let toc: TocEntry[] = [];
-
-	function slugify(str: string) {
-		return str
-			.toLowerCase()
-			.trim()
-			.replace(/\s+/g, '-')
-			.replace(/[^\w-]/g, '');
-	}
-
-	onMount(async () => {
-		await tick();
-		const hs = Array.from(contentEl.querySelectorAll('h2, h3'));
-		toc = hs.map((h) => {
-			if (!h.id) h.id = slugify(h.textContent || '');
-			return { id: h.id, text: h.textContent || '', level: h.tagName === 'H2' ? 2 : 3 };
-		});
-	});
+	let { data }: { data: PageData } = $props();
+	let article = $derived(data.article);
+	let body = $derived(renderMarkdown(article.body));
 </script>
 
 <svelte:head>
-	<title>{art.Title} – Documentation – cpak</title>
+	<title>{article.title} - Documentation - cpak</title>
+	<meta name="description" content={article.description} />
 </svelte:head>
 
-<div class="mx-auto flex max-w-7xl gap-8 px-6 py-16">
-	<aside class="hidden w-64 shrink-0 space-y-4 lg:block">
-		<nav class="sticky top-6 space-y-2">
-			<h2 class="text-lg font-semibold text-gray-800">On this page</h2>
-			<ul class="space-y-1 text-sm text-gray-600">
-				{#each toc as { id, text, level }}
-					<li class={level === 3 ? 'ml-4' : ''}>
-						<a href={`#${id}`} class="hover:underline">{text}</a>
-					</li>
-				{/each}
-			</ul>
-		</nav>
-	</aside>
-
-	<article class="prose prose-lg prose-slate max-w-full lg:max-w-none flex-1">
-		<header class="mb-8">
-			<h1>{art.Title}</h1>
-			<p class="text-sm text-gray-500">
-				{new Date(art.PublicationDate).toLocaleDateString('en-US', {
-					year: 'numeric',
-					month: 'short',
-					day: 'numeric'
-				})} — by {art.Authors.join(', ')}
-			</p>
-			<div class="mt-4 flex flex-wrap gap-2">
-				{#each art.Tags as tag}
-					<span class="rounded-full bg-gray-100 px-3 py-1 text-xs font-medium text-gray-700">
-						{tag}
-					</span>
-				{/each}
-			</div>
-		</header>
-
-		<div bind:this={contentEl}>
-			{@html art.Body}
-		</div>
-
-		<nav class="mt-16 flex justify-between text-sm text-blue-600">
-			{#if art.Previous}
-				<a href={`/docs/${art.Previous}`} class="hover:underline">← Previous</a>
-			{/if}
-			{#if art.Next}
-				<a href={`/docs/${art.Next}`} class="ml-auto hover:underline">Next →</a>
-			{/if}
-		</nav>
-	</article>
+<div class="mx-auto max-w-4xl px-6 py-16">
+	<a href="/docs" class="text-sm font-medium text-[#4670EC] hover:underline">Documentation</a>
+	<h1 class="mt-5 text-4xl font-extrabold text-gray-900">{article.title}</h1>
+	<p class="mt-4 text-lg text-gray-600">{article.description}</p>
+	<div class="mt-10 rounded-2xl border border-slate-200 bg-white p-7 shadow-sm [&_code]:rounded [&_code]:bg-slate-100 [&_code]:px-1 [&_code]:py-0.5 [&_h1]:mt-8 [&_h1]:mb-4 [&_h1]:text-3xl [&_h1]:font-bold [&_h2]:mt-8 [&_h2]:mb-3 [&_h2]:text-2xl [&_h2]:font-bold [&_h3]:mt-6 [&_h3]:mb-2 [&_h3]:text-xl [&_h3]:font-semibold [&_p]:mb-5 [&_p]:leading-7 [&_pre]:my-6 [&_pre]:overflow-x-auto [&_pre]:rounded-xl [&_pre]:bg-slate-950 [&_pre]:p-5 [&_pre]:text-sm [&_pre]:text-slate-100">
+		{@html body}
+	</div>
+	<div class="mt-8 flex flex-wrap gap-2">
+		{#each article.tags as tag}
+			<span class="rounded-full bg-slate-100 px-3 py-1 text-xs font-medium text-slate-600">{tag}</span>
+		{/each}
+	</div>
 </div>
