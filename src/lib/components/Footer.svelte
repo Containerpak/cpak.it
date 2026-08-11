@@ -4,7 +4,12 @@
   >
     <div class="space-y-4">
       <div class="flex items-center gap-2">
-        <img src="/cpak-brand.svg" alt="cpak logo" />
+        <img src="/cpak-brand.svg" alt="cpak logo" class="theme-logo-light" />
+        <img
+          src="/presskit/full/cpak-brand-dark.svg"
+          alt="cpak logo"
+          class="theme-logo-dark h-[46px] w-[104px] object-contain"
+        />
       </div>
       <p class="leading-relaxed text-gray-600">
         Decentralized software distribution for any context.
@@ -44,7 +49,9 @@
         href="https://github.com/Containerpak"
         class="block text-gray-600 hover:underline">GitHub</a
       >
-      <a href="/announcements" class="block text-gray-600 hover:underline">Announcements</a>
+      <a href="/announcements" class="block text-gray-600 hover:underline"
+        >Announcements</a
+      >
       <a href="/branding" class="block text-gray-600 hover:underline"
         >Branding</a
       >

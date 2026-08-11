@@ -2,6 +2,7 @@
   import { page } from "$app/stores";
   import { onMount } from "svelte";
   import { searchQuery } from "$lib/stores/search";
+  import ThemePicker from "$lib/components/ThemePicker.svelte";
 
   let query = "";
   let showDropdown = false;
@@ -95,7 +96,12 @@
       </button>
     {/if}
     <a href="/" class="flex shrink-0 items-center gap-2">
-      <img src="/cpak-brand.svg" alt="cpak logo" />
+      <img src="/cpak-brand.svg" alt="cpak logo" class="theme-logo-light" />
+      <img
+        src="/presskit/full/cpak-brand-dark.svg"
+        alt="cpak logo"
+        class="theme-logo-dark h-[46px] w-[104px] object-contain"
+      />
     </a>
     <div class="flex flex-grow justify-end lg:justify-center">
       <input
@@ -157,6 +163,7 @@
       {/if}
     </div>
     <div class="flex shrink-0 items-center gap-6">
+      <ThemePicker />
       <button
         class="lg:hidden flex items-center justify-center rounded-full bg-transparent p-2 text-gray-700 shadow-none transition duration-200 hover:bg-white hover:shadow-sm"
         on:click={() => (showMobileMenu = !showMobileMenu)}
@@ -170,7 +177,8 @@
         >
         <a
           href="/announcements"
-          class="text-sm font-medium text-gray-900 hover:underline">Announcements</a
+          class="text-sm font-medium text-gray-900 hover:underline"
+          >Announcements</a
         >
         <a
           href="/support"

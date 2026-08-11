@@ -1,0 +1,83 @@
+<script lang="ts">
+  import { onMount } from "svelte";
+
+  type ThemePreference = "system" | "light" | "dark";
+
+  const options: { value: ThemePreference; label: string; icon: string }[] = [
+    { value: "system", label: "System", icon: "brightness_auto" },
+    { value: "light", label: "Light", icon: "light_mode" },
+    { value: "dark", label: "Dark", icon: "dark_mode" },
+  ];
+
+  let preference: ThemePreference = "system";
+  let menu: HTMLDetailsElement;
+  let media: MediaQueryList;
+
+  function resolvedTheme(value: ThemePreference) {
+    if (value !== "system") return value;
+    return media.matches ? "dark" : "light";
+  }
+
+  function apply(value: ThemePreference, persist = true) {
+    preference = value;
+    const theme = resolvedTheme(value);
+    document.documentElement.dataset.theme = theme;
+    document.documentElement.dataset.themePreference = value;
+    document.documentElement.style.colorScheme = theme;
+    if (persist) localStorage.setItem("cpak-theme", value);
+  }
+
+  function select(value: ThemePreference) {
+    apply(value);
+    menu.open = false;
+  }
+
+  onMount(() => {
+    media = window.matchMedia("(prefers-color-scheme: dark)");
+    const stored = localStorage.getItem("cpak-theme");
+    preference = stored === "light" || stored === "dark" ? stored : "system";
+    apply(preference, false);
+
+    const handleSystemChange = () => {
+      if (preference === "system") apply("system", false);
+    };
+
+    media.addEventListener("change", handleSystemChange);
+    return () => media.removeEventListener("change", handleSystemChange);
+  });
+
+  $: current =
+    options.find((option) => option.value === preference) ?? options[0];
+</script>
+
+<details bind:this={menu} class="theme-picker relative">
+  <summary
+    class="flex h-10 w-10 cursor-pointer list-none items-center justify-center rounded-full text-gray-700 transition hover:bg-white hover:shadow-sm"
+    aria-label={`Theme: ${current.label}`}
+    title={`Theme: ${current.label}`}
+  >
+    <span class="material-symbols-outlined text-[21px]">{current.icon}</span>
+  </summary>
+
+  <div
+    class="absolute top-12 right-0 z-50 w-44 overflow-hidden rounded-2xl border border-slate-200 bg-white p-1.5 shadow-xl"
+  >
+    {#each options as option}
+      <button
+        type="button"
+        on:click={() => select(option.value)}
+        class={`flex w-full items-center gap-3 rounded-xl px-3 py-2 text-left text-sm transition hover:bg-slate-100 ${
+          preference === option.value
+            ? "font-semibold text-[#3568d1]"
+            : "text-gray-700"
+        }`}
+      >
+        <span class="material-symbols-outlined text-[20px]">{option.icon}</span>
+        <span class="flex-1">{option.label}</span>
+        {#if preference === option.value}
+          <span class="material-symbols-outlined text-[18px]">check</span>
+        {/if}
+      </button>
+    {/each}
+  </div>
+</details>
