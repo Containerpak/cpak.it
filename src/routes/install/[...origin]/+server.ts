@@ -35,7 +35,7 @@ export const GET: RequestHandler = async ({ fetch, params, url }) => {
         return new Response('Unsupported architecture', { status: 400 });
     }
 
-    const release = env.CPAK_INSTALLER_RELEASE || 'v2.0.0-rc.2';
+    const release = env.CPAK_INSTALLER_RELEASE || 'v2.0.0-rc.4';
     const installerBase = env.CPAK_INSTALLER_BASE_URL || `${RELEASE_BASE}/${release}`;
     const [catalogResponse, installerResponse] = await Promise.all([
         fetch(`${installerBase}/cpak-installer-catalog.json`),
