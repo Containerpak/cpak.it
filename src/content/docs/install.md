@@ -12,12 +12,15 @@ Cpak is distributed as one Go binary. It does not require a container daemon and
 
 ## Download the binary
 
-Open the [continuous release](https://github.com/Containerpak/cpak/releases/tag/continuous), download the archive for your architecture, and place `cpak` on your user `PATH`:
+Open the [continuous release](https://github.com/Containerpak/cpak/releases/tag/continuous) and download `cpak-linux-amd64` on x86-64 or `cpak-linux-arm64` on ARM64. Download `SHA256SUMS` from the same release, then verify and install the binary on your user `PATH`:
 
 ```bash
-install -Dm755 cpak "$HOME/.local/bin/cpak"
+sha256sum -c --ignore-missing SHA256SUMS
+install -Dm755 cpak-linux-amd64 "$HOME/.local/bin/cpak"
 cpak --help
 ```
+
+Replace `cpak-linux-amd64` with `cpak-linux-arm64` on ARM64.
 
 Use the same binary for interactive commands, application lifecycle management, and the local service. A system-wide installation is optional.
 
