@@ -8,11 +8,11 @@ order: 10
 
 # Install Cpak
 
-Cpak is distributed as one Go binary. It does not require a container daemon and it does not install a second container runtime. The current v2 builds are published through the continuous release on GitHub.
+Cpak is distributed as one Go binary. It does not require a container daemon and it does not install a second container runtime. The current v2 release candidate is published on GitHub.
 
 ## Download the binary
 
-Open the [continuous release](https://github.com/Containerpak/cpak/releases/tag/continuous) and download `cpak-linux-amd64` on x86-64 or `cpak-linux-arm64` on ARM64. Download `SHA256SUMS` from the same release, then verify and install the binary on your user `PATH`:
+Open the [v2.0.0 release candidate](https://github.com/Containerpak/cpak/releases/tag/v2.0.0-rc.1) and download `cpak-linux-amd64` on x86-64 or `cpak-linux-arm64` on ARM64. Download `SHA256SUMS` from the same release, then verify and install the binary on your user `PATH`:
 
 ```bash
 sha256sum -c --ignore-missing SHA256SUMS
@@ -52,7 +52,7 @@ Run an installed application from its desktop entry or with `cpak run`. Both pat
 
 ## Update Cpak
 
-Replace the binary with a newer continuous build, then run:
+Replace the binary with a newer release, then run:
 
 ```bash
 cpak doctor
