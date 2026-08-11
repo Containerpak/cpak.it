@@ -8,7 +8,7 @@ order: 70
 
 # Test a package
 
-Package testing should prove the manifest, image, exported files, runtime behavior, and desktop integration. Cpak provides isolated developer commands so those checks do not alter the user's installed store.
+Package testing should prove the manifest, image, exported files, runtime behavior, and desktop integration. cpak provides isolated developer commands so those checks do not alter the user's installed store.
 
 ## Static validation
 
@@ -39,7 +39,7 @@ cpak test cpak.json
 cpak test cpak.json --binary /usr/bin/example -- --version
 ```
 
-The command creates a temporary Cpak store, installs the package, checks every declared binary and desktop entry, and optionally launches one binary. It does not export files to the user's desktop.
+The command creates a temporary cpak store, installs the package, checks every declared binary and desktop entry, and optionally launches one binary. It does not export files to the user's desktop.
 
 Use `--origin` for relative dependency resolution and `--lock` to select a non-default lock path.
 
@@ -68,8 +68,8 @@ SDKs need a real compile and run test. Packages with dependencies need a launch 
 
 Build OCI images in CI and run application-specific smoke tests for every published architecture. Keep the final test commands in the package repository so maintainers can repeat them.
 
-`cpak test` should remain part of package validation after the image is published. It validates the package through Cpak rather than testing only the container image in isolation.
+`cpak test` should remain part of package validation after the image is published. It validates the package through cpak rather than testing only the container image in isolation.
 
 ## Visual applications
 
-A desktop package is not done when `--version` exits successfully. Launch it from Cpak, confirm that windows render, check icons and desktop entries, and exercise the main workflows. Test Wayland and X11 paths when the manifest enables both.
+A desktop package is not done when `--version` exits successfully. Launch it from cpak, confirm that windows render, check icons and desktop entries, and exercise the main workflows. Test Wayland and X11 paths when the manifest enables both.

@@ -23,20 +23,20 @@ Create a `Containerfile` that copies the application into a small runtime image.
 ```dockerfile
 FROM debian:13-slim
 
-RUN printf '#!/bin/sh\nprintf "Hello from Cpak\\n"\n' > /usr/bin/hello-cpak \
+RUN printf '#!/bin/sh\nprintf "Hello from cpak\\n"\n' > /usr/bin/hello-cpak \
     && chmod 0755 /usr/bin/hello-cpak
 
 ENTRYPOINT ["/usr/bin/hello-cpak"]
 ```
 
-Build and publish the image with your registry workflow. Cpak reads standard OCI images and does not require a custom image builder.
+Build and publish the image with your registry workflow. cpak reads standard OCI images and does not require a custom image builder.
 
 ## Generate the manifest
 
 ```bash
 cpak init \
-  --name "Hello Cpak" \
-  --description "Small package used to verify a Cpak setup." \
+  --name "Hello cpak" \
+  --description "Small package used to verify a cpak setup." \
   --version 1.0.0 \
   --image ghcr.io/your-name/hello-cpak:main \
   --binary /usr/bin/hello-cpak
@@ -52,7 +52,7 @@ cpak lock cpak.json
 cpak test cpak.json --binary /usr/bin/hello-cpak
 ```
 
-`cpak validate` checks the manifest contract. `cpak lock` resolves the root package and dependencies to immutable image digests. `cpak test` uses a temporary Cpak store, verifies declared binaries and desktop entries, then runs the selected binary when requested.
+`cpak validate` checks the manifest contract. `cpak lock` resolves the root package and dependencies to immutable image digests. `cpak test` uses a temporary cpak store, verifies declared binaries and desktop entries, then runs the selected binary when requested.
 
 The temporary flow does not export desktop entries or change applications installed in your normal store.
 
@@ -66,7 +66,7 @@ Copy the application's `.desktop` file and icon into standard paths in the final
 ]
 ```
 
-The `Exec` command in the desktop entry must point to a binary available in the package. Cpak exports a host entry that launches the application through its installed origin and effective permissions.
+The `Exec` command in the desktop entry must point to a binary available in the package. cpak exports a host entry that launches the application through its installed origin and effective permissions.
 
 ## Test the developer flow
 

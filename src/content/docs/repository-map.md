@@ -18,13 +18,13 @@ Use this map before opening a change. Repository boundaries follow ownership and
 | [Containerpak/hrun](https://github.com/Containerpak/hrun)       | Controlled execution of explicitly allowed host commands.                                   |
 | [mirkobrombin/DaBaDee](https://github.com/mirkobrombin/DaBaDee) | Content hashing and hard-link deduplication.                                                |
 
-The Cpak runtime default branch is `v2`. hrun and DaBaDee are normal Go dependencies; they are not embedded helper binaries.
+The cpak runtime default branch is `v2`. hrun and DaBaDee are normal Go dependencies; they are not embedded helper binaries.
 
 ## Shared images
 
 | Repository                                                    | Owns                                                                               |
 | ------------------------------------------------------------- | ---------------------------------------------------------------------------------- |
-| [Containerpak/images](https://github.com/Containerpak/images) | General base runtime images shared by Cpak packages.                               |
+| [Containerpak/images](https://github.com/Containerpak/images) | General base runtime images shared by cpak packages.                               |
 | [Containerpak/wine](https://github.com/Containerpak/wine)     | Multiarch environment used by packages that supply their own Wine-derived runtime. |
 
 A shared image should contain the environment needed by several packages, not a copy of the consuming application.
@@ -37,7 +37,7 @@ Language toolchains use the same model:
 
 | Repository                                                                | Provides                                                     |
 | ------------------------------------------------------------------------- | ------------------------------------------------------------ |
-| [Containerpak/sdk-go](https://github.com/Containerpak/sdk-go)             | Go compiler and formatter for Cpak development environments. |
+| [Containerpak/sdk-go](https://github.com/Containerpak/sdk-go)             | Go compiler and formatter for cpak development environments. |
 | [Containerpak/sdk-node-lts](https://github.com/Containerpak/sdk-node-lts) | Node.js LTS, npm, npx, and Corepack.                         |
 
 An editor lists supported SDK origins as addons. The SDK repository owns toolchain compatibility paths and architecture tests.

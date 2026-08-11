@@ -63,10 +63,10 @@
 </script>
 
 <svelte:head>
-  <title>Support Cpak</title>
+  <title>Support cpak</title>
   <meta
     name="description"
-    content="Fund independent development of Cpak and its application ecosystem."
+    content="Fund independent development of cpak and its application ecosystem."
   />
 </svelte:head>
 
@@ -81,10 +81,10 @@
       <h1
         class="mx-auto mt-4 max-w-4xl text-5xl font-extrabold tracking-tight text-gray-950 sm:text-6xl"
       >
-        Help Cpak grow past the experiment.
+        Help cpak grow past the experiment.
       </h1>
       <p class="mx-auto mt-6 max-w-2xl text-xl leading-8 text-gray-600">
-        Cpak, its runtime, official packages, SDKs, Store, and compatibility
+        cpak, its runtime, official packages, SDKs, Store, and compatibility
         work are maintained as an independent project. Funding buys the time
         needed to test more hardware and keep releases moving.
       </p>
@@ -150,7 +150,7 @@
           The work behind a package that simply opens.
         </h2>
         <p class="mt-5 text-lg leading-8 text-gray-600">
-          A Cpak release is more than the command itself. It includes kernel
+          A cpak release is more than the command itself. It includes kernel
           compatibility, runtime isolation, package recipes, application
           testing, documentation, and maintenance of shared images across
           architectures.
@@ -266,7 +266,7 @@
         </p>
       </div>
       <a
-        href="mailto:brombin94@gmail.com?subject=Cpak%20sponsorship"
+        href="mailto:brombin94@gmail.com?subject=cpak%20sponsorship"
         class="shrink-0 rounded-full bg-white px-6 py-3 font-semibold text-slate-950 hover:bg-slate-100"
         >Get in touch</a
       >

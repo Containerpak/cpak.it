@@ -1,6 +1,6 @@
 ---
 title: Sandbox and threat model
-description: What Cpak isolates, what the manifest can reopen, and which protections depend on the host.
+description: What cpak isolates, what the manifest can reopen, and which protections depend on the host.
 tags: [security, sandbox, runtime]
 section: runtime
 order: 20
@@ -8,13 +8,13 @@ order: 20
 
 # Sandbox and threat model
 
-Cpak starts applications without host root privileges. Its sandbox reduces the host surface visible to a package, then reopens resources declared by the package and accepted by the user.
+cpak starts applications without host root privileges. Its sandbox reduces the host surface visible to a package, then reopens resources declared by the package and accepted by the user.
 
 ## Namespace boundary
 
 The runtime uses Linux namespaces for users, mounts, processes, IPC, hostname, cgroups, and optional networking. The process sees the assembled package root rather than the host root. The package PID 1 owns child cleanup and instance lifetime.
 
-Nested user namespaces are blocked by default. A package can request `userNamespaces` for applications such as browsers that create another sandbox inside Cpak.
+Nested user namespaces are blocked by default. A package can request `userNamespaces` for applications such as browsers that create another sandbox inside cpak.
 
 ## Filesystem boundary
 
@@ -24,15 +24,15 @@ Landlock is an extra restriction, not a substitute for mount isolation. `cpak do
 
 ## System call boundary
 
-Cpak applies `no_new_privs` before the application starts and uses seccomp to block disallowed system calls. A package cannot gain privileges through a setuid executable after this point.
+cpak applies `no_new_privs` before the application starts and uses seccomp to block disallowed system calls. A package cannot gain privileges through a setuid executable after this point.
 
-The policy leaves the calls required by normal desktop applications and Cpak's own runtime path. New application classes should be tested against the policy instead of disabling it globally.
+The policy leaves the calls required by normal desktop applications and cpak's own runtime path. New application classes should be tested against the policy instead of disabling it globally.
 
 ## Resource controls
 
-Memory, CPU, and process limits use delegated cgroup v2 controllers. Cpak never reports a requested limit as active when the host cannot enforce it. The launch fails with a specific diagnostic.
+Memory, CPU, and process limits use delegated cgroup v2 controllers. cpak never reports a requested limit as active when the host cannot enforce it. The launch fails with a specific diagnostic.
 
-Systemd is supported as a session manager but is not required. Other init systems can run Cpak when the kernel features and user session resources are available.
+Systemd is supported as a session manager but is not required. Other init systems can run cpak when the kernel features and user session resources are available.
 
 ## Host communication
 

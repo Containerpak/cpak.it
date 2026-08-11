@@ -8,11 +8,11 @@ order: 10
 
 # Runtime architecture
 
-Cpak is one Go binary that resolves package metadata, manages a content-addressed store, and starts rootless application environments through Linux kernel interfaces. It does not depend on a daemon such as Docker or Podman at runtime.
+cpak is one Go binary that resolves package metadata, manages a content-addressed store, and starts rootless application environments through Linux kernel interfaces. It does not depend on a daemon such as Docker or Podman at runtime.
 
 ## Package resolution
 
-An install starts from a Git origin. Cpak resolves the selected branch, release, or commit and downloads `cpak.json`. The manifest is validated before image content or runtime sources become active.
+An install starts from a Git origin. cpak resolves the selected branch, release, or commit and downloads `cpak.json`. The manifest is validated before image content or runtime sources become active.
 
 The OCI image reference is resolved to an immutable digest. Dependency manifests are resolved through the same path. A lock file can record the exact manifest hashes and image digests for development and CI.
 
@@ -20,17 +20,17 @@ The OCI image reference is resolved to an immutable digest. Dependency manifests
 
 OCI layers are stored by digest. The same layer referenced by several applications occupies one stored copy. DaBaDee can replace equal files with hard links where the filesystem supports it, which removes duplicate bytes that appear across different layer layouts.
 
-Package records, immutable layers, writable application state, logs, exported desktop files, and transaction state are kept separately. This lets Cpak recover an interrupted update without treating a partially staged version as active.
+Package records, immutable layers, writable application state, logs, exported desktop files, and transaction state are kept separately. This lets cpak recover an interrupted update without treating a partially staged version as active.
 
 ## Runtime view
 
-At launch, Cpak assembles ordered application, dependency, and enabled addon layers with OverlayFS. A writable upper layer receives application changes. The downloaded content remains immutable and reusable.
+At launch, cpak assembles ordered application, dependency, and enabled addon layers with OverlayFS. A writable upper layer receives application changes. The downloaded content remains immutable and reusable.
 
-The environment receives a stable package identity through Cpak-specific variables. Packages can use that identity to select first-class Cpak behavior without pretending to be another package format.
+The environment receives a stable package identity through cpak-specific variables. Packages can use that identity to select first-class cpak behavior without pretending to be another package format.
 
 ## Isolation
 
-Cpak creates user, mount, PID, IPC, UTS, cgroup, and optional network namespaces directly. A small PID 1 process owns the container lifecycle and reaps child processes. A private Unix socket accepts bounded execution requests for the running instance.
+cpak creates user, mount, PID, IPC, UTS, cgroup, and optional network namespaces directly. A small PID 1 process owns the container lifecycle and reaps child processes. A private Unix socket accepts bounded execution requests for the running instance.
 
 Mounts are prepared from the package permission set and user overrides. The final process receives `no_new_privs`, a seccomp policy, and Landlock rules when the host kernel supports them.
 
@@ -38,7 +38,7 @@ Mounts are prepared from the package permission set and user overrides. The fina
 
 Display, audio, devices, and explicitly requested sockets are mounted into the environment. Host commands pass through hrun and a policy checked command bridge. Notifications and external URI requests use a dedicated system broker.
 
-The application does not need to adopt a portal API. Existing Linux applications can call the provided compatibility command, while Cpak decides whether the manifest allows the operation.
+The application does not need to adopt a portal API. Existing Linux applications can call the provided compatibility command, while cpak decides whether the manifest allows the operation.
 
 ## Lifecycle
 

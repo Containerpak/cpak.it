@@ -5,7 +5,7 @@
 
 <svelte:head>
 	<title>Terms | cpak</title>
-	<meta name="description" content="Terms for using the Cpak website and its public resources." />
+	<meta name="description" content="Terms for using the cpak website and its public resources." />
 </svelte:head>
 
 <Header />
@@ -32,7 +32,7 @@
 		<section>
 			<h2 class="text-3xl font-bold tracking-tight text-gray-950">Software and package content</h2>
 			<p class="mt-4">
-				Cpak, Store entries, package recipes, and linked applications are governed by the licenses shown in
+				cpak, Store entries, package recipes, and linked applications are governed by the licenses shown in
 				their respective repositories or distributions. A Store listing does not transfer ownership of an
 				application or replace its license.
 			</p>

@@ -1,18 +1,18 @@
 ---
-title: Cpak concepts
+title: cpak concepts
 description: The small set of objects behind packages, layers, state, permissions, and versions.
 tags: [basics, architecture]
 section: start
 order: 30
 ---
 
-# Cpak concepts
+# cpak concepts
 
-Cpak separates package identity from package contents. This lets a normal Git repository describe an application while OCI registries handle large binary layers.
+cpak separates package identity from package contents. This lets a normal Git repository describe an application while OCI registries handle large binary layers.
 
 ## Origin
 
-The origin is the package repository without a protocol or trailing `.git`, such as `github.com/containerpak/bottles`. It is the stable identity used by install, update, run, override, addon, and rollback commands.
+The origin is the package repository without a protocol or trailing `.git`, such as `github.com/bottlesdevs/bottles`. It is the stable identity used by install, update, run, override, addon, and rollback commands.
 
 An alias is only a local shortcut for an installed origin. It does not create a new package or change where updates come from.
 
@@ -22,7 +22,7 @@ An alias is only a local shortcut for an installed origin. It does not create a 
 
 - package metadata and the OCI image
 - exported binaries and desktop entries
-- required Cpak dependencies and optional addons
+- required cpak dependencies and optional addons
 - idle lifecycle behavior
 - filesystem, device, socket, broker, network, and resource permissions
 - verified artifacts that must be installed at package installation time
@@ -31,13 +31,13 @@ Unknown fields are rejected. A runtime that cannot apply a declared v2 feature r
 
 ## Image and layers
 
-The image contains the application filesystem. Cpak resolves the image to an immutable OCI digest and stores each layer by its content digest. Packages that reference the same bytes share those layers.
+The image contains the application filesystem. cpak resolves the image to an immutable OCI digest and stores each layer by its content digest. Packages that reference the same bytes share those layers.
 
 The image is not the package identity. A package can change its image reference during an update while keeping the same origin and application data.
 
 ## Writable state
 
-Immutable image layers are mounted below a writable application layer. Changes made by the application do not modify the downloaded OCI content. Package records, runtime state, logs, and exported desktop files remain separate so Cpak can update or recover them independently.
+Immutable image layers are mounted below a writable application layer. Changes made by the application do not modify the downloaded OCI content. Package records, runtime state, logs, and exported desktop files remain separate so cpak can update or recover them independently.
 
 ## Dependencies and addons
 
@@ -57,4 +57,4 @@ A package can follow a branch, select a release, or pin an exact commit. Commit 
 
 ## Store and catalog
 
-Cpak does not require a central catalog. Any valid package origin can be installed directly. The [Containerpak Store](/store) is a reviewed index that adds discovery, categories, icons, screenshots, and package metadata without becoming the package source of truth.
+cpak does not require a central catalog. Any valid package origin can be installed directly. The [Containerpak Store](/store) is a reviewed index that adds discovery, categories, icons, screenshots, and package metadata without becoming the package source of truth.

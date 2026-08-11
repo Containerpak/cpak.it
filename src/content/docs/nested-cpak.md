@@ -1,14 +1,14 @@
 ---
-title: Nested Cpak
-description: Declare and run a Cpak dependency as a controlled service inside another package.
+title: Nested cpak
+description: Declare and run a cpak dependency as a controlled service inside another package.
 tags: [nested, dependencies, runtime]
 section: runtime
 order: 40
 ---
 
-# Nested Cpak
+# Nested cpak
 
-Nested Cpak lets an application use another Cpak package without embedding that dependency into its own image. Bottles can use the UMU package this way: the parent keeps its UI and application state, while UMU supplies its dedicated runtime environment.
+Nested cpak lets an application use another cpak package without embedding that dependency into its own image. Bottles can use the UMU package this way: the parent keeps its UI and application state, while UMU supplies its dedicated runtime environment.
 
 ## Declare the dependency
 
@@ -23,13 +23,13 @@ Add the nested package as a normal manifest dependency:
 ]
 ```
 
-Cpak installs the dependency with the parent and records it in the package graph. Shared layers remain deduplicated in the local store.
+cpak installs the dependency with the parent and records it in the package graph. Shared layers remain deduplicated in the local store.
 
 ## Request execution
 
-The parent package sends a structured nested request to the Cpak service. The host runtime resolves the installed dependency, applies its manifest, starts or reuses the requested instance, and returns the result through the private protocol.
+The parent package sends a structured nested request to the cpak service. The host runtime resolves the installed dependency, applies its manifest, starts or reuses the requested instance, and returns the result through the private protocol.
 
-The parent does not mount the host Cpak database or control socket directly. It receives only the request path needed for its declared dependency.
+The parent does not mount the host cpak database or control socket directly. It receives only the request path needed for its declared dependency.
 
 ## Files and state
 
@@ -43,10 +43,10 @@ The nested package runs with its own manifest and user overrides. It does not in
 
 ## Lifecycle and logs
 
-Nested instances use the normal Cpak supervisor. Their output is available through Cpak logs, and they stop through the same instance lifecycle. Parent errors should include the nested package origin and the failing request so users can diagnose the correct layer.
+Nested instances use the normal cpak supervisor. Their output is available through cpak logs, and they stop through the same instance lifecycle. Parent errors should include the nested package origin and the failing request so users can diagnose the correct layer.
 
 ## Test the integration
 
-Test the dependency as a standalone Cpak first. Then test the complete parent workflow through Cpak, including first install, repeated launch, update, rollback, and cleanup.
+Test the dependency as a standalone cpak first. Then test the complete parent workflow through cpak, including first install, repeated launch, update, rollback, and cleanup.
 
 For Bottles and UMU, a successful test creates a real UMU prefix and launches the selected Windows application through the nested package. Detecting the shim or printing a version is only a preliminary check.

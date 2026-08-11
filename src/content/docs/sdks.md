@@ -8,7 +8,7 @@ order: 60
 
 # SDKs and development tools
 
-Cpak models SDKs as addon packages. An editor declares the SDK origins it supports, then each user enables only the toolchains needed by that editor.
+cpak models SDKs as addon packages. An editor declares the SDK origins it supports, then each user enables only the toolchains needed by that editor.
 
 ## Enable an official SDK
 
@@ -27,7 +27,7 @@ cpak install github.com/containerpak/sdk-node-lts
 cpak addon enable github.com/containerpak/vscode github.com/containerpak/sdk-node-lts
 ```
 
-Run VS Code through Cpak after changing the addon selection. Its integrated terminal and extensions see the enabled SDK binaries in the same package environment.
+Run VS Code through cpak after changing the addon selection. Its integrated terminal and extensions see the enabled SDK binaries in the same package environment.
 
 ## Create an SDK package
 
@@ -38,7 +38,7 @@ An SDK is a normal manifest v2 package. Its image should contain the toolchain a
   "$schema": "https://raw.githubusercontent.com/Containerpak/cpak/v2/schema/manifest-v2.json",
   "manifest_version": "2.0",
   "name": "Example SDK",
-  "description": "Example language tools for Cpak development environments.",
+  "description": "Example language tools for cpak development environments.",
   "version": "1.0.0",
   "image": "ghcr.io/example/sdk-example:main",
   "binaries": ["/usr/local/bin/example", "/usr/local/bin/examplefmt"],

@@ -8,7 +8,7 @@ order: 40
 
 # Troubleshooting
 
-Start with the narrowest layer that can explain the failure. Keep the full command, package origin, selected reference, Cpak build, and host capability report with any bug report.
+Start with the narrowest layer that can explain the failure. Keep the full command, package origin, selected reference, cpak build, and host capability report with any bug report.
 
 ## Run the host check
 
@@ -68,7 +68,7 @@ Audit first. Garbage collection is for unreferenced content, not for repairing a
 
 ## Desktop entry does not appear
 
-Confirm that the manifest path is absolute, ends in `.desktop`, and exists in the final image. Its `Exec` target must be a declared or available binary. Reinstall or update the package after changing only manifest metadata so Cpak refreshes the exported entry.
+Confirm that the manifest path is absolute, ends in `.desktop`, and exists in the final image. Its `Exec` target must be a declared or available binary. Reinstall or update the package after changing only manifest metadata so cpak refreshes the exported entry.
 
 ## An update is refused
 

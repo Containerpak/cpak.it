@@ -1,14 +1,14 @@
 ---
-title: Contributing to Cpak
+title: Contributing to cpak
 description: Build the v2 branch, run its verification suite, and send focused changes to the correct repository.
 tags: [contributing, development, go]
 section: project
 order: 10
 ---
 
-# Contributing to Cpak
+# Contributing to cpak
 
-The Cpak project is split into the runtime, reusable libraries, package images, the Store, and this website. Start in the repository that owns the behavior you want to change.
+The cpak project is split into the runtime, reusable libraries, package images, the Store, and this website. Start in the repository that owns the behavior you want to change.
 
 ## Build the runtime
 
@@ -43,7 +43,7 @@ The generated schema must match the committed schema. Add tests beside changed b
 
 Inspect every reported capability. Namespace, mount, Landlock, seccomp, cgroup, display, audio, init, and host bridge behavior depends on the host, so unit tests are not the final runtime check.
 
-For a launch change, install or test a real package through the locally built Cpak binary. For a package change, build the image in its GitHub workflow and test the published result through Cpak.
+For a launch change, install or test a real package through the locally built cpak binary. For a package change, build the image in its GitHub workflow and test the published result through cpak.
 
 ## Work on packages
 
@@ -72,4 +72,4 @@ Use the repository's existing report templates when opening an issue. Include a 
 
 ## Licenses
 
-The Cpak runtime uses the Fabricators Public Access License, FPAL-TCV 1.0. Package images also carry the licenses and redistribution terms of their included software. Review upstream terms before publishing binaries, icons, fonts, or screenshots.
+The cpak runtime uses the Fabricators Public Access License, FPAL-TCV 1.0. Package images also carry the licenses and redistribution terms of their included software. Review upstream terms before publishing binaries, icons, fonts, or screenshots.

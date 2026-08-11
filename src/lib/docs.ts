@@ -19,7 +19,7 @@ export const docSections = [
     id: "start",
     title: "Start here",
     description:
-      "Install Cpak, understand its model, and run your first application.",
+      "Install cpak, understand its model, and run your first application.",
   },
   {
     id: "packages",
@@ -35,7 +35,7 @@ export const docSections = [
   },
   {
     id: "operations",
-    title: "Operate Cpak",
+    title: "Operate cpak",
     description:
       "Manage updates, storage, diagnostics, recovery, and automation.",
   },

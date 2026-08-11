@@ -7,7 +7,7 @@
 			id: 'footprint',
 			title: 'Ultra-light footprint',
 			desc: 'A single self-contained runtime binary with shared OCI layers and content deduplication.',
-			details: `Cpak does not install a background daemon or a second package manager runtime. Applications keep the size of their real payload, while shared OCI layers are stored once and DaBaDee deduplicates repeated content across packages. This keeps the runtime small without hiding application dependencies.`
+			details: `cpak does not install a background daemon or a second package manager runtime. Applications keep the size of their real payload, while shared OCI layers are stored once and DaBaDee deduplicates repeated content across packages. This keeps the runtime small without hiding application dependencies.`
 		},
 		{
 			id: 'docker',
@@ -19,7 +19,7 @@
 			id: 'nvidia',
 			title: 'Host GPU integration',
 			desc: 'Bind host graphics drivers at launch instead of packaging a second driver stack in every image.',
-			details: `Cpak maps DRI devices and discovers host NVIDIA userspace libraries when the package grants GPU access. Images stay independent from the host driver version, while the application receives the matching host stack at launch. NVIDIA support remains experimental until it has broader hardware coverage.`
+			details: `cpak maps DRI devices and discovers host NVIDIA userspace libraries when the package grants GPU access. Images stay independent from the host driver version, while the application receives the matching host stack at launch. NVIDIA support remains experimental until it has broader hardware coverage.`
 		},
 		{
 			id: 'secure',
@@ -37,7 +37,7 @@
 			id: 'build',
 			title: 'One package model',
 			desc: 'Use the same manifest and command across systems, with an OCI image built for each architecture.',
-			details: `A package keeps one manifest and one Git origin while its OCI registry can publish the architecture-specific images it supports. The same \`cpak run\` command works on each supported target, and Cpak selects the matching image without pretending an amd64 binary can run unchanged on ARM.`
+			details: `A package keeps one manifest and one Git origin while its OCI registry can publish the architecture-specific images it supports. The same \`cpak run\` command works on each supported target, and cpak selects the matching image without pretending an amd64 binary can run unchanged on ARM.`
 		}
 	];
 
@@ -46,7 +46,7 @@
 			name: 'Bottles',
 			description: 'Run Windows applications on Linux with Wine and Proton.',
 			icon: '/store-icons/bottles.svg',
-			href: '/store/Utilities/github.com/containerpak/bottles'
+			href: '/store/Utilities/github.com/bottlesdevs/bottles'
 		},
 		{
 			name: 'Firefox',
@@ -136,7 +136,7 @@
 			<div class="max-w-xl">
 				<p class="text-sm font-semibold tracking-[0.16em] text-[#3E7BFF] uppercase">The Store</p>
 				<h2 class="mt-3 text-4xl font-extrabold tracking-tight text-gray-900">
-					Familiar apps, ready for Cpak
+					Familiar apps, ready for cpak
 				</h2>
 				<p class="mt-4 text-lg text-gray-600">
 					Every package has a clear manifest, a real origin and a command you can inspect before

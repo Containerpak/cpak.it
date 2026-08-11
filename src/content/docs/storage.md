@@ -1,6 +1,6 @@
 ---
 title: Store, deduplication, and cleanup
-description: Inspect Cpak data, repair interrupted transactions, share equal content, and reclaim unused space.
+description: Inspect cpak data, repair interrupted transactions, share equal content, and reclaim unused space.
 tags: [storage, gc, audit]
 section: operations
 order: 30
@@ -8,7 +8,7 @@ order: 30
 
 # Store, deduplication, and cleanup
 
-Cpak keeps immutable OCI content apart from writable application state. Cleanup commands operate on references in the package database so shared content is not removed while another package still uses it.
+cpak keeps immutable OCI content apart from writable application state. Cleanup commands operate on references in the package database so shared content is not removed while another package still uses it.
 
 ## Audit the store
 
@@ -24,7 +24,7 @@ Apply supported repairs explicitly:
 cpak audit --repair
 ```
 
-Read the report before repair when the store contains important application data. Repair targets Cpak metadata consistency; it does not reconstruct files deleted outside Cpak.
+Read the report before repair when the store contains important application data. Repair targets cpak metadata consistency; it does not reconstruct files deleted outside cpak.
 
 ## Garbage collection
 
@@ -65,6 +65,6 @@ Removal deletes the package record and its exported desktop integration. Shared 
 
 ## Back up writable state
 
-Back up application state and the Cpak database together when you need a recoverable snapshot. Immutable layers can be downloaded again, but local application state and user overrides may not exist anywhere else.
+Back up application state and the cpak database together when you need a recoverable snapshot. Immutable layers can be downloaded again, but local application state and user overrides may not exist anywhere else.
 
 Stop running instances before taking a filesystem-level snapshot. This avoids capturing a database or application file while it is being changed.

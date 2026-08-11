@@ -49,7 +49,7 @@
         >Branding</a
       >
       <a href="/support" class="block text-gray-600 hover:underline"
-        >Support Cpak</a
+        >Support cpak</a
       >
     </div>
 
@@ -70,6 +70,6 @@
     A project by <a
       href="https://bromb.in/"
       class="font-medium text-gray-700 hover:underline">Mirko Brombin</a
-    >, made with the Cpak community. © {new Date().getFullYear()}.
+    >, made with the cpak community. © {new Date().getFullYear()}.
   </div>
 </footer>

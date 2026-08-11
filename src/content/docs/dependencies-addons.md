@@ -58,7 +58,7 @@ The selection belongs to the parent application. Enabling an addon does not enab
 
 An addon contributes files to the runtime view. It does not expand the effective host permissions of its parent. If a toolchain needs network or filesystem access, the application manifest and user override must already allow that access.
 
-Cpak prevents removing a package while another installed package still depends on it or uses it as an enabled addon.
+cpak prevents removing a package while another installed package still depends on it or uses it as an enabled addon.
 
 ## Update behavior
 

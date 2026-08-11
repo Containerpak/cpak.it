@@ -8,7 +8,7 @@ order: 40
 
 # Build OCI images
 
-Cpak consumes standard OCI images. The image should contain only the application, its runtime libraries, declared desktop files, and assets required inside the package. Cpak itself does not need to be copied into the image.
+cpak consumes standard OCI images. The image should contain only the application, its runtime libraries, declared desktop files, and assets required inside the package. cpak itself does not need to be copied into the image.
 
 ## Use multiple stages
 
@@ -83,7 +83,7 @@ Keep the distribution release explicit. A floating distribution tag can replace 
 
 ## Layer layout
 
-Group stable runtime content before frequently changing application content. OCI registries and Cpak address layers by digest, so unchanged base layers can be shared by many packages and retained across updates.
+Group stable runtime content before frequently changing application content. OCI registries and cpak address layers by digest, so unchanged base layers can be shared by many packages and retained across updates.
 
 Avoid a single giant `RUN` step when it causes an application update to invalidate unrelated runtime content. Avoid many tiny layers that exist only to mirror individual shell commands. Split at boundaries that are likely to change independently.
 
@@ -101,4 +101,4 @@ cpak lock cpak.json
 cpak test cpak.json
 ```
 
-Run at least one declared binary. Desktop packages also need a real visual launch through Cpak on each supported display path.
+Run at least one declared binary. Desktop packages also need a real visual launch through cpak on each supported display path.

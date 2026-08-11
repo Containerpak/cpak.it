@@ -18,7 +18,7 @@ Before catalog submission, the package repository should contain:
 - a published OCI image for every advertised architecture
 - a concise README with install and test commands
 - a CI workflow that builds the image and checks its exported binaries
-- a real Cpak test of the primary application path
+- a real cpak test of the primary application path
 
 Run the package validation flow against the public repository reference, not only local files.
 
@@ -59,4 +59,4 @@ The package repository remains the source for `cpak.json` and image references. 
 
 ## Federated catalogs
 
-Cpak's package identity is decentralized. Another project can maintain its own reviewed index with different categories and policies while pointing to the same package origins. The official Store is one catalog, not a requirement built into the package format.
+cpak's package identity is decentralized. Another project can maintain its own reviewed index with different categories and policies while pointing to the same package origins. The official Store is one catalog, not a requirement built into the package format.

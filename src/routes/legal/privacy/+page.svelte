@@ -5,7 +5,7 @@
 
 <svelte:head>
 	<title>Privacy | cpak</title>
-	<meta name="description" content="How the Cpak website handles data and external services." />
+	<meta name="description" content="How the cpak website handles data and external services." />
 </svelte:head>
 
 <Header />
@@ -49,7 +49,7 @@
 			<h2 class="text-3xl font-bold tracking-tight text-gray-950">Funding and external links</h2>
 			<p class="mt-4">
 				The funding page links to GitHub Sponsors, PayPal, Patreon, and other external services. They receive
-				data only when you follow those links, and Cpak does not receive your payment credentials.
+				data only when you follow those links, and cpak does not receive your payment credentials.
 			</p>
 		</section>
 

@@ -8,7 +8,7 @@ order: 20
 
 # Updates, pins, and rollback
 
-Cpak keeps the package origin separate from its selected Git reference and resolved OCI digest. This lets a package follow a maintained branch or remain fixed to an exact revision.
+cpak keeps the package origin separate from its selected Git reference and resolved OCI digest. This lets a package follow a maintained branch or remain fixed to an exact revision.
 
 ## Source selection
 
@@ -54,9 +54,9 @@ Use this mode for unattended jobs. A permission denial is a failed update result
 
 ## Atomic switch
 
-Cpak stages the new manifest, OCI layers, runtime sources, dependencies, desktop exports, and database record. It switches the active version only after staging succeeds. Recovery code handles transactions that were interrupted before commit.
+cpak stages the new manifest, OCI layers, runtime sources, dependencies, desktop exports, and database record. It switches the active version only after staging succeeds. Recovery code handles transactions that were interrupted before commit.
 
-If the image digest is unchanged but the manifest changed, Cpak still refreshes package metadata and effective permissions.
+If the image digest is unchanged but the manifest changed, cpak still refreshes package metadata and effective permissions.
 
 ## Roll back
 

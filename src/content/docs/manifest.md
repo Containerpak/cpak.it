@@ -8,7 +8,7 @@ order: 20
 
 # Manifest v2 reference
 
-Manifest v2 is a strict JSON contract. Add the schema URL to receive editor completion and validation from the versioned definition in the Cpak repository.
+Manifest v2 is a strict JSON contract. Add the schema URL to receive editor completion and validation from the versioned definition in the cpak repository.
 
 ```json
 {
@@ -41,11 +41,11 @@ Manifest v2 is a strict JSON contract. Add the schema URL to receive editor comp
 | `manifest_version` | Yes      | Must be `2.0`.                                                   |
 | `name`             | Yes      | Human-readable application name.                                 |
 | `description`      | Yes      | Short package description.                                       |
-| `version`          | No       | Application version shown by Cpak.                               |
+| `version`          | No       | Application version shown by cpak.                               |
 | `image`            | Yes      | OCI image reference or digest.                                   |
 | `binaries`         | Yes      | One or more absolute executable paths.                           |
 | `desktop_entries`  | No       | Absolute paths to `.desktop` files in the image.                 |
-| `dependencies`     | No       | Required Cpak package origins.                                   |
+| `dependencies`     | No       | Required cpak package origins.                                   |
 | `addons`           | No       | Optional addon origins supported by this package.                |
 | `idle_time`        | Yes      | Minutes before an idle container stops. Zero disables the timer. |
 | `override`         | Yes      | Default host permissions and resource limits.                    |
@@ -95,7 +95,7 @@ A runtime source downloads an external HTTPS artifact at installation time and i
 ]
 ```
 
-The URL must use HTTPS. Cpak verifies the declared byte size and SHA-256 before running the installer. A mismatch aborts installation.
+The URL must use HTTPS. cpak verifies the declared byte size and SHA-256 before running the installer. A mismatch aborts installation.
 
 ## Permissions
 

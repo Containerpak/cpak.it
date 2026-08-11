@@ -4,7 +4,7 @@
   const paths = [
     {
       icon: "play_circle",
-      title: "Use Cpak",
+      title: "Use cpak",
       description:
         "Install the runtime, check your host, and run an application.",
       href: "/docs/quick-start",
@@ -20,7 +20,7 @@
     },
     {
       icon: "code",
-      title: "Work on Cpak",
+      title: "Work on cpak",
       description:
         "Understand the repository map, development flow, and project conventions.",
       href: "/docs/contributing",
@@ -40,12 +40,12 @@
 <section class="border-b border-slate-200 bg-white">
   <div class="mx-auto max-w-7xl px-6 py-20">
     <p class="text-sm font-semibold tracking-wide text-[#4670EC] uppercase">
-      Cpak documentation
+      cpak documentation
     </p>
     <h1
       class="mt-4 max-w-4xl text-5xl font-extrabold tracking-tight text-gray-950 sm:text-6xl"
     >
-      Everything you need to build and ship with Cpak.
+      Everything you need to build and ship with cpak.
     </h1>
     <p class="mt-6 max-w-3xl text-xl leading-8 text-gray-600">
       Choose the path that matches what you are doing. Each guide uses the
@@ -142,7 +142,7 @@
         rel="noopener noreferrer"
         class="inline-flex shrink-0 items-center justify-center gap-2 rounded-full bg-white px-6 py-3 font-semibold text-slate-950 hover:bg-slate-100"
       >
-        Open Cpak on GitHub
+        Open cpak on GitHub
         <span class="material-symbols-outlined text-lg">open_in_new</span>
       </a>
     </div>

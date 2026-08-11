@@ -33,7 +33,7 @@ Install, run, remove, stop, and shell accept branch, release, or commit selector
 | `shell`       | Open an interactive shell in a package instance.                      |
 | `logs`        | Print or follow instance output.                                      |
 | `stop`        | Stop a running instance.                                              |
-| `service`     | Start the local Cpak service.                                         |
+| `service`     | Start the local cpak service.                                         |
 | `orchestrate` | Start several applications with ordering, health checks, and retries. |
 
 Use `--instance` on supported commands to select a named instance of the same package.
@@ -74,4 +74,4 @@ Run `cpak gc --json` before `cpak gc --apply` when automating cleanup.
 
 ## Internal runtime commands
 
-`spawn`, `hostexec-client`, `hostexec-server`, `system-broker-client`, and `system-broker-server` implement Cpak's runtime protocol. Package scripts should use public lifecycle commands rather than invoking these directly.
+`spawn`, `hostexec-client`, `hostexec-server`, `system-broker-client`, and `system-broker-server` implement cpak's runtime protocol. Package scripts should use public lifecycle commands rather than invoking these directly.

@@ -5,7 +5,7 @@
 
 <svelte:head>
 	<title>Announcements - cpak</title>
-	<meta name="description" content="News and release notes from the Cpak project." />
+	<meta name="description" content="News and release notes from the cpak project." />
 </svelte:head>
 
 <Header />
@@ -18,7 +18,7 @@
 				Announcements
 			</h1>
 			<p class="mt-6 max-w-2xl text-xl leading-8 text-gray-600">
-				Notes on new packages, runtime changes and the projects that choose to ship with Cpak.
+				Notes on new packages, runtime changes and the projects that choose to ship with cpak.
 			</p>
 		</div>
 	</section>
@@ -29,10 +29,10 @@
 			<div class="mt-4 flex flex-col justify-between gap-6 sm:flex-row sm:items-end">
 				<div class="max-w-3xl">
 					<h2 class="text-3xl font-bold tracking-tight text-gray-900 group-hover:text-[#3E7BFF]">
-						Bottles arrives on Cpak
+						Bottles arrives on cpak
 					</h2>
 					<p class="mt-3 text-lg leading-8 text-gray-600">
-						Bottles 66 becomes the first major project to ship Cpak alongside Flatpak.
+						Bottles 66 becomes the first major project to ship cpak alongside Flatpak.
 					</p>
 				</div>
 				<span class="inline-flex items-center gap-1 font-semibold text-[#3E7BFF]">
