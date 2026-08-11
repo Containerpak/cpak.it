@@ -1,0 +1,89 @@
+---
+title: Permissions
+description: Declare the smallest host access an application needs and understand user overrides.
+tags: [manifest, security, permissions]
+section: packages
+order: 30
+---
+
+# Permissions
+
+The `override` object in `cpak.json` is the package's default permission set. The name reflects the same structure used for local user overrides. Each field maps to a concrete runtime action.
+
+## Display and desktop sockets
+
+| Field              | Access                                                                |
+| ------------------ | --------------------------------------------------------------------- |
+| `socketWayland`    | The active Wayland display socket.                                    |
+| `socketX11`        | The host X11 socket directory.                                        |
+| `socketPulseAudio` | The PulseAudio-compatible audio socket.                               |
+| `socketSessionBus` | The desktop session D-Bus socket.                                     |
+| `socketSystemBus`  | The system D-Bus socket. Use only when direct bus access is required. |
+| `socketCups`       | The CUPS printing socket.                                             |
+| `socketAtSpiBus`   | The accessibility bus socket.                                         |
+| `socketSshAgent`   | The user's SSH agent socket.                                          |
+| `socketGpgAgent`   | The user's GPG agent socket.                                          |
+| `socketBluetooth`  | The Bluetooth socket.                                                 |
+
+Prefer Cpak's system broker for notifications and external URIs. It exposes only the requested operation instead of the entire session bus.
+
+## Devices
+
+`deviceDri` grants access to graphics devices under `/dev/dri`. Other booleans cover KVM, shared memory, ALSA, video capture, FUSE, TUN/TAP, and USB. `deviceAll` exposes all host devices and should be reserved for packages that cannot work with narrower grants.
+
+NVIDIA userspace libraries are resolved from the host at launch when GPU passthrough is active. Packages should not copy a host-specific NVIDIA driver into their image.
+
+## Filesystem
+
+Manifest v2 uses structured filesystem entries:
+
+```json
+"filesystem": [
+  { "path": "home", "access": "read-write" },
+  { "path": "/mnt/projects", "access": "read-only" }
+]
+```
+
+The portable `home` scope maps to the user's home directory. The `host` scope maps to the host root. Absolute paths select one explicit location. Access must be `read-only` or `read-write`.
+
+Avoid the legacy `fsHost`, `fsHostHome`, `fsHostEtc`, and `fsExtra` fields in new packages. They exist for v1 migration and are rejected by the strict v2 schema.
+
+## Network and processes
+
+`network` controls network access in the package namespace. `process` shares the host process namespace and should remain false unless the application must inspect host processes.
+
+`userNamespaces` permits the application to create another user namespace. Browsers and tools with their own sandbox commonly need it. Leaving it false blocks nested user namespaces inside the package.
+
+## Resource limits
+
+| Field         | Unit               | Zero means         |
+| ------------- | ------------------ | ------------------ |
+| `memoryMaxMB` | MiB                | no limit requested |
+| `cpuQuota`    | percent of one CPU | no limit requested |
+| `pidsMax`     | process count      | no limit requested |
+
+Limits use delegated cgroup v2 controllers. If the current host cannot enforce a requested limit, Cpak returns a direct error instead of silently ignoring the manifest.
+
+## System operations
+
+Set `notification` to expose the notification shim and `openURI` to allow opening an external URI on the host. These operations pass through the Cpak system broker and do not expose a host command or unrestricted D-Bus socket.
+
+`allowedHostCommands` is a list of command names that the hrun bridge may execute on the host. Arguments remain an argument vector. The bridge validates the requesting process and applies the package policy before execution.
+
+## Environment
+
+The `env` array accepts `NAME=value` entries. Use it for stable package defaults, not user secrets. Secrets should enter through the application's own supported mechanism or a user-controlled mount.
+
+## Local overrides
+
+Users can replace one permission key for an installed application:
+
+```bash
+cpak override github.com/example/app --key network --value false
+cpak override github.com/example/app --key filesystem --value '[{"path":"home","access":"read-only"}]'
+```
+
+Overrides are stored per application version. Review them after a major package change. `cpak update` reports permission additions before committing the new version.
+
+> [!WARNING] Broad access
+> `deviceAll`, `socketSystemBus`, `process`, `asRoot`, `host` filesystem access, and arbitrary host commands cross large parts of the sandbox boundary. Document why a package needs them.

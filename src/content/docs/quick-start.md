@@ -1,18 +1,95 @@
 ---
 title: Quick start
-description: Install a package from a Git repository and run it in an isolated cpak container.
+description: Install, launch, update, and remove your first Cpak application.
 tags: [basics, cli]
+section: start
+order: 20
 ---
 
 # Quick start
 
-cpak installs an application from its manifest, downloads the OCI image layers, and starts it with the permissions declared by the package.
+A Cpak package is addressed by its Git repository. The repository contains the package contract, while its manifest points to the OCI image that contains the application.
+
+## Check the runtime
 
 ```bash
-cpak install github.com/containerpak/hello
-cpak run github.com/containerpak/hello
+cpak doctor
 ```
 
-The first command stores the manifest and layers in the local cpak store. Shared layers are downloaded once and reused by every package that references them.
+Resolve required failures before continuing. Warnings describe optional host features that Cpak cannot apply on the current system.
 
-Use `cpak list` to inspect installed applications and `cpak update` to refresh them from their source.
+## Install an application
+
+Install a package directly from its origin:
+
+```bash
+cpak install github.com/containerpak/bottles
+```
+
+Cpak resolves the repository reference, validates `cpak.json`, downloads missing image layers by digest, installs declared dependencies, and commits the package record only after the staged data is ready.
+
+Packages can follow a branch or release, or remain pinned to a commit:
+
+```bash
+cpak install --branch main github.com/containerpak/bottles
+cpak install --release v1.0.0 github.com/example/app
+cpak install --commit 0123456789abcdef github.com/example/app
+```
+
+## Run it
+
+The command accepts the package origin and an optional exported binary:
+
+```bash
+cpak run github.com/containerpak/bottles bottles
+```
+
+Arguments after the binary are passed to the application as an argument vector:
+
+```bash
+cpak run github.com/example/editor editor ./notes.txt
+```
+
+Use an alias when you do not want to repeat the origin:
+
+```bash
+cpak alias set bottles github.com/containerpak/bottles
+cpak run bottles bottles
+```
+
+## Inspect the installation
+
+```bash
+cpak list
+cpak list --json
+cpak logs github.com/containerpak/bottles
+```
+
+`cpak shell` opens an interactive shell inside the installed package. It receives the same package layers and configured mounts, which makes it useful for diagnosis.
+
+## Update safely
+
+```bash
+cpak update github.com/containerpak/bottles
+cpak update
+```
+
+If an update requests new permissions, the interactive command shows the additions before applying it. Automation can reject such changes with `cpak update --non-interactive`.
+
+Restore the previous installed version when an update needs to be reverted:
+
+```bash
+cpak rollback github.com/containerpak/bottles
+```
+
+## Remove it
+
+```bash
+cpak stop github.com/containerpak/bottles
+cpak remove github.com/containerpak/bottles
+cpak gc --apply
+```
+
+Removing a package does not delete layers still referenced by another package. Garbage collection reports unreferenced data before deleting it.
+
+Continue with [Cpak concepts](/docs/concepts) to understand how origins, images, state, and permissions fit together.

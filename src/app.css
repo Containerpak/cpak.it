@@ -1,7 +1,170 @@
-@import 'tailwindcss';
+@import "tailwindcss";
 @plugin '@tailwindcss/forms';
 @plugin '@tailwindcss/typography';
 
 body {
-    overflow-x: hidden;
+  overflow-x: hidden;
+}
+
+.doc-body {
+  color: #334155;
+  font-size: 1rem;
+  line-height: 1.8;
+}
+
+.doc-body h1,
+.doc-body h2,
+.doc-body h3 {
+  scroll-margin-top: 2rem;
+  color: #0f172a;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+.doc-body h1 {
+  margin: 3rem 0 1rem;
+  font-size: 2rem;
+}
+.doc-body h2 {
+  margin: 3rem 0 1rem;
+  font-size: 1.65rem;
+}
+.doc-body h3 {
+  margin: 2.25rem 0 0.75rem;
+  font-size: 1.25rem;
+}
+.doc-body > h1:first-child {
+  display: none;
+}
+.doc-body p {
+  margin: 0 0 1.25rem;
+}
+.doc-body strong {
+  color: #0f172a;
+  font-weight: 650;
+}
+.doc-body a {
+  color: #3158c7;
+  text-decoration: underline;
+  text-underline-offset: 0.18em;
+}
+.doc-body a:hover {
+  color: #2448ab;
+}
+.doc-body ul,
+.doc-body ol {
+  margin: 0 0 1.5rem 1.4rem;
+}
+.doc-body ul {
+  list-style: disc;
+}
+.doc-body ol {
+  list-style: decimal;
+}
+.doc-body li {
+  margin: 0.4rem 0;
+  padding-left: 0.3rem;
+}
+.doc-body code {
+  border-radius: 0.35rem;
+  background: #e9eef8;
+  padding: 0.12rem 0.35rem;
+  color: #1e3a8a;
+  font-size: 0.9em;
+}
+.doc-body pre {
+  position: relative;
+  margin: 1.75rem 0;
+  overflow-x: auto;
+  border-radius: 1rem;
+  background: #0b1120;
+  padding: 1.25rem;
+  color: #e2e8f0;
+  font-size: 0.875rem;
+  line-height: 1.65;
+}
+.doc-body pre[data-language]::before {
+  content: attr(data-language);
+  position: absolute;
+  top: 0.65rem;
+  right: 0.85rem;
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #64748b;
+}
+.doc-body pre code {
+  background: transparent;
+  padding: 0;
+  color: inherit;
+}
+.doc-body blockquote,
+.doc-body .callout {
+  margin: 1.75rem 0;
+  border-left: 3px solid #4670ec;
+  border-radius: 0 0.75rem 0.75rem 0;
+  background: #eef3ff;
+  padding: 1rem 1.2rem;
+}
+.doc-body .callout p:last-child {
+  margin-bottom: 0;
+}
+.doc-body .callout-warning {
+  border-color: #e11d48;
+  background: #fff1f2;
+}
+.doc-body .callout-tip {
+  border-color: #059669;
+  background: #ecfdf5;
+}
+.doc-body .table-wrap {
+  margin: 1.75rem 0;
+  overflow-x: auto;
+  border: 1px solid #e2e8f0;
+  border-radius: 0.85rem;
+}
+.doc-body table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.925rem;
+}
+.doc-body th {
+  background: #f8fafc;
+  color: #0f172a;
+  text-align: left;
+  font-weight: 650;
+}
+.doc-body th,
+.doc-body td {
+  border-bottom: 1px solid #e2e8f0;
+  padding: 0.75rem 0.9rem;
+  vertical-align: top;
+}
+.doc-body tbody tr:last-child td {
+  border-bottom: 0;
+}
+.doc-body hr {
+  margin: 3rem 0;
+  border: 0;
+  border-top: 1px solid #e2e8f0;
+}
+
+.doc-pagination {
+  display: flex;
+  min-height: 5.5rem;
+  flex-direction: column;
+  justify-content: center;
+  border: 1px solid #e2e8f0;
+  border-radius: 1rem;
+  background: white;
+  padding: 1rem 1.2rem;
+  transition:
+    border-color 150ms ease,
+    box-shadow 150ms ease;
+}
+
+.doc-pagination:hover {
+  border-color: rgb(70 112 236 / 0.45);
+  box-shadow: 0 8px 24px rgb(15 23 42 / 0.06);
 }

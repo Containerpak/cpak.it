@@ -1,27 +1,144 @@
 <script lang="ts">
-	import type { PageData } from './$types';
-	import { renderMarkdown } from '$lib/docs';
+  import type { PageData } from "./$types";
+  import { extractHeadings, groupedArticles, renderMarkdown } from "$lib/docs";
 
-	let { data }: { data: PageData } = $props();
-	let article = $derived(data.article);
-	let body = $derived(renderMarkdown(article.body));
+  let { data }: { data: PageData } = $props();
+  let article = $derived(data.article);
+  let body = $derived(renderMarkdown(article.body));
+  let headings = $derived(extractHeadings(article.body));
 </script>
 
 <svelte:head>
-	<title>{article.title} - Documentation - cpak</title>
-	<meta name="description" content={article.description} />
+  <title>{article.title} - Documentation - cpak</title>
+  <meta name="description" content={article.description} />
 </svelte:head>
 
-<div class="mx-auto max-w-4xl px-6 py-16">
-	<a href="/docs" class="text-sm font-medium text-[#4670EC] hover:underline">Documentation</a>
-	<h1 class="mt-5 text-4xl font-extrabold text-gray-900">{article.title}</h1>
-	<p class="mt-4 text-lg text-gray-600">{article.description}</p>
-	<div class="mt-10 rounded-2xl border border-slate-200 bg-white p-7 shadow-sm [&_code]:rounded [&_code]:bg-slate-100 [&_code]:px-1 [&_code]:py-0.5 [&_h1]:mt-8 [&_h1]:mb-4 [&_h1]:text-3xl [&_h1]:font-bold [&_h2]:mt-8 [&_h2]:mb-3 [&_h2]:text-2xl [&_h2]:font-bold [&_h3]:mt-6 [&_h3]:mb-2 [&_h3]:text-xl [&_h3]:font-semibold [&_p]:mb-5 [&_p]:leading-7 [&_pre]:my-6 [&_pre]:overflow-x-auto [&_pre]:rounded-xl [&_pre]:bg-slate-950 [&_pre]:p-5 [&_pre]:text-sm [&_pre]:text-slate-100">
-		{@html body}
-	</div>
-	<div class="mt-8 flex flex-wrap gap-2">
-		{#each article.tags as tag}
-			<span class="rounded-full bg-slate-100 px-3 py-1 text-xs font-medium text-slate-600">{tag}</span>
-		{/each}
-	</div>
+<div
+  class="mx-auto grid max-w-[92rem] grid-cols-1 gap-10 px-6 py-12 lg:grid-cols-[15rem_minmax(0,48rem)] xl:grid-cols-[15rem_minmax(0,48rem)_13rem]"
+>
+  <aside class="hidden lg:block">
+    <nav
+      class="sticky top-6 max-h-[calc(100vh-3rem)] overflow-y-auto pr-5"
+      aria-label="Documentation"
+    >
+      <a
+        href="/docs"
+        class="mb-7 inline-flex items-center gap-2 text-sm font-semibold text-[#4670EC]"
+      >
+        <span class="material-symbols-outlined text-lg">grid_view</span>
+        Documentation home
+      </a>
+      <div class="space-y-7">
+        {#each groupedArticles as group}
+          {#if group.articles.length}
+            <div>
+              <p
+                class="mb-2 text-xs font-bold tracking-wide text-slate-500 uppercase"
+              >
+                {group.title}
+              </p>
+              <ul class="space-y-0.5">
+                {#each group.articles as item}
+                  <li>
+                    <a
+                      href={`/docs/${item.slug}`}
+                      aria-current={item.slug === article.slug
+                        ? "page"
+                        : undefined}
+                      class="block rounded-lg px-3 py-2 text-sm leading-5 transition {item.slug ===
+                      article.slug
+                        ? 'bg-[#4670EC]/10 font-semibold text-[#3158c7]'
+                        : 'text-slate-600 hover:bg-white hover:text-slate-950'}"
+                    >
+                      {item.title}
+                    </a>
+                  </li>
+                {/each}
+              </ul>
+            </div>
+          {/if}
+        {/each}
+      </div>
+    </nav>
+  </aside>
+
+  <main class="min-w-0">
+    <div class="flex items-center gap-2 text-sm text-slate-500">
+      <a href="/docs" class="hover:text-[#4670EC]">Docs</a>
+      <span class="material-symbols-outlined text-base">chevron_right</span>
+      <span
+        >{groupedArticles.find((group) => group.id === article.section)
+          ?.title}</span
+      >
+    </div>
+    <h1
+      class="mt-6 text-4xl font-extrabold tracking-tight text-gray-950 sm:text-5xl"
+    >
+      {article.title}
+    </h1>
+    <p class="mt-5 text-xl leading-8 text-gray-600">{article.description}</p>
+
+    <article class="doc-body mt-12">
+      {@html body}
+    </article>
+
+    <div class="mt-14 grid gap-4 border-t border-slate-200 pt-8 sm:grid-cols-2">
+      {#if data.previous}
+        <a href={`/docs/${data.previous.slug}`} class="doc-pagination">
+          <span
+            class="text-xs font-semibold tracking-wide text-slate-500 uppercase"
+            >Previous</span
+          >
+          <span class="mt-1 font-semibold text-gray-950"
+            >{data.previous.title}</span
+          >
+        </a>
+      {:else}<span></span>{/if}
+      {#if data.next}
+        <a href={`/docs/${data.next.slug}`} class="doc-pagination text-right">
+          <span
+            class="text-xs font-semibold tracking-wide text-slate-500 uppercase"
+            >Next</span
+          >
+          <span class="mt-1 font-semibold text-gray-950">{data.next.title}</span
+          >
+        </a>
+      {/if}
+    </div>
+
+    <div
+      class="mt-6 flex flex-wrap items-center justify-between gap-4 text-sm text-slate-500"
+    >
+      <span>Found a mistake?</span>
+      <a
+        href={`https://github.com/Containerpak/cpak.it/edit/main/src/content/docs/${article.slug}.md`}
+        target="_blank"
+        rel="noopener noreferrer"
+        class="inline-flex items-center gap-1.5 font-medium text-[#4670EC] hover:underline"
+      >
+        Edit this page on GitHub
+        <span class="material-symbols-outlined text-base">open_in_new</span>
+      </a>
+    </div>
+  </main>
+
+  <aside class="hidden xl:block">
+    <nav class="sticky top-6" aria-label="On this page">
+      <p class="text-xs font-bold tracking-wide text-slate-500 uppercase">
+        On this page
+      </p>
+      <ul class="mt-3 space-y-2 border-l border-slate-200 pl-4">
+        {#each headings as heading}
+          <li class:pl-3={heading.level === 3}>
+            <a
+              href={`#${heading.id}`}
+              class="text-sm leading-5 text-slate-600 hover:text-[#4670EC]"
+            >
+              {heading.title}
+            </a>
+          </li>
+        {/each}
+      </ul>
+    </nav>
+  </aside>
 </div>
