@@ -24,8 +24,9 @@
 			Bottles arrives on cpak
 		</h1>
 		<p class="mt-6 text-xl leading-8 text-gray-600">
-			Bottles 66 is the first large project to publish cpak alongside Flatpak. It becomes the second
-			official package for Bottles after years in which Flatpak was the only supported distribution.
+			Bottles 66 is the first large project to publish cpak alongside Flatpak. The experimental cpak
+			package becomes the second official package for Bottles after years in which Flatpak was the only
+			supported distribution.
 		</p>
 
 		<div class="mt-16 space-y-7 text-lg leading-8 text-gray-700">
@@ -35,27 +36,29 @@
 				That is why Flatpak has been the official route for so long.
 			</p>
 			<p>
-				cpak is now ready to stand beside it. The cpak package is built and published by the Bottles
-				project, uses the same application release and is supported as an official install. It does not
-				ask Bottles to become a different application or rewrite its integration around a portal model.
+				The cpak package is built and published by the Bottles project from the same release source. It is
+				recognized by Bottles as an official package, including the package-specific storage and UMU
+				integration required by the application. It does not ask Bottles to pretend it is a Flatpak or
+				rewrite its desktop integration around a portal model.
 			</p>
 			<h2 class="pt-8 text-3xl font-bold tracking-tight text-gray-900">Two official choices</h2>
 			<p>
-				Flatpak remains available and remains a good way to install Bottles. cpak gives users another
-				choice with a small runtime, OCI images and a package manifest that can be read before it is
-				installed. Both packages are maintained by the project and both are intended for daily use.
+				Flatpak remains the recommended and most tested package for Bottles. cpak gives early users an
+				official alternative with OCI images and a package manifest that can be read before installation,
+				but the cpak package is experimental while the runtime reaches its stable release.
 			</p>
 			<p>
-				This matters beyond Bottles. A real desktop application is a better test than a demo: Wine,
-				graphics drivers, application launchers, desktop entries, updates and user data all have to work
-				together. Bottles 66 is the first public proof that cpak can carry that responsibility.
+				This matters beyond Bottles. A real desktop application is a better test than a demo. Wine,
+				graphics drivers, launchers, updates and user data all have to work together. Bottles 66 is the
+				first public release that lets cpak prove that work outside its own development environment.
 			</p>
 			<h2 class="pt-8 text-3xl font-bold tracking-tight text-gray-900">Install Bottles with cpak</h2>
 			<pre class="overflow-x-auto rounded-xl bg-slate-950 p-5 text-base text-slate-100"><code>cpak install github.com/bottlesdevs/bottles</code></pre>
 			<p>
 				The package is available in the cpak Store with its manifest and permission choices visible. If
-				you already use Bottles through Flatpak, there is no need to move. Pick the package that fits
-				your system and keep making bottles.
+				you already use Bottles through Flatpak, there is no reason to move unless you want to test cpak.
+				Experimental means bug reports are useful and a Flatpak installation should remain the fallback
+				for work you cannot interrupt yet.
 			</p>
 		</div>
 
