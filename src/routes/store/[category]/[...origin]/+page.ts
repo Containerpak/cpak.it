@@ -9,9 +9,9 @@ interface CpakSpec {
     image: string;
     binaries: string[];
     desktop_entries: string[];
-    dependencies: string[];
+    dependencies: Array<string | { origin: string }>;
     addons: string[];
-    override: Record<string, boolean>;
+    override: Record<string, unknown>;
 }
 
 function parseOrigin(origin: string): { owner: string; repo: string } {

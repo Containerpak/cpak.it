@@ -81,11 +81,38 @@ Choose a maintained base that supplies the ABI and runtime packages your applica
 
 Keep the distribution release explicit. A floating distribution tag can replace libraries without a corresponding package review.
 
+| Image                                | Base distribution | Intended use                                                                                                                | Recipe                                                                                          |
+| ------------------------------------ | ----------------- | --------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------- |
+| `ghcr.io/containerpak/base:main`     | Ubuntu 26.04      | Minimal runtime, multiarch setup, and cpak cleanup helper                                                                   | [`platform/base`](https://github.com/Containerpak/images/blob/main/platform/base/Containerfile) |
+| `ghcr.io/containerpak/mesa:main`     | Ubuntu 26.04      | OpenGL, Vulkan, Wayland, and 32-bit graphics runtime                                                                        | [`platform/mesa`](https://github.com/Containerpak/images/blob/main/platform/mesa/Containerfile) |
+| `ghcr.io/containerpak/gtk:main`      | Ubuntu 26.04      | GTK 4, libadwaita, WebKitGTK, D-Bus, fonts, and the Mesa runtime                                                            | [`platform/gtk`](https://github.com/Containerpak/images/blob/main/platform/gtk/Containerfile)   |
+| `ghcr.io/containerpak/wine:main`     | Ubuntu 26.04      | Wine or Proton host libraries, including 32-bit graphics, audio, input, and multimedia support; Wine itself is not included | [`Containerpak/wine`](https://github.com/Containerpak/wine/blob/main/Containerfile)             |
+| `ghcr.io/containerpak/base-sdk:main` | Ubuntu 26.04      | General C and C++ build environment                                                                                         | [`sdk/base`](https://github.com/Containerpak/images/blob/main/sdk/base/Containerfile)           |
+| `ghcr.io/containerpak/mesa-sdk:main` | Ubuntu 26.04      | Graphics development headers and tools                                                                                      | [`sdk/mesa`](https://github.com/Containerpak/images/blob/main/sdk/mesa/Containerfile)           |
+| `ghcr.io/containerpak/gtk-sdk:main`  | Ubuntu 26.04      | GTK, libadwaita, WebKitGTK, and Mesa development headers                                                                    | [`sdk/gtk`](https://github.com/Containerpak/images/blob/main/sdk/gtk/Containerfile)             |
+
+The distribution choice defines the ABI and library versions available to the application. Pick the smallest base that already matches the software, pin the final application image by digest through cpak, and review base updates in CI before publishing them.
+
 ## Layer layout
 
 Group stable runtime content before frequently changing application content. OCI registries and cpak address layers by digest, so unchanged base layers can be shared by many packages and retained across updates.
 
 Avoid a single giant `RUN` step when it causes an application update to invalidate unrelated runtime content. Avoid many tiny layers that exist only to mirror individual shell commands. Split at boundaries that are likely to change independently.
+
+## Design for two-level deduplication
+
+Shared base images are useful beyond build consistency. cpak stores OCI layers by digest, so applications built on the same unchanged base reuse one downloaded and stored layer. A new layer is unpacked only when its digest is absent.
+
+Before that new layer becomes active, cpak runs DaBaDee over its files. DaBaDee hashes file content and replaces equal files with hard links to its content store. This second level catches duplicate bytes even when two images placed them in different layers or produced different OCI digests.
+
+```text
+OCI digest match     -> reuse the complete layer
+New OCI layer        -> unpack into staging
+DaBaDee file match   -> reuse the stored file content
+Unique file          -> keep one new content object
+```
+
+The first level rewards packages that share stable bases and layer boundaries. The second level still removes repeated libraries, fonts, assets, and runtime files when independent package builds do not produce identical layers. Both happen during the normal image pull; package authors do not need to call `cpak dedup` after installation.
 
 ## External artifacts
 

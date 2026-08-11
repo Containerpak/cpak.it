@@ -8,7 +8,7 @@ order: 60
 
 # Release channels
 
-cpak publishes static Linux binaries for `amd64` and `arm64`. Every published build includes SHA-256 checksums, an SPDX JSON SBOM, and GitHub attestations for the binaries and SBOM.
+cpak publishes static Linux binaries and Store installer bases for `amd64` and `arm64`. Every published build includes SHA-256 checksums, an SPDX JSON SBOM, and GitHub attestations for the binaries and SBOM.
 
 ## Continuous
 
@@ -27,6 +27,8 @@ Use nightly for early compatibility testing and automated coverage. Do not assum
 Tags matching `v*` publish versioned release assets and generated release notes. A versioned release is the reference to use when a project needs a named, reviewable cpak version.
 
 The binary reports a development identifier such as `0.0.0-<commit>` when built from a branch. Tagged builds report their release version.
+
+Store installer downloads contain the matching cpak binary. The signed catalog records its SHA-256 and pins each package to a Git commit, so a versioned Store installer installs the cpak build produced by that release workflow and the package revision selected when the release was built.
 
 ## Verify an asset
 

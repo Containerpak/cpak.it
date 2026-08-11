@@ -18,7 +18,9 @@ The OCI image reference is resolved to an immutable digest. Dependency manifests
 
 ## Content store
 
-OCI layers are stored by digest. The same layer referenced by several applications occupies one stored copy. DaBaDee can replace equal files with hard links where the filesystem supports it, which removes duplicate bytes that appear across different layer layouts.
+Storage deduplication has two automatic levels. First, OCI layers are addressed by digest. The same layer referenced by several applications is downloaded once and occupies one stored copy. Second, every newly unpacked layer passes through DaBaDee before publication. It hashes the actual files and replaces equal content with hard links where the filesystem supports it. This catches duplicate bytes even when separate builds placed them in different layers and therefore produced different layer digests.
+
+The OCI level avoids work for the complete matching layer. The DaBaDee level works below the image layout. A shared library, font, or asset can occupy one physical copy even when unrelated application images did not share a base layer.
 
 Package records, immutable layers, writable application state, logs, exported desktop files, and transaction state are kept separately. This lets cpak recover an interrupted update without treating a partially staged version as active.
 

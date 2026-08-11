@@ -12,7 +12,7 @@ cpak is distributed as one Go binary. It does not require a container daemon and
 
 ## Download the binary
 
-Open the [v2.0.0 release candidate](https://github.com/Containerpak/cpak/releases/tag/v2.0.0-rc.1) and download `cpak-linux-amd64` on x86-64 or `cpak-linux-arm64` on ARM64. Download `SHA256SUMS` from the same release, then verify and install the binary on your user `PATH`:
+Open the [v2.0.0-rc.2 release](https://github.com/Containerpak/cpak/releases/tag/v2.0.0-rc.2) and download `cpak-linux-amd64` on x86-64 or `cpak-linux-arm64` on ARM64. Download `SHA256SUMS` from the same release, then verify and install the binary on your user `PATH`:
 
 ```bash
 sha256sum -c --ignore-missing SHA256SUMS
@@ -23,6 +23,19 @@ cpak --help
 Replace `cpak-linux-amd64` with `cpak-linux-arm64` on ARM64.
 
 Use the same binary for interactive commands, application lifecycle management, and the local service. A system-wide installation is optional.
+
+## Install an application from the Store
+
+Each application page in the [cpak Store](/store) provides a graphical installer and a menu for copying either the equivalent terminal command or a direct installer URL. The downloaded file contains the cpak binary from the same release and signed metadata for the selected application. That metadata pins the application to an immutable Git commit and records the SHA-256 of the complete installer. The installer verifies both before it writes cpak to `~/.local/bin`, then uses the normal cpak installation path for the manifest, image, dependencies, permissions, and desktop exports.
+
+Browsers normally save downloaded files without the executable bit. Enable execution in the file properties or run:
+
+```bash
+chmod +x Application-amd64.cpak-installer
+./Application-amd64.cpak-installer
+```
+
+Opening it from a desktop session shows the application icon, description, source, progress, and final result in its own window. Starting it from a terminal uses an equivalent text prompt. A changed binary, origin, reference, icon, or description fails verification and stops before cpak is installed.
 
 ## Check the host
 

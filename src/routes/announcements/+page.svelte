@@ -4,12 +4,12 @@
 
 	const announcements = [
 		{
-			section: 'Project history',
-			date: 'September 2023',
-			title: 'The first cpak sketches',
+			section: 'Bottles',
+			date: 'August 2026',
+			title: 'Bottles arrives on cpak',
 			description:
-				'The original update and nested package diagrams, revisited against the cpak v2 runtime that exists today.',
-			href: '/announcements/the-first-cpak-sketches'
+				'Bottles 66 becomes the first major project to ship cpak alongside Flatpak.',
+			href: '/announcements/bottles-on-cpak'
 		},
 		{
 			section: 'GUADEC 2025',
@@ -20,12 +20,12 @@
 			href: '/announcements/cpak-at-guadec-2025'
 		},
 		{
-			section: 'Bottles',
-			date: 'August 2026',
-			title: 'Bottles arrives on cpak',
+			section: 'Project history',
+			date: 'September 2023',
+			title: 'The first cpak sketches',
 			description:
-				'Bottles 66 becomes the first major project to ship cpak alongside Flatpak.',
-			href: '/announcements/bottles-on-cpak'
+				'The original update and nested package diagrams, revisited against the cpak v2 runtime that exists today.',
+			href: '/announcements/the-first-cpak-sketches'
 		}
 	];
 </script>
