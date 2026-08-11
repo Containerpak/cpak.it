@@ -57,6 +57,12 @@ Package updates normally follow the source reference recorded by the catalog ent
 
 The package repository remains the source for `cpak.json` and image references. The Store should not carry a divergent copy of the package contract.
 
+## Installer downloads
+
+Listed applications receive a signed graphical and terminal installer without adding an installer build to the package repository. The cpak release catalog binds the Store metadata, source revision, architecture, permissions, and generic installer base into a verified capsule.
+
+Read [cpak-installer](/docs/cpak-installer) for the direct endpoint, integration contract, release assets, and verification model.
+
 ## Federated catalogs
 
 cpak's package identity is decentralized. Another project can maintain its own reviewed index with different categories and policies while pointing to the same package origins. The official Store is one catalog, not a requirement built into the package format.

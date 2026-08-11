@@ -26,7 +26,7 @@ Use the same binary for interactive commands, application lifecycle management, 
 
 ## Install an application from the Store
 
-Each application page in the [cpak Store](/store) provides a graphical installer and a menu for copying either the equivalent terminal command or a direct installer URL. The downloaded file contains the cpak binary from the same release and signed metadata for the selected application. That metadata pins the application to an immutable Git commit and records the SHA-256 of the complete installer. The installer verifies both before it writes cpak to `~/.local/bin`, then uses the normal cpak installation path for the manifest, image, dependencies, permissions, and desktop exports.
+Each application page in the [cpak Store](/store) provides a signed graphical installer and a menu for copying either the equivalent terminal command or a direct installer URL. The downloaded file installs cpak and the selected application without requiring an existing cpak setup.
 
 Browsers normally save downloaded files without the executable bit. Enable execution in the file properties or run:
 
@@ -35,7 +35,7 @@ chmod +x Application-amd64.cpak-installer
 ./Application-amd64.cpak-installer
 ```
 
-Opening it from a desktop session shows the application icon, description, source, progress, and final result in its own window. Starting it from a terminal uses an equivalent text prompt. A changed binary, origin, reference, icon, or description fails verification and stops before cpak is installed.
+Opening it from a desktop session shows the application details, requested permissions, progress, and final result. Starting it from a terminal uses an equivalent text prompt. Read [cpak-installer](/docs/cpak-installer) for verification details, metadata inspection, direct links, and developer integration.
 
 ## Check the host
 

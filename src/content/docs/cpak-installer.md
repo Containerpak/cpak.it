@@ -1,0 +1,84 @@
+---
+title: cpak-installer
+description: Install a Store application with the signed graphical or terminal installer, or add installer downloads to a package page.
+tags: [installer, store, security, publishing]
+section: start
+order: 15
+---
+
+# cpak-installer
+
+cpak-installer turns a Store application into a signed, self-contained download. It includes the matching cpak binary and the verified identity of one package, but it does not contain the package image. The normal cpak installation path still resolves the manifest, OCI image, dependencies, permissions, and desktop exports.
+
+## For users
+
+Open an application in the [cpak Store](/store) and select **Download installer**. The Store chooses the current architecture when possible. The menu beside the button also provides the equivalent terminal command and a direct installer URL.
+
+Browsers normally save the file without the executable bit. Enable execution in the file properties or run:
+
+```bash
+chmod +x Application-amd64.cpak-installer
+./Application-amd64.cpak-installer
+```
+
+Opening the file from an X11 or XWayland desktop shows the application name, original icon, description, source, requested permissions, installation progress, and final result. Starting the same file from a terminal shows a text confirmation and reports progress there. Use `--terminal` to request the terminal interface explicitly.
+
+The installer places or updates cpak at `~/.local/bin/cpak`, then installs the selected package from its pinned Git revision. Installing the same cpak build again does not rewrite the binary.
+
+Inspect the verified metadata without installing anything:
+
+```bash
+./Application-amd64.cpak-installer --inspect
+```
+
+The command prints the package origin, display metadata, architecture, source reference, requested permissions, and installer digest.
+
+## What the download verifies
+
+Each capsule carries metadata signed with Ed25519. The signature covers:
+
+- the package origin and immutable Git reference
+- the application name, description, icon, and requested permissions
+- the target architecture
+- the SHA-256 digest of the complete installer base
+
+cpak-installer verifies the signature, metadata schema, architecture, and complete base digest before showing the interface or writing a file. Changing the application identity, source reference, permissions, embedded cpak binary, or installer code invalidates the capsule.
+
+The cpak binary is written through a temporary file and renamed into place only after the write succeeds. Package installation then follows the same manifest validation and transaction path as `cpak install`.
+
+## For package developers
+
+An application repository does not build or ship a custom installer. Keep the package source valid, publish its OCI images, and add its reviewed entry to [Containerpak/store](https://github.com/Containerpak/store). The cpak release workflow produces one generic installer base for each supported architecture and a signed catalog describing each listed package.
+
+The Store assembles a download when this endpoint is requested:
+
+```text
+https://cpak.it/install/github.com/OWNER/REPOSITORY?arch=amd64
+```
+
+Use `arch=arm64` for ARM64. The endpoint loads the installer base and catalog from the configured cpak release, verifies the base digest against the catalog, appends the package metadata and signature, and returns the result as `application/vnd.cpak.installer`.
+
+The package identity always comes from the requested Store origin and signed release catalog. It is never inferred from the browser referrer or a filename. One generic base can therefore serve every listed package without trusting client-provided application metadata.
+
+Link to the endpoint when a website needs a direct graphical installation path. Keep the normal command visible as the portable alternative:
+
+```bash
+cpak install github.com/OWNER/REPOSITORY
+```
+
+The Store application page already exposes both forms in its download menu. A package-specific installer build in application CI is neither required nor recommended.
+
+## Release ownership
+
+Versioned cpak releases publish these assets for `amd64` and `arm64`:
+
+```text
+cpak-linux-ARCH
+cpak-installer-linux-ARCH
+cpak-installer-catalog.json
+SHA256SUMS
+```
+
+The generic installer base contains the installer interface and the cpak binary from the same release. The catalog contains signed package metadata and the expected base digest. cpak.it combines those existing artifacts without access to the signing key.
+
+See [Release channels](/docs/release-channels) for version selection, [Publish to the Store](/docs/publishing) for catalog requirements, and [Security reporting](/docs/security) for private vulnerability reports.
