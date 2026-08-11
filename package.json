@@ -37,6 +37,7 @@
 	},
 	"pnpm": {
 		"overrides": {
+			"cookie": "0.7.2",
 			"picomatch": "4.0.5"
 		},
 		"onlyBuiltDependencies": [

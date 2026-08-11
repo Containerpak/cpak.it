@@ -5,6 +5,7 @@ settings:
   excludeLinksFromLockfile: false
 
 overrides:
+  cookie: 0.7.2
   picomatch: 4.0.5
 
 importers:
@@ -791,13 +792,9 @@ packages:
     resolution: {integrity: sha512-EiPU8G6dQG0GFHNR8ljnZFki/8a+cQwEQ+7wpxdChl02Q8HXlwEZWD5lqAF8vC2sEC3Tehr8hy7vErz88LHyUA==}
     engines: {node: ^14.18.0 || >=16.10.0}
 
-  cookie@0.6.0:
-    resolution: {integrity: sha512-U71cyTamuh1CRNCfpGY6to28lxvNwPG4Guz/EVjgf3Jmzv0vlDp1atT9eS5dDjMYHucpHbWns6Lwf3BKz6svdw==}
+  cookie@0.7.2:
+    resolution: {integrity: sha512-yki5XnKuf750l50uGTllt6kKILY4nQ1eNIQatoXEByZ5dWgnKqbnqmTrBE5B4N7lrMJKQ2ytWMiTO2o0v6Ew/w==}
     engines: {node: '>= 0.6'}
-
-  cookie@1.1.1:
-    resolution: {integrity: sha512-ei8Aos7ja0weRpFzJnEA9UHJ/7XQmqglbRwnf2ATjcB9Wq874VKH9kfjjirM6UhU2/E5fFYadylyhFldcqSidQ==}
-    engines: {node: '>=18'}
 
   core-util-is@1.0.3:
     resolution: {integrity: sha512-ZQBvi1DcpJ4GDqanjucZ2Hj3wEO5pZDS89BWbkcrvdxksJorwUDDZamX9ldFkp9aw2lmBDLgkObEA4DWNJ9FYQ==}
@@ -1774,7 +1771,7 @@ snapshots:
       '@sveltejs/vite-plugin-svelte': 7.3.0(svelte@5.56.8)(vite@8.2.1(@types/node@22.20.1)(esbuild@0.28.1)(jiti@2.7.0))
       '@types/cookie': 0.6.0
       acorn: 8.18.0
-      cookie: 0.6.0
+      cookie: 0.7.2
       devalue: 5.9.0
       esm-env: 1.2.2
       kleur: 4.1.5
@@ -1921,9 +1918,7 @@ snapshots:
 
   consola@3.4.0: {}
 
-  cookie@0.6.0: {}
-
-  cookie@1.1.1: {}
+  cookie@0.7.2: {}
 
   core-util-is@1.0.3: {}
 
@@ -2396,7 +2391,7 @@ snapshots:
       '@poppinss/colors': 4.1.6
       '@poppinss/dumper': 0.6.5
       '@speed-highlight/core': 1.2.24
-      cookie: 1.1.1
+      cookie: 0.7.2
       youch-core: 0.3.3
 
   zimmerframe@1.1.2: {}
