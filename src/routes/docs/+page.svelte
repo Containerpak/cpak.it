@@ -59,9 +59,12 @@
           class="group rounded-3xl border border-slate-200 bg-slate-50 p-7 transition hover:border-[#4670EC]/40 hover:bg-white hover:shadow-lg"
         >
           <span
-            class="material-symbols-outlined flex h-11 w-11 items-center justify-center rounded-2xl bg-[#4670EC]/10 text-[#4670EC]"
-            >{path.icon}</span
+            class="flex h-11 w-11 items-center justify-center rounded-2xl bg-[#4670EC]/10 text-[#4670EC]"
           >
+            <span class="material-symbols-outlined text-[22px]"
+              >{path.icon}</span
+            >
+          </span>
           <h2 class="mt-6 text-2xl font-bold text-gray-950">{path.title}</h2>
           <p class="mt-3 leading-7 text-gray-600">{path.description}</p>
           <span

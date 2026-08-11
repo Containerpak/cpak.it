@@ -104,10 +104,14 @@
         >
           <div class="flex items-start justify-between gap-5">
             <span
-              class="material-symbols-outlined flex h-12 w-12 items-center justify-center rounded-2xl {method.primary
+              class="flex h-12 w-12 items-center justify-center rounded-2xl {method.primary
                 ? 'bg-white/15'
-                : 'bg-[#4670EC]/10 text-[#4670EC]'}">{method.icon}</span
+                : 'bg-[#4670EC]/10 text-[#4670EC]'}"
             >
+              <span class="material-symbols-outlined text-[22px]"
+                >{method.icon}</span
+              >
+            </span>
             <span
               class="rounded-full px-3 py-1 text-xs font-semibold {method.primary
                 ? 'bg-white/15'
