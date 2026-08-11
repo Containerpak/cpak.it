@@ -1,5 +1,4 @@
 name = "cpak-it"
 compatibility_flags = [ "nodejs_compat", "nodejs_als" ]
-compatibility_date = "2024-09-23"
-platform = "node"
+compatibility_date = "2026-08-11"
 pages_build_output_dir = ".svelte-kit/cloudflare"
