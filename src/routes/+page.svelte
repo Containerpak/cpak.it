@@ -139,8 +139,8 @@
 					Familiar apps, ready for Cpak
 				</h2>
 				<p class="mt-4 text-lg text-gray-600">
-					The Store is small on purpose. Every package has a clear manifest, a real origin and a
-					command you can inspect before installing it.
+					Every package has a clear manifest, a real origin and a command you can inspect before
+					installing it.
 				</p>
 			</div>
 			<a href="/store" class="inline-flex items-center gap-1 font-semibold text-[#3E7BFF] hover:text-[#3158c7]">
