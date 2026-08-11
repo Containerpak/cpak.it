@@ -82,7 +82,7 @@
 </script>
 
 <svelte:head>
-	<title>Press Kit – cpak</title>
+	<title>Press Kit | cpak</title>
 </svelte:head>
 
 <section class="mx-auto max-w-7xl px-6 py-16">

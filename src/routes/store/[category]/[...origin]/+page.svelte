@@ -44,7 +44,7 @@
 </script>
 
 <svelte:head>
-	<title>{data.pkg.name} – v{data.pkg.version} – cpak Store</title>
+	<title>{data.pkg.name} | v{data.pkg.version} | cpak Store</title>
 </svelte:head>
 
 <div class="mx-auto max-w-4xl space-y-12 px-6 py-16">

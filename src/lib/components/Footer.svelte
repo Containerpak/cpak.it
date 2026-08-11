@@ -44,7 +44,7 @@
         href="https://github.com/Containerpak"
         class="block text-gray-600 hover:underline">GitHub</a
       >
-      <a href="/blog" class="block text-gray-600 hover:underline">Blog</a>
+      <a href="/announcements" class="block text-gray-600 hover:underline">Announcements</a>
       <a href="/branding" class="block text-gray-600 hover:underline"
         >Branding</a
       >

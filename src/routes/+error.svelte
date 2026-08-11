@@ -16,7 +16,7 @@
 			</h1>
 			<p class="mx-auto mt-8 max-w-md text-xl text-gray-600 lg:mx-0">
 				{status === 404
-					? 'Sorry, we couldn’t find the page you’re looking for.'
+					? 'Sorry, we couldn\'t find the page you\'re looking for.'
 					: 'An unexpected error occurred.'}
 			</p>
 

@@ -103,7 +103,7 @@
         bind:value={query}
         on:input={handleInput}
         placeholder="Search docs & apps"
-        class="hidden lg:block h-12 w-full max-w-[640px] rounded-full border border-slate-200 bg-white px-5 text-sm placeholder-gray-400 shadow-sm focus:ring-2 focus:ring-[#3E7BFF] focus:outline-none"
+        class="hidden lg:block h-12 w-full max-w-[480px] xl:max-w-[560px] rounded-full border border-slate-200 bg-white px-5 text-sm placeholder-gray-400 shadow-sm focus:ring-2 focus:ring-[#3E7BFF] focus:outline-none"
       />
       {#if showDropdown}
         <div
@@ -169,6 +169,10 @@
           class="text-sm font-medium text-gray-900 hover:underline">Docs</a
         >
         <a
+          href="/announcements"
+          class="text-sm font-medium text-gray-900 hover:underline">Announcements</a
+        >
+        <a
           href="/support"
           class="text-sm font-medium text-gray-900 hover:underline">Support</a
         >
@@ -191,6 +195,11 @@
         href="/docs"
         class="block px-6 py-4 text-sm font-medium text-gray-900 hover:bg-slate-100"
         >Docs</a
+      >
+      <a
+        href="/announcements"
+        class="block px-6 py-4 text-sm font-medium text-gray-900 hover:bg-slate-100"
+        >Announcements</a
       >
       <a
         href="/support"

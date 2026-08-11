@@ -2,7 +2,7 @@
 </script>
 
 <svelte:head>
-	<title>Brand Guidelines – cpak</title>
+	<title>Brand Guidelines | cpak</title>
 </svelte:head>
 
 <section class="mx-auto max-w-4xl space-y-12 px-6 py-16">
@@ -40,7 +40,7 @@
 					/>
 				</div>
 				<p class="text-sm text-gray-600">
-					Don’t apply filters, opacity or color shifts—always use the logo’s original colors.
+					Don't apply filters, opacity or color shifts. Use the logo's original colors.
 				</p>
 			</div>
 			<div class="space-y-4 rounded-lg border border-red-200 bg-white p-6 shadow-sm">
@@ -59,7 +59,7 @@
 					/>
 				</div>
 				<p class="text-sm text-gray-600">
-					Don’t crop or cut off any part of the logo—always show it in full.
+					Don't crop or cut off any part of the logo. Always show it in full.
 				</p>
 			</div>
 			<div class="space-y-4 rounded-lg border border-red-200 bg-white p-6 shadow-sm">
@@ -74,8 +74,7 @@
 					<img src="/cpak-brand.svg" alt="Incorrect: wrong bg" class="h-16" />
 				</div>
 				<p class="text-sm text-gray-600">
-					Don’t place the logo on clashing or unreadable backgrounds—stick to approved light or dark
-					contexts.
+					Don't place the logo on clashing or unreadable backgrounds. Use approved light or dark contexts.
 				</p>
 			</div>
 		</div>

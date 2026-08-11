@@ -2,14 +2,14 @@
 </script>
 
 <svelte:head>
-	<title>Branding Overview – cpak</title>
+	<title>Branding Overview | cpak</title>
 </svelte:head>
 
 <section class="mx-auto max-w-4xl space-y-12 px-6 py-16">
 	<h1 class="font-outfit text-4xl font-extrabold text-gray-900">Branding Overview</h1>
 	<p class="text-gray-700">
 		cpak is the decentralized, ultra-lightweight, and portable software distribution format. Below
-		you’ll find the core brand assets: logo, color palette, and typography.
+		you'll find the core brand assets: logo, color palette, and typography.
 	</p>
 
 	<div>
@@ -61,7 +61,7 @@
 	<div>
 		<h2 class="text-2xl font-semibold text-gray-900">Typography</h2>
 		<p class="mt-4 text-gray-700">
-			The brand typeface is <strong class="font-outfit">Outfit</strong>. It’s reserved for official
+			The brand typeface is <strong class="font-outfit">Outfit</strong>. It's reserved for official
 			cpak assets, see the
 			<a href="/branding/guidelines" class="text-[#4670EC] underline">full guidelines</a> for detailed
 			rules.
@@ -71,7 +71,7 @@
 		>
 			<p class="text-2xl font-semibold">Outfit Headline</p>
 			<p class="text-base">The quick brown fox jumps over the lazy dog.</p>
-			<p class="text-base italic">1234567890 &mdash; !@#$%^&*</p>
+			<p class="text-base italic">1234567890 - !@#$%^&*</p>
 		</div>
 	</div>
 </section>

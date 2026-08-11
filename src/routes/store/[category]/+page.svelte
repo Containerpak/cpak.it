@@ -5,7 +5,7 @@
 </script>
 
 <svelte:head>
-	<title>{data.category} – Store – cpak</title>
+	<title>{data.category} | Store | cpak</title>
 </svelte:head>
 
 <div class="mx-auto max-w-7xl px-6 py-16">
