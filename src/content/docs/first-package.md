@@ -42,7 +42,7 @@ cpak init \
   --binary /usr/bin/hello-cpak
 ```
 
-The generated manifest uses version `2.0` and includes the current schema URL. Edit its `override` object so it grants only what the application needs. This command-line example does not need display, audio, devices, host files, or host commands.
+The generated manifest uses version `2.0` and includes the current schema URL. Edit its `override` object so it grants only what the application needs. This command-line example does not need display, audio, devices, host files, or broker actions.
 
 ## Validate before running
 

@@ -15,10 +15,9 @@ Use this map before opening a change. Repository boundaries follow ownership and
 | Repository                                                      | Owns                                                                                        |
 | --------------------------------------------------------------- | ------------------------------------------------------------------------------------------- |
 | [Containerpak/cpak](https://github.com/Containerpak/cpak)       | CLI, store, OCI resolution, transactions, runtime, sandbox, brokers, manifests, and schema. |
-| [Containerpak/hrun](https://github.com/Containerpak/hrun)       | Controlled execution of explicitly allowed host commands.                                   |
 | [mirkobrombin/DaBaDee](https://github.com/mirkobrombin/DaBaDee) | Content hashing and hard-link deduplication.                                                |
 
-The cpak runtime default branch is `v2`. hrun and DaBaDee are normal Go dependencies; they are not embedded helper binaries.
+The cpak runtime default branch is `v2`. Host integration providers live in the cpak binary. DaBaDee remains a normal Go dependency and is not an embedded helper binary.
 
 ## Shared images
 
@@ -53,6 +52,6 @@ The Store entry points to a package repository. It does not own the package's `c
 
 ## Where a fix belongs
 
-Put namespace, transaction, permission, OCI, or CLI behavior in `cpak`. Put host command transport in `hrun`. Put duplicate-file storage logic in DaBaDee. Put an application dependency or launch workaround in that application's package repository. Put shared ABI content in a base image only when several packages need it.
+Put namespace, transaction, permission, OCI, broker, or CLI behavior in `cpak`. Put duplicate-file storage logic in DaBaDee. Put an application dependency or launch workaround in that application's package repository. Put shared ABI content in a base image only when several packages need it.
 
 When a change crosses repositories, keep each commit independently valid and update the consumer only after the dependency release or image is available.

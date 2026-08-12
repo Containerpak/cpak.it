@@ -52,7 +52,7 @@ These commands use a temporary store and isolate package debugging from installe
 
 ## Check permissions
 
-Symptoms such as a missing window, silent audio, inaccessible files, failed browser sandbox, or blocked external link usually map to one concrete permission. Review display sockets, audio, DRI, filesystem paths, `userNamespaces`, broker fields, and host commands.
+Symptoms such as a missing window, silent audio, inaccessible files, failed browser sandbox, or blocked external link usually map to one concrete permission. Review display sockets, audio, DRI, filesystem paths, `userNamespaces`, and broker fields.
 
 Do not enable the session bus, system bus, all devices, or host root as a generic fix. Confirm the resource the application attempted to access.
 

@@ -3,7 +3,8 @@
 	import { onMount, tick } from 'svelte';
 	export let data: PageData;
 
-	type PermissionValue = boolean | number | string | string[] | Record<string, string>[];
+	type PermissionObject = Record<string, string | string[]>;
+	type PermissionValue = boolean | number | string | string[] | PermissionObject[];
 	type PermissionInfo = {
 		label: string;
 		description: string;
@@ -146,11 +147,15 @@
 			icon: 'admin_panel_settings',
 			broad: true
 		},
+		hostActions: {
+			label: 'Host services',
+			description: 'Uses the listed capabilities from a built-in cpak provider.',
+			icon: 'shield_lock'
+		},
 		allowedHostCommands: {
-			label: 'Host commands',
-			description: 'Runs the listed host commands through the cpak policy gate.',
-			icon: 'terminal',
-			broad: true
+			label: 'Legacy host integration',
+			description: 'Uses an older manifest field converted to typed permissions during install.',
+			icon: 'history'
 		}
 	};
 	const overrides = data.pkg.cpak.override as Record<string, PermissionValue>;
@@ -166,9 +171,24 @@
 			return value
 				.map((entry) => {
 					if (typeof entry === 'string') return entry;
-					return `${entry.path} (${entry.access.replace('-', ' ')})`;
+					const path = Array.isArray(entry.path) ? entry.path.join(', ') : entry.path;
+					const access = Array.isArray(entry.access)
+						? entry.access.join(', ')
+						: entry.access.replace('-', ' ');
+					return `${path} (${access})`;
 				})
 				.join(', ');
+		}
+		if (key === 'hostActions' && Array.isArray(value)) {
+			return value
+				.map((entry) => {
+					if (typeof entry === 'string') return entry;
+					const capabilities = Array.isArray(entry.capabilities)
+						? entry.capabilities.join(', ')
+						: entry.capabilities;
+					return `${entry.provider}: ${capabilities}`;
+				})
+				.join('; ');
 		}
 		if (key === 'allowedHostCommands' && Array.isArray(value)) return value.join(', ');
 		return '';
@@ -222,9 +242,7 @@
 </svelte:head>
 
 <div class="mx-auto max-w-4xl space-y-12 px-6 py-16">
-	<section
-		class="flex flex-col items-start justify-between gap-8 md:flex-row md:items-center"
-	>
+	<section class="flex flex-col items-start justify-between gap-8 md:flex-row md:items-center">
 		<div class="relative flex items-center gap-6">
 			<div class="rounded-2xl border border-slate-200 bg-slate-50 p-2 shadow-sm">
 				<img src={data.pkg.icon} alt="" class="h-20 w-20 rounded-xl" />
@@ -371,7 +389,9 @@
 					</div>
 					<div class="min-w-0 flex-1">
 						<div class="flex flex-wrap items-center justify-between gap-2">
-							<h3 class="font-semibold text-gray-900">{permissions[key].label}</h3>
+							<h3 class="font-semibold text-gray-900">
+								{permissions[key].label}
+							</h3>
 							<span
 								class={permissions[key].broad
 									? 'rounded-full bg-yellow-100 px-2 py-1 text-xs font-semibold text-yellow-800'
@@ -380,7 +400,9 @@
 								{permissions[key].broad ? 'Broad access' : 'Allowed'}
 							</span>
 						</div>
-						<p class="mt-1 text-sm leading-5 text-gray-500">{permissions[key].description}</p>
+						<p class="mt-1 text-sm leading-5 text-gray-500">
+							{permissions[key].description}
+						</p>
 						{#if permissionDetail(key, value)}
 							<p class="mt-2 break-words text-xs font-medium text-gray-700">
 								{permissionDetail(key, value)}
@@ -435,9 +457,7 @@
 				</dd>
 			</div>
 			<div class="min-w-0">
-				<dt class="text-xs font-semibold tracking-wide text-gray-500 uppercase"
-					>Desktop entries</dt
-				>
+				<dt class="text-xs font-semibold tracking-wide text-gray-500 uppercase">Desktop entries</dt>
 				<dd class="mt-1 min-w-0 space-y-1 break-words">
 					{#each data.pkg.cpak.desktop_entries as d}<div>{d}</div>{/each}
 				</dd>
@@ -456,8 +476,8 @@
 				<span class="min-w-0 flex-1">
 					<strong class="block text-gray-900">Dependencies</strong>
 					<span class="text-sm text-gray-500">
-						{data.pkg.cpak.dependencies.length} required package{data.pkg.cpak.dependencies.length ===
-						1
+						{data.pkg.cpak.dependencies.length} required package{data.pkg.cpak.dependencies
+							.length === 1
 							? ''
 							: 's'}
 					</span>

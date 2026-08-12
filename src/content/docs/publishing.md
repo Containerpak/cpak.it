@@ -47,7 +47,7 @@ Do not edit generated catalog indexes by hand. The Store validation workflow reb
 
 ## Review package permissions
 
-The Store displays effective manifest permissions to users. Broad filesystem access, all-device access, system bus access, root execution, process sharing, and host commands need a concrete package reason.
+The Store displays effective manifest permissions to users. Broad filesystem access, all-device access, system bus access, root execution, process sharing, and host service capabilities need a concrete package reason.
 
 Catalog acceptance does not weaken the runtime sandbox. The installed package still follows its manifest and the user's local overrides.
 

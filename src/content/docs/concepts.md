@@ -49,7 +49,7 @@ An addon is optional. The package author declares which addon origins are compat
 
 The manifest declares the default host access for an application. A user override changes the effective permission set locally. Updates compare the old and new effective permissions, and new grants require approval in the interactive flow.
 
-Permissions control concrete resources: paths, devices, sockets, network namespaces, nested user namespaces, resource limits, notifications, external URI opening, and named host commands.
+Permissions control concrete resources and broker actions. This includes paths, devices, sockets, network namespaces, nested user namespaces, resource limits, notifications, external URI opening, host applications, and typed host services.
 
 ## Source references
 
