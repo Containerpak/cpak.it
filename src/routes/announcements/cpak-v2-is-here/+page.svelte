@@ -29,10 +29,28 @@
 			cpak v2 is here
 		</h1>
 		<p class="mt-6 max-w-3xl text-xl leading-8 text-gray-600">
-			Three years after the first sketches and one year after its first public presentation at
-			GUADEC, cpak has a stable v2 runtime, a Store and an installer that can carry a Linux desktop
+			Three years after the
+			<a
+				href="/announcements/the-first-cpak-sketches"
+				class="font-semibold text-[#3158c7] underline underline-offset-4"
+				>first sketches</a
+			>
+			and one year after its
+			<a
+				href="/announcements/cpak-at-guadec-2025"
+				class="font-semibold text-[#3158c7] underline underline-offset-4"
+				>first public presentation at GUADEC</a
+			>, cpak has a stable v2 runtime, a Store and an installer that can carry a Linux desktop
 			application directly to the user.
 		</p>
+		<iframe
+			class="mt-10 aspect-video w-full rounded-2xl"
+			src="https://www.youtube-nocookie.com/embed/fDXPD4R85Ds?start=3603"
+			title="cpak at GUADEC 2025"
+			loading="lazy"
+			allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+			allowfullscreen
+		></iframe>
 
 		<div class="mt-16 space-y-7 text-lg leading-8 text-gray-700">
 			<p>
