@@ -38,9 +38,9 @@ Mounts are prepared from the package permission set and user overrides. The fina
 
 ## Host integration
 
-Display, audio, devices, and explicitly requested sockets are mounted into the environment. Host commands pass through hrun and a policy checked command bridge. Notifications and external URI requests use a dedicated system broker.
+Display, audio, devices, and explicitly requested sockets are mounted into the environment. Notifications, external URI requests, host application launches, and typed host services use the cpak system broker.
 
-The application does not need to adopt a portal API. Existing Linux applications can call the provided compatibility command, while cpak decides whether the manifest allows the operation.
+The application does not need to adopt a portal API. Existing Linux applications can call a compatibility command. The shim parses that command into a finite request before it crosses the sandbox boundary. The broker checks the package policy and returns output, errors, exit status, and cancellation without exposing a host shell.
 
 ## Lifecycle
 

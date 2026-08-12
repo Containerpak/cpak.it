@@ -45,6 +45,7 @@ Manifest v2 is a strict JSON contract. Add the schema URL to receive editor comp
 | `image`            | Yes      | OCI image reference or digest.                                   |
 | `binaries`         | Yes      | One or more absolute executable paths.                           |
 | `desktop_entries`  | No       | Absolute paths to `.desktop` files in the image.                 |
+| `sessions`         | No       | Desktop or kiosk sessions offered to a display manager.          |
 | `dependencies`     | No       | Required cpak package origins.                                   |
 | `addons`           | No       | Optional addon origins supported by this package.                |
 | `idle_time`        | Yes      | Minutes before an idle container stops. Zero disables the timer. |
@@ -99,7 +100,11 @@ The URL must use HTTPS. cpak verifies the declared byte size and SHA-256 before 
 
 ## Permissions
 
-The `override` object declares the package defaults for sockets, devices, filesystem paths, networking, process sharing, nested user namespaces, resource limits, system brokers, and allowed host commands. See [Permissions](/docs/permissions) for every field and its effect.
+The `override` object declares the package defaults for sockets, devices, filesystem paths, networking, process sharing, nested user namespaces, resource limits, and system broker actions. See [Permissions](/docs/permissions) for every field and its effect.
+
+## Login sessions
+
+The optional `sessions` array turns an exported binary into a desktop or kiosk choice at the system login screen. Each session has its own permission set. Registration is explicit and passes through the cpak system authority. See [Desktop and kiosk sessions](/docs/desktop-sessions).
 
 ## Validate and migrate
 

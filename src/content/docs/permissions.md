@@ -68,7 +68,9 @@ Limits use delegated cgroup v2 controllers. If the current host cannot enforce a
 
 Set `notification` to expose the notification shim and `openURI` to allow opening an external URI on the host. These operations pass through the cpak system broker and do not expose a host command or unrestricted D-Bus socket.
 
-`allowedHostCommands` is a list of command names that the hrun bridge may execute on the host. Arguments remain an argument vector. The bridge validates the requesting process and applies the package policy before execution.
+Set `hostApplications` when a desktop environment needs the host application catalog. Launch requests use opaque catalog identifiers and the broker selects the trusted desktop entry.
+
+`hostActions` grants capabilities from a built-in provider. The `containers` provider offers `read`, `manage-owned`, and `exec-owned`. Package updates treat a new provider or capability as a permission addition. See [Host actions](/docs/host-actions) for the exact boundary.
 
 ## Environment
 
@@ -86,4 +88,4 @@ cpak override github.com/example/app --key filesystem --value '[{"path":"home","
 Overrides are stored per application version. Review them after a major package change. `cpak update` reports permission additions before committing the new version.
 
 > [!WARNING] Broad access
-> `deviceAll`, `socketSystemBus`, `process`, `asRoot`, `host` filesystem access, and arbitrary host commands cross large parts of the sandbox boundary. Document why a package needs them.
+> `deviceAll`, `socketSystemBus`, `process`, `asRoot`, and `host` filesystem access cross large parts of the sandbox boundary. Document why a package needs them.

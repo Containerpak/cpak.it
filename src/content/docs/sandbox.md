@@ -38,10 +38,10 @@ Systemd is supported as a session manager but is not required. Other init system
 
 Direct sockets and devices are opt-in manifest fields. Narrow system operations use brokers:
 
-- hrun executes only named host commands accepted by package policy
-- the system broker handles notifications and external URI opening
+- the system broker accepts only built-in action types
 - local peer validation ties requests to the running package instance
-- argument vectors are passed without shell expansion
+- compatibility commands are parsed before the broker request is created
+- streamed actions preserve output channels, exit status, and cancellation
 
 The package does not receive unrestricted access merely because the compatibility shim exists in its filesystem.
 
@@ -53,6 +53,6 @@ The manifest defines defaults, not an unchangeable policy. Users can remove acce
 
 ## Limits of the boundary
 
-A package with read-write home access can modify user files. A package with the session bus can call services exposed on that bus. Full devices, process sharing, system bus access, host root mounts, root inside the environment, and allowed host commands all expand the trusted surface.
+A package with read-write home access can modify user files. A package with the session bus can call services exposed on that bus. Full devices, process sharing, system bus access, host root mounts, and root inside the environment all expand the trusted surface.
 
 Review the manifest before running an untrusted package. The Store highlights high-risk permissions, but the manifest and local override remain the authoritative policy.

@@ -1,7 +1,7 @@
 ---
 title: System integration
-description: Connect desktop applications to display, audio, notifications, URIs, devices, and selected host commands.
-tags: [desktop, broker, hrun]
+description: Connect applications to display, audio, notifications, URIs, host applications, and typed host services.
+tags: [desktop, broker, actions]
 section: runtime
 order: 30
 ---
@@ -44,19 +44,21 @@ Enable the URI broker when links must open in a host application:
 
 The package invokes the provided compatibility path. cpak validates the request and forwards the URI through the host desktop. Keep user-controlled URI validation in the application as well.
 
-## Host commands
+## Host applications
 
-Some applications must call a host tool that cannot be represented as a mounted resource. List the accepted command names:
+Desktop cpaks can list applications installed by the host and launch a selected entry through the broker:
 
 ```json
-"allowedHostCommands": [
-  "example-tool"
-]
+"hostApplications": true
 ```
 
-The hrun bridge resolves the host executable, verifies the requesting peer, and passes arguments without a shell. Paths not listed by policy are rejected.
+cpak builds a private catalog from trusted desktop entries. The package receives opaque application identifiers instead of executable paths. Launch requests are resolved against that catalog and can target the nested display of a desktop cpak.
 
-Use this only when a brokered operation or package dependency cannot model the requirement. A host command executes with the user's host context.
+## Typed host services
+
+Use `hostActions` when an application needs a supported host service which cannot be represented by a mount. Each provider publishes a fixed capability set. See [Host actions](/docs/host-actions) for the container provider and its compatibility shims.
+
+`allowedHostCommands` is accepted only to migrate the old notification, URI, and host application shims. New manifests cannot use it to name arbitrary executables.
 
 ## Desktop entries and icons
 
