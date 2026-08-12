@@ -1,11 +1,26 @@
 <script lang="ts">
+  import { afterNavigate } from "$app/navigation";
   import type { PageData } from "./$types";
   import { extractHeadings, groupedArticles, renderMarkdown } from "$lib/docs";
 
   let { data }: { data: PageData } = $props();
+  let documentationNavigation: HTMLElement;
   let article = $derived(data.article);
   let body = $derived(renderMarkdown(article.body));
   let headings = $derived(extractHeadings(article.body));
+
+  afterNavigate(() => {
+    const active = documentationNavigation.querySelector<HTMLElement>(
+      '[aria-current="page"]',
+    );
+    if (!active) return;
+    documentationNavigation.scrollTop = Math.max(
+      0,
+      active.offsetTop -
+        documentationNavigation.clientHeight / 2 +
+        active.clientHeight / 2,
+    );
+  });
 </script>
 
 <svelte:head>
@@ -18,6 +33,7 @@
 >
   <aside class="hidden lg:block">
     <nav
+      bind:this={documentationNavigation}
       class="sticky top-6 max-h-[calc(100vh-3rem)] overflow-y-auto pr-5"
       aria-label="Documentation"
     >

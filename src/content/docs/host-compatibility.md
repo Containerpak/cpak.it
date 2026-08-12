@@ -25,7 +25,7 @@ The JSON report separates required checks from optional hardening and resource f
 
 The portability workflow checks that the static cpak binary runs and generates its schema on Debian 13, Fedora 42, Arch Linux, openSUSE Tumbleweed, and Ubuntu 26.04 userspace images.
 
-Kernel integration tests run on several Ubuntu GitHub runner generations. These CI checks do not prove every desktop, filesystem, GPU, or init combination. Real application tests remain necessary.
+Kernel integration tests run on several Ubuntu GitHub runner generations. Validate the target desktop, filesystem, GPU, and init combination with `cpak doctor` and an application smoke test.
 
 ## Filesystems
 
@@ -37,11 +37,11 @@ Network filesystems, unusual FUSE mounts, or filesystems with restricted user na
 
 cpak can expose Wayland, X11, PulseAudio-compatible audio, accessibility, printing, and selected devices. The application manifest must enable the matching resource, and that resource must exist in the user session.
 
-Headless packages do not require a desktop socket. Desktop packages should be tested on each display path they declare.
+Headless packages can omit desktop sockets. Test desktop packages on each display path they declare.
 
 ## Init and cgroups
 
-Systemd is supported but not required. cpak can run under another init when the user session supplies the needed runtime directories and sockets.
+cpak runs under the host's user service manager. The user session must provide the required runtime directories and sockets.
 
 Memory, CPU, and process limits require delegated cgroup v2 controllers. Applications without requested limits can still run when delegation is absent. A requested limit fails if the host cannot apply it.
 
@@ -51,7 +51,7 @@ Seccomp is required by the runtime policy. Landlock adds path restrictions on ke
 
 ## GPU support
 
-DRI devices cover common Mesa-based graphics stacks. NVIDIA support resolves host userspace driver files at launch so packages do not need a copied driver. Driver passthrough must be tested on the target hardware and host driver version.
+DRI devices cover common Mesa-based graphics stacks. NVIDIA support resolves host userspace driver files at launch. Test driver passthrough on the target hardware and host driver version.
 
 > [!NOTE] Experimental release
 > cpak v2 is launching as an experimental distribution option. The compatibility report tells you what the runtime can prove locally; package-specific hardware coverage is documented by each package.

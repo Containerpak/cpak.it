@@ -1,6 +1,6 @@
 ---
 title: Host actions
-description: Give an application a typed host service without exposing a host shell.
+description: Configure typed, policy-gated host services for an application.
 tags: [broker, permissions, containers]
 section: runtime
 order: 35
@@ -12,7 +12,7 @@ order: 35
 
 ## Container provider
 
-The first provider offers controlled access to the host Podman service:
+The first provider offers controlled access to supported host container engines:
 
 ```json
 "hostActions": [
@@ -29,21 +29,23 @@ The first provider offers controlled access to the host Podman service:
 | `manage-owned` | Create containers carrying the package ownership label, then start, stop, restart, or remove only those containers. |
 | `exec-owned`   | Execute a command only inside a container owned by the requesting package.                                          |
 
-`manage-owned` does not grant control over containers created by another cpak or by the user. `exec-owned` does not execute a command directly on the host.
+`manage-owned` is limited to containers carrying the requesting package ownership label. `exec-owned` runs commands inside those owned containers.
 
 ## Compatibility shims
 
-When the provider is enabled, cpak places `podman` and `docker` shims in the package. They support a finite CLI subset and convert it to the provider request. This lets existing tools keep their normal process interface, including separate standard output and standard error, a real exit code, and cancellation.
+When the provider is enabled, cpak places independent `podman` and `docker` shims in the package. Calling `podman` selects the host Podman binary and calling `docker` selects the host Docker binary. An application such as Visual Studio Code can use either engine, or both, without receiving direct access to either socket or executable.
+
+Both shims expose the same finite CLI subset and convert each invocation to a provider request. Standard output, standard error, exit status, and cancellation pass through the shim. If the selected engine is not installed on the host, that command fails with a direct backend unavailable error while the other shim remains usable.
 
 Unsupported commands and flags fail locally. Privileged mode, device grants, host namespaces, and arbitrary backend options are not forwarded.
 
 ## Filesystem policy
 
-A nested container can mount only a source path already present in the cpak `filesystem` permission. The broker resolves symlinks before comparison. A read-only package path can produce only a read-only nested mount.
+A nested container can mount source paths present in the cpak `filesystem` permission. The broker resolves symlinks before comparison and preserves read-only access.
 
 ## Nested packages
 
-A nested cpak receives the intersection of the parent and child host action capabilities. It cannot add a provider or capability denied by either manifest. Local user overrides take part in the same calculation.
+A nested cpak receives the intersection of the parent and child host action capabilities, including local user overrides.
 
 ## Legacy manifests
 

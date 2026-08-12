@@ -30,6 +30,25 @@ The binary reports a development identifier such as `0.0.0-<commit>` when built 
 
 Store installer downloads contain the matching cpak binary. The signed catalog records its SHA-256 and pins each package to a Git commit, so a versioned Store installer installs the cpak build produced by that release workflow and the package revision selected when the release was built.
 
+## Runtime update checks
+
+Official binaries check the latest versioned release at most once per day. Run an immediate check or install:
+
+```bash
+cpak self-update --check
+cpak self-update
+```
+
+The installer verifies the selected architecture against the release checksum before replacing the binary. Release candidates are older than the matching stable version, so a stable release replaces its candidate even when the numeric version is equal.
+
+Packagers build with `SELF_UPDATE_MODE=managed`. This keeps the version notice and disables direct replacement:
+
+```bash
+make VERSION=v2.0.1 SELF_UPDATE_MODE=managed
+```
+
+The release version and update mode are compiled into the binary. Do not patch the runtime command or remove the update check in a package recipe.
+
 ## Verify an asset
 
 Download the matching binary and `SHA256SUMS`, then verify it before installation:
@@ -42,6 +61,6 @@ GitHub attestations provide another verification path for release provenance. Th
 
 ## Package releases
 
-Application packages have their own repository and OCI image lifecycle. Updating the cpak binary does not silently update every package. Use `cpak update` to resolve installed packages and review any new permission requests.
+Application packages have their own repository and OCI image lifecycle. Update them with `cpak update` and review any new permission requests.
 
 Package image workflows should publish an immutable SHA tag beside their moving branch tag. Lock files and installed image digests preserve the exact content used by a test or transaction.

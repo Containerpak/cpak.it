@@ -8,7 +8,7 @@ order: 45
 
 # Desktop and kiosk sessions
 
-A cpak can remain a normal application package and also offer a login session. The session uses the same installed package, writable state, user profile, and update channel as a windowed launch.
+A package can declare a login session beside its application entrypoints. Windowed and login launches use the same installed version, writable state, user profile, and update channel.
 
 ## Manifest
 
@@ -17,11 +17,11 @@ Declare an exported entrypoint and a separate permission set:
 ```json
 "sessions": [
   {
-    "id": "dev.sinty.singularity",
-    "name": "Singularity Desktop",
-    "description": "Singularity Desktop session",
+    "id": "com.example.desktop",
+    "name": "Example Desktop",
+    "description": "Example desktop session",
     "kind": "desktop",
-    "entrypoint": "/usr/bin/singularity-session",
+    "entrypoint": "/usr/bin/example-session",
     "override": {
       "deviceDri": true,
       "deviceInput": true,
@@ -46,13 +46,13 @@ cpak system setup
 cpak system status
 ```
 
-The setup installs a fixed root-owned launcher, D-Bus activation policy, and Polkit actions. It does not install a package session automatically.
+The setup installs a fixed root-owned launcher, D-Bus activation policy, and Polkit actions. Package sessions are registered separately.
 
 ## Register a session
 
 ```bash
-cpak session list github.com/singularityos-lab/singularity-desktop
-cpak session enable github.com/singularityos-lab/singularity-desktop dev.sinty.singularity
+cpak session list github.com/example/desktop
+cpak session enable github.com/example/desktop com.example.desktop
 ```
 
 cpak shows the session permissions before registration. Polkit then asks for authorization. The privileged service receives validated metadata and a package origin, never an executable supplied by the caller. The generated display manager entry calls the fixed cpak launcher with the registered session identifier.
@@ -60,13 +60,26 @@ cpak shows the session permissions before registration. Polkit then asks for aut
 Remove one session with:
 
 ```bash
-cpak session disable dev.sinty.singularity
+cpak session disable com.example.desktop
 ```
 
 Removing the last installed package version which provides that identifier also unregisters it. `cpak system remove` removes registered cpak sessions before deleting the system authority.
 
-## Distribution support
+## Display manager support
 
-The package image remains a normal OCI image. A distribution can install the same desktop through its existing build without adding the cpak manifest to the runtime. The session declaration only affects cpak installations.
+cpak stores login entries in `/usr/local/share/wayland-sessions`, the local system data directory defined by the XDG base directory specification. `cpak system setup` configures display managers which do not search that directory by default.
 
-The runtime does not require systemd. A display manager must be able to read the registered Wayland session directory. cpak configures SDDM when it is installed and keeps trusted system session entries available in that directory.
+| Display manager | Status                                                                                                                   |
+| --------------- | ------------------------------------------------------------------------------------------------------------------------ |
+| GDM             | Works without extra configuration. GDM reads Wayland sessions from the XDG system data directories.                      |
+| SDDM            | Configured automatically by `cpak system setup`.                                                                         |
+| LightDM         | Configured automatically by `cpak system setup`. Existing system, X11, and Wayland session directories remain available. |
+| greetd          | Supported through the selected greeter. Configure the greeter to scan `/usr/local/share/wayland-sessions`.               |
+
+For example, tuigreet accepts the cpak directory through its existing session option:
+
+```bash
+tuigreet --sessions /usr/local/share/wayland-sessions:/usr/share/wayland-sessions
+```
+
+Other display managers can use the generated entries when they scan XDG system data directories or allow `/usr/local/share/wayland-sessions` to be added to their session path.

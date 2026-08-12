@@ -50,7 +50,7 @@ Arguments after the binary are passed to the application as an argument vector:
 cpak run github.com/example/editor editor ./notes.txt
 ```
 
-Use an alias when you do not want to repeat the origin:
+Create an alias for a shorter local command:
 
 ```bash
 cpak alias set bottles github.com/bottlesdevs/bottles
@@ -90,6 +90,6 @@ cpak remove github.com/bottlesdevs/bottles
 cpak gc --apply
 ```
 
-Removing a package does not delete layers still referenced by another package. Garbage collection reports unreferenced data before deleting it.
+Package removal retains layers referenced by another package. Garbage collection reports unreferenced data before deletion.
 
 Continue with [cpak concepts](/docs/concepts) to understand how origins, images, state, and permissions fit together.

@@ -4,6 +4,14 @@
 
 	const announcements = [
 		{
+			section: 'Release',
+			date: 'August 12, 2026',
+			title: 'cpak v2 is here',
+			description:
+				'Three years after the first sketches, cpak has a stable v2 runtime, a Store and signed application installers.',
+			href: '/announcements/cpak-v2-is-here'
+		},
+		{
 			section: 'Bottles',
 			date: 'August 2026',
 			title: 'Bottles arrives on cpak',

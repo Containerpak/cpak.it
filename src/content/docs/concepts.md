@@ -8,13 +8,13 @@ order: 30
 
 # cpak concepts
 
-cpak separates package identity from package contents. This lets a normal Git repository describe an application while OCI registries handle large binary layers.
+cpak separates package identity from package contents. A Git repository describes the package and an OCI registry stores its image layers.
 
 ## Origin
 
 The origin is the package repository without a protocol or trailing `.git`, such as `github.com/bottlesdevs/bottles`. It is the stable identity used by install, update, run, override, addon, and rollback commands.
 
-An alias is only a local shortcut for an installed origin. It does not create a new package or change where updates come from.
+An alias is a local shortcut for an installed origin. Updates continue to resolve from the original package repository.
 
 ## Manifest
 
@@ -27,7 +27,7 @@ An alias is only a local shortcut for an installed origin. It does not create a 
 - filesystem, device, socket, broker, network, and resource permissions
 - verified artifacts that must be installed at package installation time
 
-Unknown fields are rejected. A runtime that cannot apply a declared v2 feature rejects the package instead of ignoring it.
+Unknown fields and unsupported v2 features fail manifest validation.
 
 ## Image and layers
 
@@ -37,7 +37,7 @@ The image is not the package identity. A package can change its image reference 
 
 ## Writable state
 
-Immutable image layers are mounted below a writable application layer. Changes made by the application do not modify the downloaded OCI content. Package records, runtime state, logs, and exported desktop files remain separate so cpak can update or recover them independently.
+Immutable image layers are mounted below a writable application layer. Application writes go to that layer. Package records, runtime state, logs, and exported desktop files use separate storage and recovery paths.
 
 ## Dependencies and addons
 
@@ -53,8 +53,8 @@ Permissions control concrete resources and broker actions. This includes paths, 
 
 ## Source references
 
-A package can follow a branch, select a release, or pin an exact commit. Commit installations do not move during update. Lock files add immutable manifest hashes and OCI digests for local development and CI.
+A package can follow a branch, select a release, or pin an exact commit. Commit installations remain pinned during update. Lock files record immutable manifest hashes and OCI digests for local development and CI.
 
 ## Store and catalog
 
-cpak does not require a central catalog. Any valid package origin can be installed directly. The [Containerpak Store](/store) is a reviewed index that adds discovery, categories, icons, screenshots, and package metadata without becoming the package source of truth.
+Any valid package origin can be installed directly. The [Containerpak Store](/store) adds reviewed discovery metadata, categories, icons, and screenshots. Package manifests and images remain in their original repositories and registries.

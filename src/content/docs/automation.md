@@ -20,7 +20,7 @@ cpak gc --json
 cpak alias list --json
 ```
 
-Do not parse human tables. JSON fields are designed for status checks and automation.
+Use JSON output for status checks and automation. Human tables are presentation output.
 
 ## Unattended updates
 
@@ -46,7 +46,7 @@ Add `--health` when each started application can answer a health command. Use `-
 
 ## Service lifecycle
 
-`cpak service` starts the local cpak service. A user service manager can own it, but systemd is not required by the runtime. Other init systems can run the same command in the user's session.
+`cpak service` starts the local cpak service. Run it under the service manager available in the user session.
 
 Keep the service in the same user environment as desktop applications so display, audio, XDG paths, and the system broker resolve the intended session.
 
@@ -64,6 +64,6 @@ Capture the command exit status and logs around a failing run. cpak propagates t
 
 ## CI package checks
 
-Use `cpak validate`, `cpak lock`, and `cpak test` in package CI after the OCI image has been published. A package test should run through cpak, not only through the image builder's container command.
+Use `cpak validate`, `cpak lock`, and `cpak test` in package CI after the OCI image has been published. Include a test of the published image through cpak.
 
 Keep production image builds in CI. Local development commands are for package validation and visual testing, not a substitute for a signed multi-architecture publishing workflow.

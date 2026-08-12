@@ -71,7 +71,7 @@ Use only one source selector per dependency. The lock file records the resolved 
 
 ## Addons
 
-The `addons` array lists package origins that the user may mount into this application. Addons do not grant more host permissions to the parent package.
+The `addons` array lists package origins that the user may mount into this application. Enabled addons use the parent's effective host permissions.
 
 ```json
 "addons": [

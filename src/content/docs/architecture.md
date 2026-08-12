@@ -8,13 +8,15 @@ order: 10
 
 # Runtime architecture
 
-cpak is one Go binary that resolves package metadata, manages a content-addressed store, and starts rootless application environments through Linux kernel interfaces. It does not depend on a daemon such as Docker or Podman at runtime.
+cpak is one Go binary that resolves package metadata, manages a content-addressed store, and starts rootless application environments through Linux kernel interfaces. OCI content is pulled and mounted directly by cpak.
 
 ## Package resolution
 
 An install starts from a Git origin. cpak resolves the selected branch, release, or commit and downloads `cpak.json`. The manifest is validated before image content or runtime sources become active.
 
-The OCI image reference is resolved to an immutable digest. Dependency manifests are resolved through the same path. A lock file can record the exact manifest hashes and image digests for development and CI.
+The native OCI Distribution client resolves the image reference to an immutable digest, selects the current Linux architecture from an image index, validates every descriptor, and checks downloaded content against its SHA-256 digest. Dependency manifests are resolved through the same path. A lock file can record the exact manifest hashes and image digests for development and CI.
+
+Registry access is anonymous unless the user creates an explicit credential binding for the package origin. cpak never reads Docker configuration, Podman authentication files, or external credential helpers. A stored credential is valid only for its package origin, registry host, and repository path.
 
 ## Content store
 
@@ -22,13 +24,13 @@ Storage deduplication has two automatic levels. First, OCI layers are addressed 
 
 The OCI level avoids work for the complete matching layer. The DaBaDee level works below the image layout. A shared library, font, or asset can occupy one physical copy even when unrelated application images did not share a base layer.
 
-Package records, immutable layers, writable application state, logs, exported desktop files, and transaction state are kept separately. This lets cpak recover an interrupted update without treating a partially staged version as active.
+Package records, immutable layers, writable application state, logs, exported desktop files, and transaction state are kept separately. Recovery discards incomplete staging data and preserves the active version.
 
 ## Runtime view
 
 At launch, cpak assembles ordered application, dependency, and enabled addon layers with OverlayFS. A writable upper layer receives application changes. The downloaded content remains immutable and reusable.
 
-The environment receives a stable package identity through cpak-specific variables. Packages can use that identity to select first-class cpak behavior without pretending to be another package format.
+The environment receives cpak runtime variables. `CPAK_CONTAINER_ID` contains an opaque identifier for the active instance and can be used to detect a cpak launch.
 
 ## Isolation
 
@@ -40,7 +42,7 @@ Mounts are prepared from the package permission set and user overrides. The fina
 
 Display, audio, devices, and explicitly requested sockets are mounted into the environment. Notifications, external URI requests, host application launches, and typed host services use the cpak system broker.
 
-The application does not need to adopt a portal API. Existing Linux applications can call a compatibility command. The shim parses that command into a finite request before it crosses the sandbox boundary. The broker checks the package policy and returns output, errors, exit status, and cancellation without exposing a host shell.
+Compatibility commands cover notifications, URI opening, host application launches, and supported host services. Each shim parses a finite request before it crosses the sandbox boundary. The broker checks the package policy and returns output, errors, exit status, and cancellation.
 
 ## Lifecycle
 

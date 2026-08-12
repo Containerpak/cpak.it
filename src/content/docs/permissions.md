@@ -25,7 +25,7 @@ The `override` object in `cpak.json` is the package's default permission set. Th
 | `socketGpgAgent`   | The user's GPG agent socket.                                          |
 | `socketBluetooth`  | The Bluetooth socket.                                                 |
 
-Prefer cpak's system broker for notifications and external URIs. It exposes only the requested operation instead of the entire session bus.
+Use the system broker for notifications and external URIs. Each permission exposes one operation to the package.
 
 ## Devices
 
@@ -62,11 +62,11 @@ Avoid the legacy `fsHost`, `fsHostHome`, `fsHostEtc`, and `fsExtra` fields in ne
 | `cpuQuota`    | percent of one CPU | no limit requested |
 | `pidsMax`     | process count      | no limit requested |
 
-Limits use delegated cgroup v2 controllers. If the current host cannot enforce a requested limit, cpak returns a direct error instead of silently ignoring the manifest.
+Limits use delegated cgroup v2 controllers. A requested limit fails when the current host cannot enforce it.
 
 ## System operations
 
-Set `notification` to expose the notification shim and `openURI` to allow opening an external URI on the host. These operations pass through the cpak system broker and do not expose a host command or unrestricted D-Bus socket.
+Set `notification` to expose the notification shim and `openURI` to allow opening an external URI on the host. `openURI` covers `xdg-open`, `gio open`, and direct GIO default-handler requests. Both operations pass through typed system broker requests.
 
 Set `hostApplications` when a desktop environment needs the host application catalog. Launch requests use opaque catalog identifiers and the broker selects the trusted desktop entry.
 

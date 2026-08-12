@@ -8,11 +8,11 @@ order: 10
 
 # Install cpak
 
-cpak is distributed as one Go binary. It does not require a container daemon and it does not install a second container runtime. The current v2 release candidate is published on GitHub.
+cpak is distributed as one Go binary and pulls OCI content directly. Docker, Podman, crane, registry credential helpers, and a background image service are not runtime requirements.
 
 ## Download the binary
 
-Open the [v2.0.0 release](https://github.com/Containerpak/cpak/releases/tag/v2.0.0) and download `cpak-linux-amd64` on x86-64 or `cpak-linux-arm64` on ARM64. Download `SHA256SUMS` from the same release, then verify and install the binary on your user `PATH`:
+Open the [latest cpak release](https://github.com/Containerpak/cpak/releases/latest) and download `cpak-linux-amd64` on x86-64 or `cpak-linux-arm64` on ARM64. Download `SHA256SUMS` from the same release, then verify and install the binary on your user `PATH`:
 
 ```bash
 sha256sum -c --ignore-missing SHA256SUMS
@@ -26,7 +26,7 @@ Use the same binary for interactive commands, application lifecycle management, 
 
 ## Install an application from the Store
 
-Each application page in the [cpak Store](/store) provides a signed graphical installer and a menu for copying either the equivalent terminal command or a direct installer URL. The downloaded file installs cpak and the selected application without requiring an existing cpak setup.
+Each application page in the [cpak Store](/store) provides a signed graphical installer, the equivalent terminal command, and a direct installer URL. The downloaded file installs cpak and the selected application.
 
 Browsers normally save downloaded files without the executable bit. Enable execution in the file properties or run:
 
@@ -49,7 +49,7 @@ cpak doctor --json
 The report covers user namespaces, rootless OverlayFS, `mount_setattr`, seccomp, Landlock, delegated cgroup v2 controllers, display and audio access, and the controlled host command bridge. A warning explains a missing optional hardening layer or resource controller. A failed required capability prevents the affected runtime path from starting.
 
 > [!NOTE] Host support
-> Landlock and delegated cgroups depend on the kernel and session manager. cpak reports their absence instead of claiming that the protection or limit was applied.
+> Landlock and delegated cgroups depend on the kernel and session manager. `cpak doctor` reports whether each feature is active.
 
 ## Data locations
 
@@ -65,14 +65,18 @@ Run an installed application from its desktop entry or with `cpak run`. Both pat
 
 ## Update cpak
 
-Replace the binary with a newer release, then run:
+Check and install a newer cpak release:
 
 ```bash
+cpak self-update --check
+cpak self-update
 cpak doctor
 cpak audit
 ```
 
-The package store is upgraded by the runtime when its schema changes. Keep a copy of the store before testing development builds against irreplaceable application data.
+On a desktop, cpak checks once per day while another command runs. GNOME uses Zenity when it is installed, KDE uses KDialog, and other sessions use the built-in cpak dialog. The update is downloaded from the official release, checked against `SHA256SUMS`, written beside the current binary, and installed with an atomic rename. Applications that are already running continue to use their existing process.
+
+A distribution package can disable binary replacement at build time. cpak still reports that a newer version exists and tells the user to request it from the package maintainer. Read [cpak runtime updates](/docs/runtime-updates) for packager configuration and desktop backend selection.
 
 ## Remove cpak
 

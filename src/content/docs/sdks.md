@@ -1,6 +1,6 @@
 ---
 title: SDKs and development tools
-description: Add language toolchains to editors without rebuilding or expanding the editor package.
+description: Package language toolchains as optional editor addons.
 tags: [sdk, addons, development]
 section: packages
 order: 60
@@ -31,7 +31,7 @@ Run VS Code through cpak after changing the addon selection. Its integrated term
 
 ## Create an SDK package
 
-An SDK is a normal manifest v2 package. Its image should contain the toolchain and no editor-specific state. Declare every command that other tools may call:
+An SDK is a manifest v2 package. Its image contains the toolchain while editor state stays with the parent application. Declare every command that other tools may call:
 
 ```json
 {
@@ -65,7 +65,7 @@ cpak test cpak.json --binary /usr/local/bin/example -- --version
 
 Then test it as an enabled addon in each supported editor. Open a login shell and a non-login shell, because editors and build tasks do not always initialize the same environment.
 
-For a language SDK, compile and run a minimal project. A version string proves that the binary starts; it does not prove imports, compilers, subprocesses, or output paths.
+For a language SDK, compile and run a minimal project. Cover imports, compilers, subprocesses, and output paths in addition to the version command.
 
 ## Version updates
 

@@ -8,11 +8,11 @@ order: 20
 
 # Sandbox and threat model
 
-cpak starts applications without host root privileges. Its sandbox reduces the host surface visible to a package, then reopens resources declared by the package and accepted by the user.
+cpak starts applications as the current user. The sandbox exposes resources declared by the package and accepted by the user.
 
 ## Namespace boundary
 
-The runtime uses Linux namespaces for users, mounts, processes, IPC, hostname, cgroups, and optional networking. The process sees the assembled package root rather than the host root. The package PID 1 owns child cleanup and instance lifetime.
+The runtime uses Linux namespaces for users, mounts, processes, IPC, hostname, cgroups, and optional networking. The process sees the assembled package root. The package PID 1 owns child cleanup and instance lifetime.
 
 Nested user namespaces are blocked by default. A package can request `userNamespaces` for applications such as browsers that create another sandbox inside cpak.
 
@@ -26,13 +26,13 @@ Landlock is an extra restriction, not a substitute for mount isolation. `cpak do
 
 cpak applies `no_new_privs` before the application starts and uses seccomp to block disallowed system calls. A package cannot gain privileges through a setuid executable after this point.
 
-The policy leaves the calls required by normal desktop applications and cpak's own runtime path. New application classes should be tested against the policy instead of disabling it globally.
+The policy includes the calls required by supported desktop applications and the cpak runtime. Test a new application class against the policy before changing the global filter.
 
 ## Resource controls
 
-Memory, CPU, and process limits use delegated cgroup v2 controllers. cpak never reports a requested limit as active when the host cannot enforce it. The launch fails with a specific diagnostic.
+Memory, CPU, and process limits use delegated cgroup v2 controllers. A launch with an unavailable requested limit fails with a specific diagnostic.
 
-Systemd is supported as a session manager but is not required. Other init systems can run cpak when the kernel features and user session resources are available.
+The runtime uses the service manager available in the user session. Kernel features and session resources determine host compatibility.
 
 ## Host communication
 
@@ -43,7 +43,7 @@ Direct sockets and devices are opt-in manifest fields. Narrow system operations 
 - compatibility commands are parsed before the broker request is created
 - streamed actions preserve output channels, exit status, and cancellation
 
-The package does not receive unrestricted access merely because the compatibility shim exists in its filesystem.
+Every compatibility shim maps to a typed request and its effective package permission.
 
 ## User overrides
 

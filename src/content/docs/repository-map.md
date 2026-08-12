@@ -17,7 +17,7 @@ Use this map before opening a change. Repository boundaries follow ownership and
 | [Containerpak/cpak](https://github.com/Containerpak/cpak)       | CLI, store, OCI resolution, transactions, runtime, sandbox, brokers, manifests, and schema. |
 | [mirkobrombin/DaBaDee](https://github.com/mirkobrombin/DaBaDee) | Content hashing and hard-link deduplication.                                                |
 
-The cpak runtime default branch is `v2`. Host integration providers live in the cpak binary. DaBaDee remains a normal Go dependency and is not an embedded helper binary.
+The cpak runtime default branch is `v2`. Host integration providers live in the cpak binary. DaBaDee is a Go dependency of the runtime.
 
 ## Shared images
 
@@ -48,7 +48,7 @@ An editor lists supported SDK origins as addons. The SDK repository owns toolcha
 | [Containerpak/store](https://github.com/Containerpak/store)     | Reviewed catalog metadata, categories, original icons, screenshots, and generated indexes. |
 | [Containerpak/cpak.it](https://github.com/Containerpak/cpak.it) | Website, Store frontend, documentation renderer, and project pages.                        |
 
-The Store entry points to a package repository. It does not own the package's `cpak.json` or OCI image.
+The Store entry points to a package repository. That repository owns `cpak.json` and its OCI image lifecycle.
 
 ## Where a fix belongs
 

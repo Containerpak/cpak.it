@@ -8,7 +8,7 @@ order: 80
 
 # Publish to the Store
 
-The Store is an optional discovery layer. Users can install any valid package by Git origin without waiting for a catalog entry.
+The Store is a discovery layer. Packages are also installable directly from a valid Git origin.
 
 ## Prepare the package origin
 
@@ -20,7 +20,7 @@ Before catalog submission, the package repository should contain:
 - a CI workflow that builds the image and checks its exported binaries
 - a real cpak test of the primary application path
 
-Run the package validation flow against the public repository reference, not only local files.
+Run the package validation flow against the public repository reference before submission.
 
 ## Prepare catalog media
 
@@ -49,7 +49,7 @@ Do not edit generated catalog indexes by hand. The Store validation workflow reb
 
 The Store displays effective manifest permissions to users. Broad filesystem access, all-device access, system bus access, root execution, process sharing, and host service capabilities need a concrete package reason.
 
-Catalog acceptance does not weaken the runtime sandbox. The installed package still follows its manifest and the user's local overrides.
+Runtime permissions come from the installed manifest and the user's local overrides. Catalog metadata is used for discovery and installer presentation.
 
 ## Keep the entry current
 
@@ -59,7 +59,7 @@ The package repository remains the source for `cpak.json` and image references. 
 
 ## Installer downloads
 
-Listed applications receive a signed graphical and terminal installer without adding an installer build to the package repository. The cpak release catalog binds the Store metadata, source revision, architecture, permissions, and generic installer base into a verified capsule.
+The cpak release workflow produces signed graphical and terminal installers for listed applications. The release catalog binds Store metadata, source revision, architecture, permissions, and installer base into a verified capsule.
 
 Read [cpak-installer](/docs/cpak-installer) for the direct endpoint, integration contract, release assets, and verification model.
 

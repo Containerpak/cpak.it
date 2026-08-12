@@ -1,6 +1,6 @@
 ---
 title: Your first package
-description: Create a v2 package repository, build its image, and test it without changing your installed applications.
+description: Create a v2 package repository, build its image, and test it in an isolated store.
 tags: [packaging, tutorial]
 section: packages
 order: 10
@@ -18,7 +18,7 @@ cd hello-cpak
 git init
 ```
 
-Create a `Containerfile` that copies the application into a small runtime image. The binary paths declared later must exist in the final image, not only in a build stage.
+Create a `Containerfile` that copies the application into a small runtime image. Every binary path declared in the manifest must exist in the final image.
 
 ```dockerfile
 FROM debian:13-slim
@@ -29,7 +29,7 @@ RUN printf '#!/bin/sh\nprintf "Hello from cpak\\n"\n' > /usr/bin/hello-cpak \
 ENTRYPOINT ["/usr/bin/hello-cpak"]
 ```
 
-Build and publish the image with your registry workflow. cpak reads standard OCI images and does not require a custom image builder.
+Build and publish the image with any OCI registry workflow.
 
 ## Generate the manifest
 
@@ -42,7 +42,7 @@ cpak init \
   --binary /usr/bin/hello-cpak
 ```
 
-The generated manifest uses version `2.0` and includes the current schema URL. Edit its `override` object so it grants only what the application needs. This command-line example does not need display, audio, devices, host files, or broker actions.
+The generated manifest uses version `2.0` and includes the current schema URL. This command-line example uses an empty `override` because it needs no host resources.
 
 ## Validate before running
 
@@ -54,7 +54,7 @@ cpak test cpak.json --binary /usr/bin/hello-cpak
 
 `cpak validate` checks the manifest contract. `cpak lock` resolves the root package and dependencies to immutable image digests. `cpak test` uses a temporary cpak store, verifies declared binaries and desktop entries, then runs the selected binary when requested.
 
-The temporary flow does not export desktop entries or change applications installed in your normal store.
+The temporary flow uses an isolated store and skips desktop exports.
 
 ## Add a desktop application
 

@@ -72,6 +72,13 @@ Use `--instance` on supported commands to select a named instance of the same pa
 
 Run `cpak gc --json` before `cpak gc --apply` when automating cleanup.
 
-## Internal runtime commands
+## Runtime and registry access
 
-`spawn`, `hostexec-client`, `hostexec-server`, `system-broker-client`, and `system-broker-server` implement cpak's runtime protocol. Package scripts should use public lifecycle commands rather than invoking these directly.
+| Command       | Purpose                                                        |
+| ------------- | -------------------------------------------------------------- |
+| `auth`        | Bind registry access to one package origin and OCI repository. |
+| `self-update` | Check for or install a newer official cpak binary.             |
+
+Use `cpak auth login`, `logout`, `list`, or `status` to manage private registry access. Read [Private OCI registries](/docs/registry-authentication) before adding a separate token host.
+
+`cpak self-update --check` reports an available release without replacing the binary. Package-manager builds keep the version notice but reject direct replacement. See [Update the cpak runtime](/docs/runtime-updates).

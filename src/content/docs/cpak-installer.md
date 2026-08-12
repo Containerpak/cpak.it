@@ -8,7 +8,7 @@ order: 15
 
 # cpak-installer
 
-cpak-installer turns a Store application into a signed, self-contained download. It includes the matching cpak binary and the verified identity of one package, but it does not contain the package image. The normal cpak installation path still resolves the manifest, OCI image, dependencies, permissions, and desktop exports.
+cpak-installer is a signed executable for one Store application. It contains the matching cpak binary and verified package metadata. At installation time it resolves the manifest, OCI image, dependencies, permissions, and desktop exports.
 
 ## For users
 
@@ -48,7 +48,7 @@ The cpak binary is written through a temporary file and renamed into place only 
 
 ## For package developers
 
-An application repository does not build or ship a custom installer. Keep the package source valid, publish its OCI images, and add its reviewed entry to [Containerpak/store](https://github.com/Containerpak/store). The cpak release workflow produces one generic installer base for each supported architecture and a signed catalog describing each listed package.
+Publish a valid package repository and its OCI images, then add the reviewed entry to [Containerpak/store](https://github.com/Containerpak/store). The cpak release workflow produces one installer base for each supported architecture and a signed catalog describing each listed package.
 
 The Store assembles a download when this endpoint is requested:
 
@@ -58,15 +58,15 @@ https://cpak.it/install/github.com/OWNER/REPOSITORY?arch=amd64
 
 Use `arch=arm64` for ARM64. The endpoint loads the installer base and catalog from the configured cpak release, verifies the base digest against the catalog, appends the package metadata and signature, and returns the result as `application/vnd.cpak.installer`.
 
-The package identity always comes from the requested Store origin and signed release catalog. It is never inferred from the browser referrer or a filename. One generic base can therefore serve every listed package without trusting client-provided application metadata.
+The requested Store origin and signed release catalog define the package identity. Browser referrers and downloaded filenames are not identity inputs. One installer base serves every listed package.
 
-Link to the endpoint when a website needs a direct graphical installation path. Keep the normal command visible as the portable alternative:
+Link to the endpoint for a direct graphical installation path. Publish the terminal command beside it:
 
 ```bash
 cpak install github.com/OWNER/REPOSITORY
 ```
 
-The Store application page already exposes both forms in its download menu. A package-specific installer build in application CI is neither required nor recommended.
+The Store application page publishes both forms in its download menu. Installer bases and package metadata are produced by the cpak release workflow.
 
 ## Release ownership
 

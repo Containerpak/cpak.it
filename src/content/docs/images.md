@@ -8,7 +8,7 @@ order: 40
 
 # Build OCI images
 
-cpak consumes standard OCI images. The image should contain only the application, its runtime libraries, declared desktop files, and assets required inside the package. cpak itself does not need to be copied into the image.
+cpak consumes standard OCI images. Include the application, its runtime libraries, declared desktop files, and required assets. The cpak runtime stays on the host.
 
 ## Use multiple stages
 
@@ -112,7 +112,7 @@ DaBaDee file match   -> reuse the stored file content
 Unique file          -> keep one new content object
 ```
 
-The first level rewards packages that share stable bases and layer boundaries. The second level still removes repeated libraries, fonts, assets, and runtime files when independent package builds do not produce identical layers. Both happen during the normal image pull; package authors do not need to call `cpak dedup` after installation.
+The first level reuses stable bases and matching layer boundaries. The second level finds repeated libraries, fonts, assets, and runtime files across different layer layouts. Both run automatically during image pull.
 
 ## External artifacts
 

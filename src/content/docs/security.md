@@ -26,7 +26,7 @@ Do not include live credentials or unrelated personal files. Replace secrets whi
 
 ## Scope
 
-Security-sensitive cpak areas include namespace setup, mounts, seccomp, Landlock, user overrides, host command policy, system broker requests, nested package authorization, OCI verification, runtime source checksums, update transactions, and desktop exports.
+Security-sensitive cpak areas include namespace setup, mounts, seccomp, Landlock, user overrides, typed host actions, system broker requests, nested package authorization, OCI verification, runtime source checksums, update transactions, and desktop exports.
 
 An application behaving maliciously within permissions explicitly granted by its manifest is not automatically a cpak boundary bypass. A hidden, misreported, or unenforced permission remains a valid security problem.
 

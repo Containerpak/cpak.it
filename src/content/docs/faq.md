@@ -10,7 +10,7 @@ order: 30
 
 ## Does cpak need Docker or Podman?
 
-No. Package authors may use a standard OCI builder in CI, but the installed cpak runtime pulls and mounts OCI content directly. It does not start a Docker or Podman daemon.
+No. Package authors can use any standard OCI builder in CI. The installed cpak runtime pulls and mounts OCI content directly.
 
 ## Is a cpak package an OCI image?
 
@@ -22,13 +22,13 @@ No. Install any valid package by its Git origin. The Store provides reviewed dis
 
 ## How is cpak different from Flatpak?
 
-cpak uses a Git manifest and OCI content, has one runtime binary, shares content-addressed layers, supports direct package dependencies and addons, and brokers selected host operations without requiring applications to adopt a portal API.
+cpak uses a Git manifest, OCI content, one runtime binary, content-addressed layers, direct package dependencies, addons, and policy-gated host operations.
 
-The formats also have different sandbox and distribution contracts. Treat cpak as its own target and use the cpak package identity rather than setting Flatpak environment variables.
+The formats have different sandbox and distribution contracts. Applications can detect a cpak launch through `CPAK_CONTAINER_ID`.
 
 ## Does cpak share base runtimes?
 
-Yes. Equal OCI layers are stored once, and DaBaDee can deduplicate equal files across different layer layouts. A shared base image remains an OCI build input rather than a separately installed global runtime.
+Yes. Equal OCI layers are stored once, and DaBaDee deduplicates equal files across different layer layouts. Shared base images remain OCI build inputs.
 
 ## Where does application data go?
 
@@ -40,7 +40,7 @@ Required dependencies are installed with the parent. Optional addons are enabled
 
 ## Can I add a language SDK to an editor?
 
-Yes. Install a supported SDK package and enable it as an addon for that editor. The toolchain becomes part of the editor runtime view without rebuilding the editor image.
+Yes. Install a supported SDK package and enable it as an addon for that editor. The toolchain becomes part of the editor runtime view.
 
 ## Does cpak work without systemd?
 
@@ -48,7 +48,13 @@ Yes, provided the host supplies the required kernel features and user session re
 
 ## Are updates automatic?
 
-`cpak update` updates one or all installed packages. New permission grants require approval. `--non-interactive` rejects updates that request additional access.
+`cpak update` updates one or all installed applications. New permission grants require approval. `--non-interactive` rejects updates that request additional access.
+
+The cpak binary checks for a new official release once per day. Desktop installations can show an update dialog and install it after confirmation. Distribution-managed builds report the update but leave installation to the system package manager.
+
+## Can cpak pull a private image?
+
+Yes. `cpak auth login` stores an explicit credential for one package origin and the exact OCI repository declared by its manifest. Desktop credentials use Secret Service. Headless systems can inject a user-owned mode `0600` credential file. cpak does not import Docker or Podman credentials.
 
 ## Can I roll back?
 

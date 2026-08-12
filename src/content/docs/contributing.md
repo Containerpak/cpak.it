@@ -33,7 +33,7 @@ go run . gen-schema --output /tmp/manifest-v2.json
 diff -u schema/manifest-v2.json /tmp/manifest-v2.json
 ```
 
-The generated schema must match the committed schema. Add tests beside changed behavior. Runtime changes should cover failure paths and store recovery, not only a successful command.
+The generated schema must match the committed schema. Add tests beside changed behavior. Runtime changes must cover successful commands, failure paths, and store recovery.
 
 ## Test host behavior
 
@@ -49,7 +49,7 @@ For a launch change, install or test a real package through the locally built cp
 
 Each official package has its own repository under the Containerpak organization. The package repository owns `cpak.json`, its image recipe, tests, and application-specific integration.
 
-Do not add an application workaround to the core runtime when it belongs in one package. Do not duplicate a shared runtime in every package when a base image or dependency owns it.
+Application-specific workarounds belong in the package repository. Shared ABI content belongs in a base image or dependency when several packages use it.
 
 ## Work on the website
 

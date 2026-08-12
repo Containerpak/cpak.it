@@ -8,7 +8,9 @@ order: 20
 
 # Updates, pins, and rollback
 
-cpak keeps the package origin separate from its selected Git reference and resolved OCI digest. This lets a package follow a maintained branch or remain fixed to an exact revision.
+cpak records the package origin, selected Git reference, and resolved OCI digest separately. A package can follow a maintained branch or stay fixed to an exact revision.
+
+This page covers application packages. Use [cpak runtime updates](/docs/runtime-updates) to update the cpak binary.
 
 ## Source selection
 
@@ -21,7 +23,7 @@ cpak install --branch main github.com/example/app
 Install a named release:
 
 ```bash
-cpak install --release v2.1.0 github.com/example/app
+cpak install --release v2.0.1 github.com/example/app
 ```
 
 Pin an immutable commit:
@@ -56,7 +58,7 @@ Use this mode for unattended jobs. A permission denial is a failed update result
 
 cpak stages the new manifest, OCI layers, runtime sources, dependencies, desktop exports, and database record. It switches the active version only after staging succeeds. Recovery code handles transactions that were interrupted before commit.
 
-If the image digest is unchanged but the manifest changed, cpak still refreshes package metadata and effective permissions.
+If the image digest is unchanged but the manifest changed, cpak refreshes package metadata and effective permissions. Running an update for a current release also repairs its exported commands, desktop entries, icons, and default-application aliases.
 
 ## Roll back
 

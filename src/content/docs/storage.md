@@ -45,7 +45,7 @@ Garbage collection retains layers referenced by installed packages, their active
 
 ## Deduplicate equal files
 
-The normal pull path already applies both storage levels automatically. It skips complete OCI layers that are already present by digest, then runs DaBaDee on every newly unpacked layer before publishing it. The command below is for an explicit path or a maintenance pass, not for enabling deduplication after each install.
+Image pull applies both storage levels automatically. Existing OCI layer digests are reused, then DaBaDee processes every newly unpacked layer before publication. Use the command below for an explicit path or maintenance pass.
 
 ```bash
 cpak dedup --path /path/to/cpak/store

@@ -70,6 +70,21 @@ Audit first. Garbage collection is for unreferenced content, not for repairing a
 
 Confirm that the manifest path is absolute, ends in `.desktop`, and exists in the final image. Its `Exec` target must be a declared or available binary. Reinstall or update the package after changing only manifest metadata so cpak refreshes the exported entry.
 
+## A cpak application is not used as the default
+
+Check both desktop resolvers:
+
+```bash
+xdg-mime query default x-scheme-handler/https
+gio mime x-scheme-handler/https
+```
+
+The result may be the hidden original desktop ID or the visible cpak-prefixed ID. Run `cpak update` for the package when the configured original ID no longer exists. The update refreshes both entries without changing application data.
+
+## A link opens inside the wrong package
+
+The package needs `openURI`. cpak provides `xdg-open`, `gio open`, and a private GIO handler for common external links. Check the application log for an attempted nested launch. That message means an old runtime resolved a host desktop entry inside the package instead of using the URI broker. Update cpak, stop the package instance, and start it again so its runtime policy is rebuilt.
+
 ## An update is refused
 
 Inspect the structured update result:

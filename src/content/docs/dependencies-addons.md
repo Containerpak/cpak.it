@@ -25,11 +25,11 @@ A dependency is installed with the parent package. Use one when the application 
 
 The dependency can select a branch, release, or commit. `cpak lock` resolves the full graph and records immutable image digests. Installation stages dependencies before committing the parent package.
 
-Dependencies are not copied into the parent OCI image. Their content-addressed layers remain reusable by every package that references them.
+Dependencies keep their own OCI images and content-addressed layers. Every package that references them can reuse those layers.
 
 ## Optional addons
 
-An addon is a package that the parent explicitly supports but does not require:
+An addon is an optional package explicitly supported by the parent:
 
 ```json
 "addons": [
@@ -52,11 +52,11 @@ cpak addon enable github.com/containerpak/vscode github.com/containerpak/sdk-go
 cpak addon disable github.com/containerpak/vscode github.com/containerpak/sdk-go
 ```
 
-The selection belongs to the parent application. Enabling an addon does not enable it globally and does not modify the parent manifest.
+The addon selection is stored for the parent application. Other applications keep their own selections and the parent manifest remains unchanged.
 
 ## Permission boundaries
 
-An addon contributes files to the runtime view. It does not expand the effective host permissions of its parent. If a toolchain needs network or filesystem access, the application manifest and user override must already allow that access.
+An addon contributes files to the runtime view and uses the parent's effective host permissions. Network or filesystem access must be present in the application manifest or its user override.
 
 cpak prevents removing a package while another installed package still depends on it or uses it as an enabled addon.
 
