@@ -103,19 +103,18 @@ Avoid a single giant `RUN` step when it causes an application update to invalida
 
 Shared base images are useful beyond build consistency. cpak stores OCI layers by digest, so applications built on the same unchanged base reuse one downloaded and stored layer. A new layer is unpacked only when its digest is absent.
 
-While that new layer is unpacked, cpak streams each regular file into DaBaDee. DaBaDee reuses complete files through hard links and matching content-defined ranges through reflinks when the filesystem supports them. This second level catches duplicate bytes even when two images placed them in different layers or produced different OCI digests.
+cpak streams a new layer directly into the global FVS content store. FVS splits file contents into content-defined blocks and reuses blocks already referenced by another layer. This catches equal ranges even when two images placed them in different files or produced different OCI digests.
 
 ```text
 OCI digest match     -> reuse the complete layer
-New OCI layer        -> verify and unpack as one stream
-DaBaDee file match   -> reuse the complete stored file
-DaBaDee chunk match  -> clone matching ranges when supported
-Unique file          -> keep one new content object
+New OCI layer        -> verify and decode as one stream
+FVS block match      -> reference the existing content block
+Unique block         -> store one new content block
 ```
 
-The first level reuses stable bases and matching layer boundaries. The second level finds repeated libraries, fonts, assets, and runtime files across different layer layouts. Both run automatically during image pull. cpak does not keep the downloaded compressed layer after a successful import.
+The first level reuses stable bases and matching layer boundaries. The second level finds repeated content across different layer layouts. Both run automatically during image pull. cpak does not keep the downloaded compressed layer or an expanded layer directory after a successful import.
 
-For registries and CDNs that preserve byte-range responses, `zstd:chunked` lets cpak read the layer table of contents first and skip compressed file ranges already present in DaBaDee. cpak uses one complete stream for a cold store and switches to ranges only when the known content makes that cheaper. A normal gzip or zstd pull remains the automatic fallback. Read [Choose and operate an OCI registry](/docs/registries) before enabling it in CI.
+For registries and CDNs that preserve byte-range responses, `zstd:chunked` lets cpak read the layer table of contents first and skip compressed file ranges whose complete content already exists in FVS. cpak uses one complete stream for a cold store and switches to ranges only when known content makes that cheaper. A normal gzip or zstd pull remains the automatic fallback. Read [Choose and operate an OCI registry](/docs/registries) before enabling it in CI.
 
 ## External artifacts
 

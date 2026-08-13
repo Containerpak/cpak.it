@@ -8,7 +8,7 @@ order: 15
 
 # cpak-installer
 
-cpak-installer is a signed executable for one Store application. It contains the matching cpak binary and verified package metadata. At installation time it resolves the manifest, OCI image, dependencies, permissions, and desktop exports.
+cpak-installer is a signed executable for one Store application. It contains matching `cpak` and `cpak-storaged` binaries plus verified package metadata. At installation time it resolves the manifest, OCI image, dependencies, permissions, and desktop exports.
 
 ## For users
 
@@ -23,7 +23,7 @@ chmod +x Application-amd64.cpak-installer
 
 Opening the file from an X11 or XWayland desktop shows the application name, original icon, description, source, requested permissions, installation progress, and final result. Starting the same file from a terminal shows a text confirmation and reports progress there. Use `--terminal` to request the terminal interface explicitly.
 
-The installer places or updates cpak at `~/.local/bin/cpak`, then installs the selected package from its pinned Git revision. Installing the same cpak build again does not rewrite the binary.
+The installer places or updates `cpak` and `cpak-storaged` in `~/.local/bin`, then installs the selected package from its pinned Git revision. Installing the same cpak build again does not rewrite either binary.
 
 Inspect the verified metadata without installing anything:
 
@@ -42,9 +42,9 @@ Each capsule carries metadata signed with Ed25519. The signature covers:
 - the target architecture
 - the SHA-256 digest of the complete installer base
 
-cpak-installer verifies the signature, metadata schema, architecture, and complete base digest before showing the interface or writing a file. Changing the application identity, source reference, permissions, embedded cpak binary, or installer code invalidates the capsule.
+cpak-installer verifies the signature, metadata schema, architecture, and complete base digest before showing the interface or writing a file. Changing the application identity, source reference, permissions, embedded runtime binaries, or installer code invalidates the capsule.
 
-The cpak binary is written through a temporary file and renamed into place only after the write succeeds. Package installation then follows the same manifest validation and transaction path as `cpak install`.
+Each runtime binary is written through a temporary file and renamed into place only after the write succeeds. Package installation then follows the same manifest validation and transaction path as `cpak install`.
 
 ## For package developers
 
@@ -74,11 +74,12 @@ Versioned cpak releases publish these assets for `amd64` and `arm64`:
 
 ```text
 cpak-linux-ARCH
+cpak-storaged-linux-ARCH
 cpak-installer-linux-ARCH
 cpak-installer-catalog.json
 SHA256SUMS
 ```
 
-The generic installer base contains the installer interface and the cpak binary from the same release. The catalog contains signed package metadata and the expected base digest. cpak.it combines those existing artifacts without access to the signing key.
+The generic installer base contains the installer interface and both runtime binaries from the same release. The catalog contains signed package metadata and the expected base digest. cpak.it combines those existing artifacts without access to the signing key.
 
 See [Release channels](/docs/release-channels) for version selection, [Publish to the Store](/docs/publishing) for catalog requirements, and [Security reporting](/docs/security) for private vulnerability reports.

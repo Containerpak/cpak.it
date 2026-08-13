@@ -8,7 +8,7 @@ order: 60
 
 # Release channels
 
-cpak publishes static Linux binaries and Store installer bases for `amd64` and `arm64`. Every published build includes SHA-256 checksums, an SPDX JSON SBOM, and GitHub attestations for the binaries and SBOM.
+cpak publishes static `cpak` and `cpak-storaged` Linux binaries plus Store installer bases for `amd64` and `arm64`. Every published build includes SHA-256 checksums, an SPDX JSON SBOM, and GitHub attestations for the binaries and SBOM.
 
 ## Continuous
 
@@ -39,12 +39,12 @@ cpak self-update --check
 cpak self-update
 ```
 
-The installer verifies the selected architecture against the release checksum before replacing the binary. Release candidates are older than the matching stable version, so a stable release replaces its candidate even when the numeric version is equal.
+The installer verifies both runtime binaries for the selected architecture against the release checksums before replacing installed files. Release candidates are older than the matching stable version, so a stable release replaces its candidate even when the numeric version is equal.
 
 Packagers build with `SELF_UPDATE_MODE=managed`. This keeps the version notice and disables direct replacement:
 
 ```bash
-make VERSION=v2.0.1 SELF_UPDATE_MODE=managed
+make VERSION=v2.1.0 SELF_UPDATE_MODE=managed
 ```
 
 The release version and update mode are compiled into the binary. Do not patch the runtime command or remove the update check in a package recipe.

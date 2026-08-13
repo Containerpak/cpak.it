@@ -37,15 +37,15 @@ Public packages work best with anonymous blob access. Private repositories need 
 
 ## Publish regular OCI layers
 
-gzip and zstd layers work on conforming registries. cpak streams a new layer directly through digest verification, decompression, and DaBaDee without keeping a second compressed copy in its cache.
+gzip and zstd layers work on conforming registries. cpak streams a new layer directly through digest verification and decompression into FVS without keeping a second compressed copy or expanded layer directory.
 
 Any OCI publisher can produce the image. Keep the final manifest in OCI format when the build system supports it, publish architecture indexes only for architectures that were tested, and record the resulting digest through `cpak lock`.
 
 ## Enable partial pulls
 
-`zstd:chunked` adds a table of contents to a zstd layer. The layer descriptor carries the location and checksum of that table. cpak can inspect it with a byte-range request, reuse files already present in DaBaDee, and download only the compressed ranges needed for missing files.
+`zstd:chunked` adds a table of contents to a zstd layer. The layer descriptor carries the location and checksum of that table. cpak can inspect it with a byte-range request, reuse complete file content already present in FVS, and download only the compressed ranges needed for missing files.
 
-cpak chooses the partial path only when reuse is high enough to reduce the transfer without creating hundreds of small requests. An empty store uses one complete verified stream. A warm store can skip file payloads already known to DaBaDee. This decision is local and does not change the published image.
+cpak chooses the partial path only when reuse is high enough to reduce the transfer without creating hundreds of small requests. An empty store uses one complete verified stream. A warm store can skip file payloads already indexed by FVS. This decision is local and does not change the published image.
 
 Podman can publish this format directly:
 
@@ -94,7 +94,7 @@ Before publishing packages, configure:
 
 A registry with local filesystem storage should run as a single writer unless the storage is shared correctly. Replicated frontends need a common storage backend and consistent authentication state. Follow the storage model documented by the selected registry instead of copying one node's data directory between active instances.
 
-Registry garbage collection is separate from `cpak gc`. Registry GC removes remote blobs no longer referenced by a remote manifest. `cpak gc` removes local layers and DaBaDee objects no longer referenced by installed packages or retained versions.
+Registry garbage collection is separate from `cpak gc`. Registry GC removes remote blobs no longer referenced by a remote manifest. `cpak gc` removes local FVS layers and blocks no longer referenced by installed packages or retained versions, plus unreferenced legacy DaBaDee data. It does not migrate referenced layers.
 
 ## Verify before release
 
@@ -107,7 +107,7 @@ cpak lock cpak.json
 cpak test cpak.json
 ```
 
-Repeat the test on every published architecture. Test once with an empty cpak store, then update from the previous image so shared layers, partial pulls, DaBaDee reuse, and rollback all run against real registry responses.
+Repeat the test on every published architecture. Test once with an empty cpak store, then update from the previous image so shared layers, partial pulls, FVS reuse, and rollback all run against real registry responses.
 
 If the package is private, repeat the test with the same `cpak auth` flow that users will follow. A successful Podman or Docker pull does not prove that the cpak credential binding or token-host policy is correct.
 

@@ -12,7 +12,7 @@ cpak runs on Linux and uses kernel facilities directly. The static runtime binar
 
 ## Required host capabilities
 
-`cpak doctor` is the authoritative check for the current machine. A working application runtime needs unprivileged user namespaces, rootless OverlayFS, and the mount operations used to assemble the package view.
+`cpak doctor` is the authoritative check for the current machine. A working application runtime needs unprivileged user namespaces, FUSE, rootless OverlayFS, and the mount operations used to assemble the package view.
 
 ```bash
 cpak doctor
@@ -29,7 +29,7 @@ Kernel integration tests run on several Ubuntu GitHub runner generations. Valida
 
 ## Filesystems
 
-The cpak store needs a filesystem that supports the operations used by rootless OverlayFS. DaBaDee hard-link deduplication works only when source and storage are on a compatible filesystem and the same mount.
+The cpak store needs a local filesystem that supports the operations used by FVS and rootless OverlayFS. FVS content deduplication does not require hard links or reflinks. The host must expose `/dev/fuse` to the user session.
 
 Network filesystems, unusual FUSE mounts, or filesystems with restricted user namespace support may fail the runtime check. Keep the store on a local Linux filesystem for the broadest compatibility.
 

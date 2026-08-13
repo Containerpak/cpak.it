@@ -18,6 +18,8 @@ cpak audit
 
 Audit compares installed package records, layer references, transaction state, runtime sources, and stored files. Run it after an interrupted update, manual store move, or filesystem error.
 
+Audit reads legacy and FVS layers in place. It does not migrate layer content, start applications, or download missing data.
+
 Apply supported repairs explicitly:
 
 ```bash
@@ -41,27 +43,31 @@ Delete the reported data:
 cpak gc --apply
 ```
 
-Garbage collection retains layers referenced by installed packages, their active dependency graph, and rollback state. It also removes DaBaDee objects and chunk records after their final layer reference disappears. A clean report has no candidate layers, cache entries, objects, chunks, or reclaimable bytes.
+Garbage collection retains layers referenced by installed packages, their active dependency graph, and rollback state. It removes FVS blocks after their final layer reference disappears and collects unreferenced DaBaDee objects left by the previous store. It checks both storage formats without migrating referenced legacy layers. A clean report has no candidate layers, cache entries, content objects, or reclaimable bytes.
 
-## Deduplicate equal files
+## Automatic two-level deduplication
 
-Image pull applies both storage levels automatically. Existing OCI layer digests are reused. A new layer streams through decompression and DaBaDee while it is unpacked, so cpak does not keep a compressed cache copy beside the extracted layer. Use the command below for an explicit path or maintenance pass.
+Image pull applies both storage levels automatically. Existing OCI layer digests are reused. A new layer streams through digest verification and decompression into the global FVS block store, without a compressed cache copy or an expanded layer directory.
+
+FVS uses content-defined blocks. Equal ranges from different files and layers refer to the same block, including files that only differ in a small region. This works on local filesystems without requiring hard-link or reflink support.
+
+`cpak dedup` remains available as a DaBaDee-backed maintenance tool for an explicit external path. It is not required for the cpak application store.
 
 ```bash
 cpak dedup --path /path/to/cpak/store
 ```
 
-The DaBaDee-backed pass hashes files and replaces equal content with hard links when supported. It can also split large files into content-defined chunks and reuse matching ranges through reflinks on filesystems that support them. Without reflinks, DaBaDee keeps whole-file deduplication and does not create a second chunk payload store.
+The command hashes regular files and reuses whole files through hard links when the source filesystem supports them. It can reuse matching ranges through reflinks on compatible filesystems. These constraints apply to the explicit maintenance command, not to FVS application layers.
 
-Hard-link reuse requires source and store content on a compatible filesystem and the same mount. Chunk-range reuse requires reflinks. The logical package contents remain unchanged on filesystems without either optimization.
+## Upgrade an existing cpak store
 
-## Upgrade from the v1 store
+Existing installations remain available after updating cpak. Layers move to FVS only when an application needs them. cpak imports one legacy layer into a temporary FVS repository, verifies every entry, publishes it atomically, and removes the expanded copy only after the new layer is complete.
 
-The first v2 storage operation creates a separate DaBaDee v2 index. Existing v1 content remains readable and is adopted when a matching file is encountered. Adoption uses a hard link when possible and does not rewrite every installed layer during the update.
+The terminal reports layer and byte progress. Desktop launches show the same operation in a progress dialog when it takes longer than a short startup threshold. An interrupted import leaves the legacy layer intact and resumes safely on the next launch.
 
-The v1 index stays in place, so an older cpak binary can still read an installation after the new index has been created. New storage features are ignored by the older binary.
+DaBaDee remains installed as the compatibility reader and collector until old layers have moved. It is not used for newly downloaded cpak layers. Applications that use DaBaDee as a Go library can follow the independent [DaBaDee v2 migration guide](https://github.com/mirkobrombin/DaBaDee/blob/main/docs/migration-v2.md).
 
-Applications that use DaBaDee as a Go library can follow the [DaBaDee v2 migration guide](https://github.com/mirkobrombin/DaBaDee/blob/main/docs/migration-v2.md). cpak performs its own store adoption automatically.
+Package rollback continues to work through current cpak releases. A binary downgrade cannot read layers after their expanded legacy copies have been removed, so copy the store before testing an older cpak binary.
 
 ## Remove an application
 
@@ -72,6 +78,8 @@ cpak gc --apply
 ```
 
 Removal deletes the package record and its exported desktop integration. Shared layers remain until no installed package or retained version references them.
+
+The remove command stops and cleans only containers owned by the selected package. It releases package-specific layer metadata without running a store-wide audit. Run `cpak gc --apply` separately when you also want to reclaim shared content blocks which lost their final reference.
 
 ## Back up writable state
 

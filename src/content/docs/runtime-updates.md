@@ -24,7 +24,7 @@ Download and install the release:
 cpak self-update
 ```
 
-cpak selects `cpak-linux-amd64` or `cpak-linux-arm64`, downloads `SHA256SUMS`, verifies the binary, writes a temporary executable in the current binary directory, syncs it, and renames it over the old file. A failed download, checksum, write, or rename leaves the old binary intact.
+cpak selects the matching `cpak-linux-ARCH` and `cpak-storaged-linux-ARCH` assets, downloads `SHA256SUMS`, and verifies both binaries. Each file is written to a temporary executable in the current binary directory, synced, and renamed into place. A failed download or checksum does not replace either installed file.
 
 ## Desktop notification
 
@@ -56,7 +56,7 @@ Set `CPAK_OPTS_FILE` to test a specific configuration file.
 Build a package-manager-owned binary with:
 
 ```bash
-make VERSION=v2.0.1 SELF_UPDATE_MODE=managed DIALOG_BACKEND=auto
+make VERSION=v2.1.0 SELF_UPDATE_MODE=managed DIALOG_BACKEND=auto
 ```
 
 Managed builds continue to check the official release. The CLI and desktop notice identify the available version and direct the user to the package maintainer. Direct binary replacement is disabled.

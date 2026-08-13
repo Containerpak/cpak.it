@@ -28,7 +28,7 @@ The formats have different sandbox and distribution contracts. Applications can 
 
 ## Does cpak share base runtimes?
 
-Yes. Equal OCI layers are stored once, and DaBaDee deduplicates equal files across different layer layouts. Shared base images remain OCI build inputs.
+Yes. Equal OCI layers are stored once, and FVS stores equal content blocks once across different layer layouts. Shared base images remain OCI build inputs.
 
 ## Where does application data go?
 

@@ -47,7 +47,7 @@ export const GET: RequestHandler = async ({ fetch, params, url }) => {
     return new Response("Unsupported architecture", { status: 400 });
   }
 
-  const release = env.CPAK_INSTALLER_RELEASE || "v2.0.1";
+  const release = env.CPAK_INSTALLER_RELEASE || "v2.1.0";
   let catalogResponse: Response;
   let installerResponse: Response;
   if (env.CPAK_INSTALLER_BASE_URL) {

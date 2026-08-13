@@ -8,7 +8,7 @@ order: 10
 
 # Runtime architecture
 
-cpak is one Go binary that resolves package metadata, manages a content-addressed store, and starts rootless application environments through Linux kernel interfaces. OCI content is pulled and mounted directly by cpak.
+cpak uses two static Go binaries. The `cpak` client resolves packages and starts rootless application environments through Linux kernel interfaces. The on-demand `cpak-storaged` service owns the shared FVS content store and its mounted views. No Docker, Podman, or image daemon participates in the runtime path.
 
 ## Package resolution
 
@@ -20,15 +20,15 @@ Registry access is anonymous unless the user creates an explicit credential bind
 
 ## Content store
 
-Storage deduplication has two automatic levels. First, OCI layers are addressed by digest. The same layer referenced by several applications is downloaded once and occupies one stored copy. Second, every newly unpacked layer passes through DaBaDee before publication. It hashes the actual files and replaces equal content with hard links where the filesystem supports it. This catches duplicate bytes even when separate builds placed them in different layers and therefore produced different layer digests.
+Storage deduplication has two automatic levels. OCI layers are addressed by digest, so the same layer referenced by several applications is downloaded once. FVS stores file content as shared content-defined blocks, so equal ranges occupy one physical copy even when separate builds placed them in different layers.
 
-The OCI level avoids work for the complete matching layer. The DaBaDee level works below the image layout. A shared library, font, or asset can occupy one physical copy even when unrelated application images did not share a base layer.
+The OCI level reuses the complete matching layer. The FVS level works below the image layout and does not depend on hard links or reflinks. A shared library, font, or asset can reuse existing blocks even when unrelated images do not share a base layer.
 
 Package records, immutable layers, writable application state, logs, exported desktop files, and transaction state are kept separately. Recovery discards incomplete staging data and preserves the active version.
 
 ## Runtime view
 
-At launch, cpak assembles ordered application, dependency, and enabled addon layers with OverlayFS. A writable upper layer receives application changes. The downloaded content remains immutable and reusable.
+At launch, `cpak-storaged` exposes the ordered application, dependency, and enabled addon layers as one read-only FUSE view. cpak uses that view as the lower filesystem for rootless OverlayFS. A writable upper layer receives application changes while FVS content stays immutable and shared.
 
 The environment receives cpak runtime variables. `CPAK_CONTAINER_ID` contains an opaque identifier for the active instance and can be used to detect a cpak launch.
 

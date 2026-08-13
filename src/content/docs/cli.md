@@ -19,7 +19,7 @@ Run `cpak <command> --help` for the flags accepted by the installed build. The t
 | `list`     | List installed packages. Accepts `--json`.                       |
 | `update`   | Update one package or every installed package.                   |
 | `rollback` | Restore the previous installed version.                          |
-| `remove`   | Remove an installed package.                                     |
+| `remove`   | Remove one installed package and its owned runtime resources.    |
 | `extract`  | Export a resolved package as a tar archive.                      |
 | `alias`    | Set, remove, or list local origin aliases.                       |
 
