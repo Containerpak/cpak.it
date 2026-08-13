@@ -15,7 +15,7 @@ Use this map before opening a change. Repository boundaries follow ownership and
 | Repository                                                      | Owns                                                                                        |
 | --------------------------------------------------------------- | ------------------------------------------------------------------------------------------- |
 | [Containerpak/cpak](https://github.com/Containerpak/cpak)       | CLI, store, OCI resolution, transactions, runtime, sandbox, brokers, manifests, and schema. |
-| [mirkobrombin/DaBaDee](https://github.com/mirkobrombin/DaBaDee) | Content hashing and hard-link deduplication.                                                |
+| [mirkobrombin/DaBaDee](https://github.com/mirkobrombin/DaBaDee) | Content-addressed storage with whole-file and chunk deduplication.                          |
 
 The cpak runtime default branch is `v2`. Host integration providers live in the cpak binary. DaBaDee is a Go dependency of the runtime.
 

@@ -41,19 +41,27 @@ Delete the reported data:
 cpak gc --apply
 ```
 
-Garbage collection retains layers referenced by installed packages, their active dependency graph, and rollback state. A clean report has no candidate layers or cache entries and zero reclaimable bytes.
+Garbage collection retains layers referenced by installed packages, their active dependency graph, and rollback state. It also removes DaBaDee objects and chunk records after their final layer reference disappears. A clean report has no candidate layers, cache entries, objects, chunks, or reclaimable bytes.
 
 ## Deduplicate equal files
 
-Image pull applies both storage levels automatically. Existing OCI layer digests are reused, then DaBaDee processes every newly unpacked layer before publication. Use the command below for an explicit path or maintenance pass.
+Image pull applies both storage levels automatically. Existing OCI layer digests are reused. A new layer streams through decompression and DaBaDee while it is unpacked, so cpak does not keep a compressed cache copy beside the extracted layer. Use the command below for an explicit path or maintenance pass.
 
 ```bash
 cpak dedup --path /path/to/cpak/store
 ```
 
-The DaBaDee-backed pass hashes files and replaces equal content with hard links when supported. OCI layer digests already deduplicate identical layers; the file pass can also find equal bytes that arrived through different layer layouts.
+The DaBaDee-backed pass hashes files and replaces equal content with hard links when supported. It can also split large files into content-defined chunks and reuse matching ranges through reflinks on filesystems that support them. Without reflinks, DaBaDee keeps whole-file deduplication and does not create a second chunk payload store.
 
-Deduplication requires a filesystem that supports hard links and does not cross filesystem boundaries. The logical package contents remain unchanged.
+Hard-link reuse requires source and store content on a compatible filesystem and the same mount. Chunk-range reuse requires reflinks. The logical package contents remain unchanged on filesystems without either optimization.
+
+## Upgrade from the v1 store
+
+The first v2 storage operation creates a separate DaBaDee v2 index. Existing v1 content remains readable and is adopted when a matching file is encountered. Adoption uses a hard link when possible and does not rewrite every installed layer during the update.
+
+The v1 index stays in place, so an older cpak binary can still read an installation after the new index has been created. New storage features are ignored by the older binary.
+
+Applications that use DaBaDee as a Go library can follow the [DaBaDee v2 migration guide](https://github.com/mirkobrombin/DaBaDee/blob/main/docs/migration-v2.md). cpak performs its own store adoption automatically.
 
 ## Remove an application
 
