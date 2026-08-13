@@ -72,4 +72,6 @@ Use the repository's existing report templates when opening an issue. Include a 
 
 ## Licenses
 
-The cpak runtime uses the Fabricators Public Access License, FPAL-TCV 1.0. Package images also carry the licenses and redistribution terms of their included software. Review upstream terms before publishing binaries, icons, fonts, or screenshots.
+The cpak runtime is available under GPL-3.0-only. Contributions accepted into the public project remain available under that license. Contributors must accept the [cpak Contributor License Agreement](https://github.com/Containerpak/cpak/blob/v2/CLA.md), which also allows Mirko Brombin and FABRICATORS S.R.L. to grant non-exclusive commercial licenses without removing the public GPL license.
+
+Package images carry the licenses and redistribution terms of their included software. Review upstream terms before publishing binaries, icons, fonts, or screenshots.
