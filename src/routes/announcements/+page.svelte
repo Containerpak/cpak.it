@@ -4,11 +4,19 @@
 
 	const announcements = [
 		{
-			section: 'Incident',
+			section: 'Resolved',
+			date: 'August 14, 2026',
+			title: 'FVS Storage startup regression resolved',
+			description:
+				'cpak v2.2.0 moves FVS preparation out of application startup and migrates existing stores in place.',
+			href: '/announcements/fvs-storage-resolved'
+		},
+		{
+			section: 'Incident history',
 			date: 'August 14, 2026',
 			title: 'FVS Storage startup regression',
 			description:
-				'We are investigating slow application startup under cpak v2.1.x and have published downgrade guidance for affected users.',
+				'The original incident notice and technical background for the cpak v2.1.x startup regression.',
 			href: '/announcements/fvs-storage'
 		},
 		{

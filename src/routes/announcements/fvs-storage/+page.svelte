@@ -7,7 +7,7 @@
 	<title>FVS Storage incident notice - cpak</title>
 	<meta
 		name="description"
-		content="An active investigation into slow application startup with FVS Storage."
+		content="The resolved investigation into slow application startup with FVS Storage."
 	/>
 </svelte:head>
 
@@ -29,26 +29,25 @@
 			FVS Storage incident notice
 		</h1>
 		<p class="mt-6 max-w-3xl text-xl leading-8 text-gray-600">
-			We are investigating an FVS Storage regression that can make applications slow to start under
-			certain conditions. The issue affects cpak v2.1.x and is under active investigation.
+			This incident affected cpak v2.1.x and was resolved in cpak v2.2.0. This page preserves the
+			original technical background and downgrade guidance.
 		</p>
 
 		<div class="mt-16 space-y-7 text-lg leading-8 text-gray-700">
-			<div class="rounded-lg border border-amber-300 bg-amber-50 p-6 text-amber-950">
-				<h2 class="text-2xl font-bold tracking-tight">Temporary fallback</h2>
+			<div class="rounded-lg border border-emerald-300 bg-emerald-50 p-6 text-emerald-950">
+				<h2 class="text-2xl font-bold tracking-tight">Resolved in cpak v2.2.0</h2>
 				<p class="mt-3">
-					If you have not yet started an application with cpak v2.1.x, you can use the last DaBaDee
-					release, <a
-						href="https://github.com/Containerpak/cpak/releases/tag/v2.0.1"
-						class="font-semibold underline underline-offset-4">v2.0.1</a
-					>. Do not downgrade an installation that has already migrated a layer to FVS: v2.0.1
-					expects the old expanded layer directories, which the FVS migration removes after it
-					publishes the FVS layer.
-				</p>
-				<p class="mt-3">
-					To use v2.0.1 after migration, reinstall the affected applications and packages. Application
-					user data in the exposed home and XDG paths is not a package layer and should remain, but
-					back it up before changing versions.
+					Update directly to
+					<a
+						href="https://github.com/Containerpak/cpak/releases/tag/v2.2.0"
+						class="font-semibold underline underline-offset-4">v2.2.0</a
+					>. Existing DaBaDee and FVS stores are migrated in place without reinstalling
+					applications. Read the
+					<a
+						href="/announcements/fvs-storage-resolved"
+						class="font-semibold underline underline-offset-4">resolution announcement</a
+					>
+					for the new storage path and migration details.
 				</p>
 			</div>
 			<p>
