@@ -10,6 +10,9 @@ order: 30
 
 cpak keeps immutable OCI content apart from writable application state. Cleanup commands operate on references in the package database so shared content is not removed while another package still uses it.
 
+> [!WARNING] FVS Storage startup regression
+> cpak v2.1.x can take longer than expected to start applications under certain conditions. Read the [incident notice](/announcements/fvs-storage) before downgrading because cpak v2.0.1 cannot read layers that have already migrated to FVS.
+
 ## Audit the store
 
 ```bash

@@ -4,6 +4,14 @@
 
 	const announcements = [
 		{
+			section: 'Incident',
+			date: 'August 14, 2026',
+			title: 'FVS Storage startup regression',
+			description:
+				'We are investigating slow application startup under cpak v2.1.x and have published downgrade guidance for affected users.',
+			href: '/announcements/fvs-storage'
+		},
+		{
 			section: 'Release',
 			date: 'August 12, 2026',
 			title: 'cpak v2 is here',
