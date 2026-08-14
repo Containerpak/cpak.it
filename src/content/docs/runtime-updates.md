@@ -8,7 +8,7 @@ order: 22
 
 # Update the cpak runtime
 
-cpak checks the latest official GitHub release at most once per day when a command starts. A failed network request does not block the requested command.
+cpak checks the latest official GitHub release at most once per day when a command starts. The requested command proceeds when the update endpoint is unavailable.
 
 ## Command line
 
@@ -24,7 +24,7 @@ Download and install the release:
 cpak self-update
 ```
 
-cpak selects the matching `cpak-linux-ARCH` and `cpak-storaged-linux-ARCH` assets, downloads `SHA256SUMS`, and verifies both binaries. Each file is written to a temporary executable in the current binary directory, synced, and renamed into place. A failed download or checksum does not replace either installed file.
+cpak selects the matching `cpak-linux-ARCH` and `cpak-storaged-linux-ARCH` assets, downloads `SHA256SUMS`, and verifies both binaries. Each file is written to a temporary executable in the current binary directory, synced, and renamed into place. Replacement begins after both assets pass verification.
 
 ## Desktop notification
 
@@ -63,4 +63,4 @@ Managed builds continue to check the official release. The CLI and desktop notic
 
 `DIALOG_BACKEND` accepts `auto`, `gnome`, `kde`, or `builtin` and applies to both the cpak binary and cpak-installer. A JSON setting still takes precedence, and an unavailable native tool falls back to the built-in interface.
 
-The GitHub workflow uses `SELF_UPDATE_MODE=enabled` and `DIALOG_BACKEND=auto` for official static binaries. A distribution should set these values during compilation rather than patching update code after the build.
+The GitHub workflow uses `SELF_UPDATE_MODE=enabled` and `DIALOG_BACKEND=auto` for official static binaries. Distribution builds set their selected values at compile time.

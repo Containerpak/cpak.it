@@ -8,7 +8,7 @@ order: 10
 
 # Install cpak
 
-cpak is distributed as two static Go binaries and pulls OCI content directly. The `cpak` command owns package and application lifecycle, while `cpak-storaged` serves shared FVS filesystem views only while an application needs one. Docker, Podman, crane, registry credential helpers, and a persistent image daemon are not runtime requirements.
+cpak is distributed as two static Go binaries and pulls OCI content through the Distribution API. The `cpak` command owns package and application lifecycle. `cpak-storaged` prepares and verifies native layer checkouts during installation, update, or maintenance, then exits. A prepared application starts directly from its runtime index.
 
 ## Download the binary
 
@@ -23,7 +23,7 @@ cpak --help
 
 Replace both `amd64` asset names with their `arm64` variants on ARM64.
 
-Keep both binaries in the same directory. cpak discovers its storage service beside the active command before checking the user `PATH`. A system-wide installation is optional.
+Keep both binaries in the same directory. cpak discovers its storage service beside the active command before checking the user `PATH`. A system-wide installation is optional. The graphical installer and `cpak self-update` replace both files together and prepare existing application storage before returning.
 
 ## Install an application from the Store
 
@@ -77,11 +77,13 @@ cpak audit
 
 On a desktop, cpak checks once per day while another command runs. GNOME uses Zenity when it is installed, KDE uses KDialog, and other sessions use the built-in cpak dialog. Both runtime assets are downloaded from the official release, checked against `SHA256SUMS`, written beside the current binaries, and installed with atomic renames. Applications that are already running continue to use their existing processes.
 
+The first update that introduces a newer storage layout prepares installed layers before the next application starts. The operation is atomic and resumable. Desktop launches show a progress dialog when preparation takes longer than 400 milliseconds; terminal launches report progress in the terminal.
+
 A distribution package can disable binary replacement at build time. cpak still reports that a newer version exists and tells the user to request it from the package maintainer. Read [cpak runtime updates](/docs/runtime-updates) for packager configuration and desktop backend selection.
 
 ## Remove cpak
 
-Removing the binary does not remove installed applications. First remove packages you no longer need, run garbage collection, then delete the remaining user store only if you intend to discard every package and its writable state.
+Application data remains in the local store after removing the runtime binaries. Remove unwanted packages and run garbage collection before deleting the store. Deleting the store discards every installed package and its writable state.
 
 ```bash
 cpak list

@@ -54,7 +54,7 @@ The cpak binary checks for a new official release once per day. Desktop installa
 
 ## Can cpak pull a private image?
 
-Yes. `cpak auth login` stores an explicit credential for one package origin and the exact OCI repository declared by its manifest. Desktop credentials use Secret Service. Headless systems can inject a user-owned mode `0600` credential file. cpak does not import Docker or Podman credentials.
+Yes. `cpak auth login` stores an explicit credential for one package origin and the exact OCI repository declared by its manifest. Desktop credentials use Secret Service. Headless systems can inject a user-owned mode `0600` credential file. cpak credential bindings remain independent from container engines.
 
 ## Can I roll back?
 

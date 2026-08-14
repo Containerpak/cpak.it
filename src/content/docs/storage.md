@@ -21,7 +21,7 @@ cpak audit
 
 Audit compares installed package records, layer references, transaction state, runtime sources, and stored files. Run it after an interrupted update, manual store move, or filesystem error.
 
-Audit reads legacy and FVS layers in place. It does not migrate layer content, start applications, or download missing data.
+Audit reads legacy and FVS layers in place. Migration, application launch, and downloads remain separate operations.
 
 Apply supported repairs explicitly:
 
@@ -29,7 +29,7 @@ Apply supported repairs explicitly:
 cpak audit --repair
 ```
 
-Read the report before repair when the store contains important application data. Repair targets cpak metadata consistency; it does not reconstruct files deleted outside cpak.
+Read the report before repair when the store contains important application data. Repair covers cpak metadata consistency. Restore externally deleted application files from a backup.
 
 ## Garbage collection
 
@@ -46,31 +46,38 @@ Delete the reported data:
 cpak gc --apply
 ```
 
-Garbage collection retains layers referenced by installed packages, their active dependency graph, and rollback state. It removes FVS blocks after their final layer reference disappears and collects unreferenced DaBaDee objects left by the previous store. It checks both storage formats without migrating referenced legacy layers. A clean report has no candidate layers, cache entries, content objects, or reclaimable bytes.
+Garbage collection retains layers referenced by installed packages, their active dependency graph, and rollback state. It removes FVS blocks after their final layer reference disappears and collects unreferenced DaBaDee objects. Storage migration has its own explicit lifecycle. A clean report has no candidate layers, cache entries, content objects, or reclaimable bytes.
 
 ## Automatic two-level deduplication
 
-Image pull applies both storage levels automatically. Existing OCI layer digests are reused. A new layer streams through digest verification and decompression into the global FVS block store, without a compressed cache copy or an expanded layer directory.
+Image pull applies both storage levels automatically. Existing OCI layer digests are reused. A new layer streams through digest verification and decompression into the global FVS block store. The successful import retains the FVS representation used by installed packages.
 
-FVS uses content-defined blocks. Equal ranges from different files and layers refer to the same block, including files that only differ in a small region. This works on local filesystems without requiring hard-link or reflink support.
+FVS uses content-defined blocks. Equal ranges from different files and layers refer to the same block, including files that differ in a small region. Native checkouts add whole-file reuse through reflinks or hard links where supported.
 
-`cpak dedup` remains available as a DaBaDee-backed maintenance tool for an explicit external path. It is not required for the cpak application store.
+`cpak dedup` provides DaBaDee-backed maintenance for an explicit external path:
 
 ```bash
 cpak dedup --path /path/to/cpak/store
 ```
 
-The command hashes regular files and reuses whole files through hard links when the source filesystem supports them. It can reuse matching ranges through reflinks on compatible filesystems. These constraints apply to the explicit maintenance command, not to FVS application layers.
+The command hashes regular files and reuses whole files through hard links when the source filesystem supports them. Compatible filesystems can also reuse matching ranges through reflinks.
 
-## Upgrade an existing cpak store
+## Prepare an existing cpak store
 
-Existing installations remain available after updating cpak. Layers move to FVS only when an application needs them. cpak imports one legacy layer into a temporary FVS repository, verifies every entry, publishes it atomically, and removes the expanded copy only after the new layer is complete.
+The graphical installer and `cpak self-update` prepare existing application layers after replacing the runtime binaries. `cpak-storaged` creates one verified native checkout per immutable layer and publishes an atomic runtime index. Completed layers are retained when a batch is interrupted and reused by the next attempt.
 
-The terminal reports layer and byte progress. Desktop launches show the same operation in a progress dialog when it takes longer than a short startup threshold. An interrupted import leaves the legacy layer intact and resumes safely on the next launch.
+A desktop launch detects a missing required checkout, shows a progress dialog after 400 milliseconds, completes the affected layers, and then starts the application. Terminal launches report the same operation in the terminal. Prepared launches read the index directly.
 
-DaBaDee remains installed as the compatibility reader and collector until old layers have moved. It is not used for newly downloaded cpak layers. Applications that use DaBaDee as a Go library can follow the independent [DaBaDee v2 migration guide](https://github.com/mirkobrombin/DaBaDee/blob/main/docs/migration-v2.md).
+Inspect or start the operation explicitly with:
 
-Package rollback continues to work through current cpak releases. A binary downgrade cannot read layers after their expanded legacy copies have been removed, so copy the store before testing an older cpak binary.
+```bash
+cpak storage status
+cpak storage migrate
+cpak storage verify
+cpak storage verify --repair
+```
+
+FVS remains the authoritative layer store. Native checkouts are derived data and can be verified or rebuilt. DaBaDee implements the same versioned storage driver contract for compatible deployments. Applications that use DaBaDee as a Go library can follow the independent [DaBaDee v2 migration guide](https://github.com/mirkobrombin/DaBaDee/blob/main/docs/migration-v2.md).
 
 ## Remove an application
 
@@ -82,7 +89,7 @@ cpak gc --apply
 
 Removal deletes the package record and its exported desktop integration. Shared layers remain until no installed package or retained version references them.
 
-The remove command stops and cleans only containers owned by the selected package. It releases package-specific layer metadata without running a store-wide audit. Run `cpak gc --apply` separately when you also want to reclaim shared content blocks which lost their final reference.
+The remove command stops and cleans containers owned by the selected package, then releases its layer metadata. Run `cpak gc --apply` to reclaim shared content blocks after their final reference disappears.
 
 ## Back up writable state
 

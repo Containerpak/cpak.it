@@ -31,7 +31,7 @@ Use the system broker for notifications and external URIs. Each permission expos
 
 `deviceDri` grants access to graphics devices under `/dev/dri`. Other booleans cover KVM, shared memory, ALSA, video capture, FUSE, TUN/TAP, and USB. `deviceAll` exposes all host devices and should be reserved for packages that cannot work with narrower grants.
 
-NVIDIA userspace libraries are resolved from the host at launch when GPU passthrough is active. Packages should not copy a host-specific NVIDIA driver into their image.
+NVIDIA userspace libraries are resolved from the host at launch when GPU passthrough is active. Package images use that resolved driver stack.
 
 ## Filesystem
 

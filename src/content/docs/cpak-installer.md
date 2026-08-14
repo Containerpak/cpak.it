@@ -23,7 +23,7 @@ chmod +x Application-amd64.cpak-installer
 
 Opening the file from an X11 or XWayland desktop shows the application name, original icon, description, source, requested permissions, installation progress, and final result. Starting the same file from a terminal shows a text confirmation and reports progress there. Use `--terminal` to request the terminal interface explicitly.
 
-The installer places or updates `cpak` and `cpak-storaged` in `~/.local/bin`, then installs the selected package from its pinned Git revision. Installing the same cpak build again does not rewrite either binary.
+The installer places or updates `cpak` and `cpak-storaged` in `~/.local/bin`, then installs the selected package from its pinned Git revision. Matching runtime binaries are reused.
 
 Inspect the verified metadata without installing anything:
 
@@ -58,7 +58,7 @@ https://cpak.it/install/github.com/OWNER/REPOSITORY?arch=amd64
 
 Use `arch=arm64` for ARM64. The endpoint loads the installer base and catalog from the configured cpak release, verifies the base digest against the catalog, appends the package metadata and signature, and returns the result as `application/vnd.cpak.installer`.
 
-The requested Store origin and signed release catalog define the package identity. Browser referrers and downloaded filenames are not identity inputs. One installer base serves every listed package.
+The requested Store origin and signed release catalog are the exclusive package identity inputs. One installer base serves every listed package.
 
 Link to the endpoint for a direct graphical installation path. Publish the terminal command beside it:
 
@@ -80,6 +80,6 @@ cpak-installer-catalog.json
 SHA256SUMS
 ```
 
-The generic installer base contains the installer interface and both runtime binaries from the same release. The catalog contains signed package metadata and the expected base digest. cpak.it combines those existing artifacts without access to the signing key.
+The generic installer base contains the installer interface and both runtime binaries from the same release. The catalog contains signed package metadata and the expected base digest. cpak.it combines these verified artifacts after checking the base digest.
 
 See [Release channels](/docs/release-channels) for version selection, [Publish to the Store](/docs/publishing) for catalog requirements, and [Security reporting](/docs/security) for private vulnerability reports.

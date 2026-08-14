@@ -64,7 +64,7 @@ cpak audit --repair
 cpak gc --json
 ```
 
-Audit first. Garbage collection is for unreferenced content, not for repairing active package records.
+Audit repairs active package records. Garbage collection removes unreferenced content after the record graph is consistent.
 
 ## Desktop entry does not appear
 

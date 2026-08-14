@@ -55,7 +55,7 @@ Runtime permissions come from the installed manifest and the user's local overri
 
 Package updates normally follow the source reference recorded by the catalog entry. Update screenshots and descriptions when the application's visible behavior changes. Remove claims that are no longer true.
 
-The package repository remains the source for `cpak.json` and image references. The Store should not carry a divergent copy of the package contract.
+The package repository is the source for `cpak.json` and image references. Store metadata points to that package contract.
 
 ## Installer downloads
 
@@ -65,4 +65,4 @@ Read [cpak-installer](/docs/cpak-installer) for the direct endpoint, integration
 
 ## Federated catalogs
 
-cpak's package identity is decentralized. Another project can maintain its own reviewed index with different categories and policies while pointing to the same package origins. The official Store is one catalog, not a requirement built into the package format.
+cpak's package identity is decentralized. Another project can maintain its own reviewed index with different categories and policies while pointing to the same package origins. Package installation remains independent from any catalog.
