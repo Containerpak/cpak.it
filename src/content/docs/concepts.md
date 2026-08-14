@@ -33,7 +33,7 @@ Unknown fields and unsupported v2 features fail manifest validation.
 
 The image contains the application filesystem. cpak resolves the image to an immutable OCI digest and stores each layer by its content digest. Packages that reference the same bytes share those layers.
 
-The image is not the package identity. A package can change its image reference during an update while keeping the same origin and application data.
+The origin remains the package identity when an update changes its image reference. Application data follows the origin across those updates.
 
 ## Writable state
 

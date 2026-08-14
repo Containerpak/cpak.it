@@ -8,7 +8,7 @@ order: 10
 
 # Runtime architecture
 
-cpak uses two static Go binaries. The `cpak` client resolves packages and starts rootless application environments through Linux kernel interfaces. The on-demand `cpak-storaged` service owns the shared FVS content store and its mounted views. No Docker, Podman, or image daemon participates in the runtime path.
+cpak uses two static Go binaries. The `cpak` client resolves packages and starts rootless application environments through Linux kernel interfaces. `cpak-storaged` prepares, verifies, and collects persistent layer checkouts during maintenance operations, then exits. Prepared applications start directly from the runtime index and rootless OverlayFS.
 
 ## Package resolution
 
@@ -16,19 +16,23 @@ An install starts from a Git origin. cpak resolves the selected branch, release,
 
 The native OCI Distribution client resolves the image reference to an immutable digest, selects the current Linux architecture from an image index, validates every descriptor, and checks downloaded content against its SHA-256 digest. Dependency manifests are resolved through the same path. A lock file can record the exact manifest hashes and image digests for development and CI.
 
-Registry access is anonymous unless the user creates an explicit credential binding for the package origin. cpak never reads Docker configuration, Podman authentication files, or external credential helpers. A stored credential is valid only for its package origin, registry host, and repository path.
+Registry access begins anonymously. Private packages use an explicit credential binding scoped to the package origin, registry host, and repository path. cpak keeps these bindings in its own credential store.
 
 ## Content store
 
 Storage deduplication has two automatic levels. OCI layers are addressed by digest, so the same layer referenced by several applications is downloaded once. FVS stores file content as shared content-defined blocks, so equal ranges occupy one physical copy even when separate builds placed them in different layers.
 
-The OCI level reuses the complete matching layer. The FVS level works below the image layout and does not depend on hard links or reflinks. A shared library, font, or asset can reuse existing blocks even when unrelated images do not share a base layer.
+The OCI level reuses a complete matching layer. FVS works below the image layout and shares content-defined blocks across unrelated images, including libraries, fonts, and assets. This level works on local filesystems with or without hard-link and reflink support.
 
 Package records, immutable layers, writable application state, logs, exported desktop files, and transaction state are kept separately. Recovery discards incomplete staging data and preserves the active version.
 
+FVS remains the authoritative source for immutable layer content. A storage driver derives persistent native directories from that source. The default FVS driver reuses complete files through reflinks or hard links where the filesystem permits it. The DaBaDee driver implements the same contract for compatibility and alternative deployments.
+
 ## Runtime view
 
-At launch, `cpak-storaged` exposes the ordered application, dependency, and enabled addon layers as one read-only FUSE view. cpak uses that view as the lower filesystem for rootless OverlayFS. A writable upper layer receives application changes while FVS content stays immutable and shared.
+Each prepared layer has an immutable native checkout and an entry in an atomic runtime index. At launch, cpak reads that index and passes the ordered application, dependency, and enabled addon directories directly to rootless OverlayFS. A writable upper layer receives application changes while FVS content stays immutable and shared.
+
+A prepared launch reads the runtime index and mounts the listed directories immediately. Storage processes and per-application materialization stay in the maintenance path. If an update was interrupted before a required checkout was published, the desktop entry shows preparation progress, resumes complete layers, and starts the application after the runtime index is ready.
 
 The environment receives cpak runtime variables. `CPAK_CONTAINER_ID` contains an opaque identifier for the active instance and can be used to detect a cpak launch.
 
@@ -53,3 +57,5 @@ An `idle_time` greater than zero allows an unused environment to stop after the 
 ## Transactions
 
 Installs and updates stage manifests, layers, runtime sources, and database changes before switching the active package record. The old version remains available for rollback after a successful update. Audit and repair inspect the relationship between records and files after an interrupted operation.
+
+Storage preparation follows the same model. A driver writes a private partial checkout, verifies it, synchronizes it, and publishes it with an atomic rename. cpak updates the runtime index only after validating every returned directory. Completed layers survive an interrupted batch and are reused by the next attempt.

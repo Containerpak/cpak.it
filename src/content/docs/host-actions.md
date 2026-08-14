@@ -8,7 +8,7 @@ order: 35
 
 # Host actions
 
-`hostActions` grants a package capabilities from a provider implemented by cpak. Providers accept structured requests, not command lines. There is no action for running an arbitrary host executable.
+`hostActions` grants a package capabilities from a provider implemented by cpak. Every provider accepts a finite structured request and maps it to a fixed host operation. Arbitrary host executables are outside this interface.
 
 ## Container provider
 
@@ -33,7 +33,7 @@ The first provider offers controlled access to supported host container engines:
 
 ## Compatibility shims
 
-When the provider is enabled, cpak places independent `podman` and `docker` shims in the package. Calling `podman` selects the host Podman binary and calling `docker` selects the host Docker binary. An application such as Visual Studio Code can use either engine, or both, without receiving direct access to either socket or executable.
+When the provider is enabled, cpak places independent `podman` and `docker` shims in the package. Calling `podman` selects the host Podman engine and calling `docker` selects the host Docker engine. Visual Studio Code can use either engine through the same bounded provider policy.
 
 Both shims expose the same finite CLI subset and convert each invocation to a provider request. Standard output, standard error, exit status, and cancellation pass through the shim. If the selected engine is not installed on the host, that command fails with a direct backend unavailable error while the other shim remains usable.
 
@@ -49,4 +49,4 @@ A nested cpak receives the intersection of the parent and child host action capa
 
 ## Legacy manifests
 
-The old `allowedHostCommands` field remains readable for migration. cpak converts `notify-send`, `xdg-open`, and `cpak-launch-app` to their typed permissions. Any other command is rejected because it has no provider policy.
+The old `allowedHostCommands` field remains readable for migration. cpak converts `notify-send`, `xdg-open`, and `cpak-launch-app` to their typed permissions. Entries outside this mapping fail manifest validation.

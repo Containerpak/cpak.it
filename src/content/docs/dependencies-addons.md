@@ -8,11 +8,11 @@ order: 50
 
 # Dependencies and addons
 
-Dependencies and addons both contribute package layers, but they express different contracts.
+Dependencies and addons contribute package layers through separate lifecycle contracts.
 
 ## Required dependencies
 
-A dependency is installed with the parent package. Use one when the application cannot work without the other package.
+A dependency is installed with the parent package. Use one for a component required by the application.
 
 ```json
 "dependencies": [

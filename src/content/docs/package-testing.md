@@ -72,4 +72,4 @@ Run `cpak test` against the published image as part of package validation. This 
 
 ## Visual applications
 
-A desktop package is not done when `--version` exits successfully. Launch it from cpak, confirm that windows render, check icons and desktop entries, and exercise the main workflows. Test Wayland and X11 paths when the manifest enables both.
+A desktop package needs a visual cpak launch in addition to a `--version` check. Confirm that windows render, check icons and desktop entries, and exercise the main workflows. Test Wayland and X11 paths when the manifest enables both.

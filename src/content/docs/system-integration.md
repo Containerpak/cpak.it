@@ -42,7 +42,7 @@ Enable the URI broker when links must open in a host application:
 "openURI": true
 ```
 
-cpak provides compatible `xdg-open` and `gio open` commands. Applications that call GIO directly resolve a private URI handler inside the package, so they reach the broker without replacing or patching `libgio`. The broker validates the request and asks the host desktop to open the URI with its current default application.
+cpak provides compatible `xdg-open` and `gio open` commands. Applications that call GIO directly resolve a private URI handler inside the package. The handler reaches the broker through the existing GIO interface, and the broker asks the host desktop to open the URI with its current default application.
 
 HTTP, HTTPS, and mail links use this path automatically. The broker rejects file paths, `file:` URIs, script schemes, and custom outbound schemes. Keep application-side validation for user-controlled URIs.
 
@@ -50,7 +50,7 @@ HTTP, HTTPS, and mail links use this path automatically. The broker rejects file
 
 An exported desktop entry keeps its declared MIME types and URI schemes. cpak also exports a hidden compatibility ID when the original desktop ID is free on the host. This allows a packaged browser, mail client, or another handler to become the desktop default while the visible launcher keeps its collision-safe cpak ID.
 
-The compatibility entry is never allowed to replace a user-created or system desktop entry. Removing the package removes only entries carrying that package identity.
+Compatibility entry ownership is limited to the package identity that created it. User-created and system desktop entries remain independent. Removing the package removes its owned entries.
 
 URI callbacks follow the opposite path. The host desktop starts the exported entry with `%u` or `%U`, and cpak forwards the URI to the declared application command. Loopback callbacks, such as an OAuth response on `127.0.0.1`, use the package network namespace selected by its manifest.
 

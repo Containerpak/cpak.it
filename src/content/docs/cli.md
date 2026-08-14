@@ -81,4 +81,4 @@ Run `cpak gc --json` before `cpak gc --apply` when automating cleanup.
 
 Use `cpak auth login`, `logout`, `list`, or `status` to manage private registry access. Read [Private OCI registries](/docs/registry-authentication) before adding a separate token host.
 
-`cpak self-update --check` reports an available release without replacing the binary. Package-manager builds keep the version notice but reject direct replacement. See [Update the cpak runtime](/docs/runtime-updates).
+`cpak self-update --check` reports an available release and leaves the installed binary unchanged. Package-manager builds keep the version notice and delegate replacement to the system package manager. See [Update the cpak runtime](/docs/runtime-updates).

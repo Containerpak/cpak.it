@@ -77,19 +77,19 @@ Add application-specific checks after the build. Verify every architecture that 
 
 ## Base images
 
-Choose a maintained base that supplies the ABI and runtime packages your application expects. The Containerpak `images` and `wine` repositories provide reusable environments for official packages with shared needs. They are bases, not copies of the final application.
+Choose a maintained base that supplies the ABI and runtime packages your application expects. The Containerpak `images` and `wine` repositories provide reusable environments for official packages with shared needs. Application payloads stay in their package images.
 
 Keep the distribution release explicit. A floating distribution tag can replace libraries without a corresponding package review.
 
-| Image                                | Base distribution | Intended use                                                                                                                | Recipe                                                                                          |
-| ------------------------------------ | ----------------- | --------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------- |
-| `ghcr.io/containerpak/base:main`     | Ubuntu 26.04      | Minimal runtime, multiarch setup, and cpak cleanup helper                                                                   | [`platform/base`](https://github.com/Containerpak/images/blob/main/platform/base/Containerfile) |
-| `ghcr.io/containerpak/mesa:main`     | Ubuntu 26.04      | OpenGL, Vulkan, Wayland, and 32-bit graphics runtime                                                                        | [`platform/mesa`](https://github.com/Containerpak/images/blob/main/platform/mesa/Containerfile) |
-| `ghcr.io/containerpak/gtk:main`      | Ubuntu 26.04      | GTK 4, libadwaita, WebKitGTK, D-Bus, fonts, and the Mesa runtime                                                            | [`platform/gtk`](https://github.com/Containerpak/images/blob/main/platform/gtk/Containerfile)   |
-| `ghcr.io/containerpak/wine:main`     | Ubuntu 26.04      | Wine or Proton host libraries, including 32-bit graphics, audio, input, and multimedia support; Wine itself is not included | [`Containerpak/wine`](https://github.com/Containerpak/wine/blob/main/Containerfile)             |
-| `ghcr.io/containerpak/base-sdk:main` | Ubuntu 26.04      | General C and C++ build environment                                                                                         | [`sdk/base`](https://github.com/Containerpak/images/blob/main/sdk/base/Containerfile)           |
-| `ghcr.io/containerpak/mesa-sdk:main` | Ubuntu 26.04      | Graphics development headers and tools                                                                                      | [`sdk/mesa`](https://github.com/Containerpak/images/blob/main/sdk/mesa/Containerfile)           |
-| `ghcr.io/containerpak/gtk-sdk:main`  | Ubuntu 26.04      | GTK, libadwaita, WebKitGTK, and Mesa development headers                                                                    | [`sdk/gtk`](https://github.com/Containerpak/images/blob/main/sdk/gtk/Containerfile)             |
+| Image                                | Base distribution | Intended use                                                                                                              | Recipe                                                                                          |
+| ------------------------------------ | ----------------- | ------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------- |
+| `ghcr.io/containerpak/base:main`     | Ubuntu 26.04      | Minimal runtime, multiarch setup, and cpak cleanup helper                                                                 | [`platform/base`](https://github.com/Containerpak/images/blob/main/platform/base/Containerfile) |
+| `ghcr.io/containerpak/mesa:main`     | Ubuntu 26.04      | OpenGL, Vulkan, Wayland, and 32-bit graphics runtime                                                                      | [`platform/mesa`](https://github.com/Containerpak/images/blob/main/platform/mesa/Containerfile) |
+| `ghcr.io/containerpak/gtk:main`      | Ubuntu 26.04      | GTK 4, libadwaita, WebKitGTK, D-Bus, fonts, and the Mesa runtime                                                          | [`platform/gtk`](https://github.com/Containerpak/images/blob/main/platform/gtk/Containerfile)   |
+| `ghcr.io/containerpak/wine:main`     | Ubuntu 26.04      | Host libraries for application images that supply Wine or Proton, including 32-bit graphics, audio, input, and multimedia | [`Containerpak/wine`](https://github.com/Containerpak/wine/blob/main/Containerfile)             |
+| `ghcr.io/containerpak/base-sdk:main` | Ubuntu 26.04      | General C and C++ build environment                                                                                       | [`sdk/base`](https://github.com/Containerpak/images/blob/main/sdk/base/Containerfile)           |
+| `ghcr.io/containerpak/mesa-sdk:main` | Ubuntu 26.04      | Graphics development headers and tools                                                                                    | [`sdk/mesa`](https://github.com/Containerpak/images/blob/main/sdk/mesa/Containerfile)           |
+| `ghcr.io/containerpak/gtk-sdk:main`  | Ubuntu 26.04      | GTK, libadwaita, WebKitGTK, and Mesa development headers                                                                  | [`sdk/gtk`](https://github.com/Containerpak/images/blob/main/sdk/gtk/Containerfile)             |
 
 The distribution choice defines the ABI and library versions available to the application. Pick the smallest base that already matches the software, pin the final application image by digest through cpak, and review base updates in CI before publishing them.
 
@@ -112,7 +112,7 @@ FVS block match      -> reference the existing content block
 Unique block         -> store one new content block
 ```
 
-The first level reuses stable bases and matching layer boundaries. The second level finds repeated content across different layer layouts. Both run automatically during image pull. cpak does not keep the downloaded compressed layer or an expanded layer directory after a successful import.
+The first level reuses stable bases and matching layer boundaries. The second level finds repeated content across different layer layouts. Both run automatically during image pull. A successful import retains the FVS representation used by installed packages.
 
 For registries and CDNs that preserve byte-range responses, `zstd:chunked` lets cpak read the layer table of contents first and skip compressed file ranges whose complete content already exists in FVS. cpak uses one complete stream for a cold store and switches to ranges only when known content makes that cheaper. A normal gzip or zstd pull remains the automatic fallback. Read [Choose and operate an OCI registry](/docs/registries) before enabling it in CI.
 

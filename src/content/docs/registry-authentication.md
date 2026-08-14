@@ -36,7 +36,7 @@ The credential cannot authenticate another package origin or another repository 
 
 Interactive login stores the secret through the desktop Secret Service D-Bus API. Public binding metadata is written to the cpak configuration directory with mode `0600`. Passwords and tokens are not written to that file.
 
-cpak does not invoke `secret-tool` and does not read Docker, Podman, Buildah, or container credential-helper configuration.
+cpak talks to Secret Service directly and keeps credential bindings separate from Docker, Podman, Buildah, and container credential-helper configuration.
 
 List bindings or inspect one origin:
 
@@ -60,7 +60,7 @@ install -m 0600 /dev/null token.txt
 cpak auth login github.com/example/private-app --token --secret-file token.txt
 ```
 
-cpak stores the absolute file path in the binding and reads the secret from that file for each registry request. The secret is not copied into the binding metadata or Secret Service. Keep the file at that path with the same owner and mode. `cpak auth logout` removes the binding but leaves the user-owned file untouched.
+cpak stores the absolute file path in the binding and reads the secret from that file for each registry request. Binding metadata contains the path only. Keep the file at that path with the same owner and mode. `cpak auth logout` removes the binding and leaves the user-owned file untouched.
 
 An automated runtime can inject `CPAK_REGISTRY_AUTH_FILE`. The JSON file must be owned by the current user and have mode `0600`:
 

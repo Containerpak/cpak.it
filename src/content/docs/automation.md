@@ -66,4 +66,4 @@ Capture the command exit status and logs around a failing run. cpak propagates t
 
 Use `cpak validate`, `cpak lock`, and `cpak test` in package CI after the OCI image has been published. Include a test of the published image through cpak.
 
-Keep production image builds in CI. Local development commands are for package validation and visual testing, not a substitute for a signed multi-architecture publishing workflow.
+Keep production image builds in CI. Local development commands cover package validation and visual testing. The publishing workflow signs and produces each supported architecture.

@@ -39,7 +39,7 @@ Keep application-owned files in the parent unless the nested runtime is their na
 
 ## Permissions
 
-The nested package uses the intersection of its manifest, user overrides, and the parent permission boundary. A dependency declaration grants no additional host access to the parent.
+The nested package uses the intersection of its manifest, user overrides, and the parent permission boundary. Parent access remains bounded by its own effective policy.
 
 ## Lifecycle and logs
 

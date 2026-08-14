@@ -41,7 +41,7 @@ The generated schema must match the committed schema. Add tests beside changed b
 ./cpak doctor --json
 ```
 
-Inspect every reported capability. Namespace, mount, Landlock, seccomp, cgroup, display, audio, init, and host bridge behavior depends on the host, so unit tests are not the final runtime check.
+Inspect every reported capability. Namespace, mount, Landlock, seccomp, cgroup, display, audio, init, and host bridge behavior depends on the host. Follow unit tests with a runtime check on a supported host.
 
 For a launch change, install or test a real package through the locally built cpak binary. For a package change, build the image in its GitHub workflow and test the published result through cpak.
 

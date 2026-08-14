@@ -55,7 +55,7 @@ cpak session list github.com/example/desktop
 cpak session enable github.com/example/desktop com.example.desktop
 ```
 
-cpak shows the session permissions before registration. Polkit then asks for authorization. The privileged service receives validated metadata and a package origin, never an executable supplied by the caller. The generated display manager entry calls the fixed cpak launcher with the registered session identifier.
+cpak shows the session permissions before registration. Polkit then asks for authorization. The privileged service accepts validated metadata and a package origin. The generated display manager entry calls the fixed cpak launcher with the registered session identifier.
 
 Remove one session with:
 

@@ -20,7 +20,7 @@ Nested user namespaces are blocked by default. A package can request `userNamesp
 
 Only the package root, runtime mounts, and declared host filesystem paths are present. Each host path has a read-only or read-write mode. Landlock narrows path access after mount setup when supported by the current kernel.
 
-Landlock is an extra restriction, not a substitute for mount isolation. `cpak doctor` reports when it is unavailable.
+Landlock adds path restrictions after mount isolation. `cpak doctor` reports when the host kernel cannot apply it.
 
 ## System call boundary
 
@@ -47,7 +47,7 @@ Every compatibility shim maps to a typed request and its effective package permi
 
 ## User overrides
 
-The manifest defines defaults, not an unchangeable policy. Users can remove access or add a local grant. Updates compare the effective old and new permissions and ask before accepting additions.
+The manifest defines package defaults. Users can remove access or add a local grant. Updates compare the effective old and new permissions and ask before accepting additions.
 
 `cpak update --non-interactive` rejects updates that require new permissions. This is the recommended mode for unattended systems.
 
@@ -55,4 +55,4 @@ The manifest defines defaults, not an unchangeable policy. Users can remove acce
 
 A package with read-write home access can modify user files. A package with the session bus can call services exposed on that bus. Full devices, process sharing, system bus access, host root mounts, and root inside the environment all expand the trusted surface.
 
-Review the manifest before running an untrusted package. The Store highlights high-risk permissions, but the manifest and local override remain the authoritative policy.
+Review the manifest before running an untrusted package. The Store highlights high-risk permissions. The manifest and local override define the authoritative policy.
