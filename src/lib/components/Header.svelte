@@ -85,7 +85,7 @@
   $: current = $page.url.pathname;
 </script>
 
-<nav class="relative w-full bg-slate-50 max-w-full">
+<nav class="relative w-full bg-slate-50">
   <div class="mx-auto flex max-w-7xl items-center gap-6 px-6 py-4">
     {#if current !== "/"}
       <button

@@ -32,11 +32,8 @@
 		<section>
 			<h2 class="text-3xl font-bold tracking-tight text-gray-950">Software and package content</h2>
 			<p class="mt-4">
-				The cpak runtime is available under
-				<a class="font-medium text-[#4670EC] hover:underline" href="https://github.com/Containerpak/cpak/blob/v2/LICENSE" target="_blank" rel="noopener noreferrer">GPL-3.0-only</a>.
-				Non-exclusive commercial licenses can be granted independently by
-				<a class="font-medium text-[#4670EC] hover:underline" href="https://bromb.in/" target="_blank" rel="noopener noreferrer">Mirko Brombin</a>
-				or FABRICATORS S.R.L.
+				The cpak runtime is released under
+				<a class="font-medium text-[#4670EC] hover:underline" href="https://github.com/Containerpak/cpak/blob/v2/LICENSE" target="_blank" rel="noopener noreferrer">LGPL-2.1-only</a>.
 				Store entries, package recipes, and linked applications remain governed by the licenses shown in
 				their respective repositories or distributions. A Store listing does not transfer ownership of an
 				application or replace its license.

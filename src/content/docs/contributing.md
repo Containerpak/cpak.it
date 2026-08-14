@@ -72,6 +72,6 @@ Use the repository's existing report templates when opening an issue. Include a 
 
 ## Licenses
 
-The cpak runtime is available under GPL-3.0-only. Contributions accepted into the public project remain available under that license. Contributors must accept the [cpak Contributor License Agreement](https://github.com/Containerpak/cpak/blob/v2/CLA.md), which also allows Mirko Brombin and FABRICATORS S.R.L. to grant non-exclusive commercial licenses without removing the public GPL license.
+The cpak runtime and every accepted contribution remain available under LGPL-2.1-only. Contributors must accept the [cpak Contributor License Agreement](https://github.com/Containerpak/cpak/blob/v2/CLA.md), which grants the project owners the rights required to maintain cpak while keeping contributions under the same public license.
 
 Package images carry the licenses and redistribution terms of their included software. Review upstream terms before publishing binaries, icons, fonts, or screenshots.
