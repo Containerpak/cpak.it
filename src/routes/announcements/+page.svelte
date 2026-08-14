@@ -4,6 +4,14 @@
 
 	const announcements = [
 		{
+			section: 'Project',
+			date: 'August 14, 2026',
+			title: 'cpak moves to LGPLv2.1',
+			description:
+				'cpak v2.3.1 adopts LGPL-2.1-only for the runtime and all future contributions.',
+			href: '/announcements/cpak-moves-to-lgpl-2-1'
+		},
+		{
 			section: 'Resolved',
 			date: 'August 14, 2026',
 			title: 'FVS Storage startup regression resolved',
