@@ -238,6 +238,23 @@
 			</section>
 
 			<h2 class="pt-8 text-3xl font-bold tracking-tight text-gray-900">
+				I also found space the migration was not releasing
+			</h2>
+			<p>
+				The diagnosis exposed a separate bug in the move to FVS storage. When a layer had
+				already been imported into FVS but its old expanded copy was still present, both used
+				the same digest and the garbage collector treated both as active. The old DaBaDee data
+				could remain hard-linked to that expanded layer, so removing its directory alone did not
+				reclaim the space.
+			</p>
+			<p>
+				cpak now checks whether the referenced FVS layer is available and keeps it as the
+				authoritative copy. The duplicate expanded layer can then be removed and the legacy
+				object store can release its remaining data. Existing installations can recover that
+				space with <code>cpak gc --apply</code>; reinstalling the applications is not required.
+			</p>
+
+			<h2 class="pt-8 text-3xl font-bold tracking-tight text-gray-900">
 				The same work on SDKs and Bottles
 			</h2>
 			<p>
