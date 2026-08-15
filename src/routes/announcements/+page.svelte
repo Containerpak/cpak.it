@@ -4,6 +4,14 @@
 
 	const announcements = [
 		{
+			section: 'Engineering',
+			date: 'August 14, 2026',
+			title: '81 cpak images, 41 GiB lighter',
+			description:
+				'I ran a full diagnosis across 81 official cpak images and cut the data required to download them by 59.8%.',
+			href: '/announcements/smaller-images-with-apt'
+		},
+		{
 			section: 'Project',
 			date: 'August 14, 2026',
 			title: 'cpak moves to LGPLv2.1',
