@@ -4,6 +4,14 @@
 
 	const announcements = [
 		{
+			section: 'Platform',
+			date: 'August 15, 2026',
+			title: 'The platform under every official cpak',
+			description:
+				'Official packages now share versioned Ubuntu 26.04 platform images, narrower toolkit layers and host locale data selected by cpak.',
+			href: '/announcements/the-platform-under-every-cpak'
+		},
+		{
 			section: 'cpak 2.4',
 			date: 'August 15, 2026',
 			title: 'File access without the whole home',

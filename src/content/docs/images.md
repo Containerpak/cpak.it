@@ -66,6 +66,7 @@ jobs:
           file: Containerfile
           platforms: linux/amd64,linux/arm64
           push: true
+          pull: true
           tags: ghcr.io/example/example:main
           cache-from: type=gha
           cache-to: type=gha,mode=max
@@ -74,6 +75,8 @@ jobs:
 ```
 
 Add application-specific checks after the build. Verify every architecture that the workflow claims to publish.
+
+Keep `pull: true` when the final image follows a platform tag. This makes the build resolve the current platform digest even when the GitHub Actions cache contains an older base.
 
 ## Base images
 
@@ -116,6 +119,18 @@ The `main` tag follows the current platform build. `ubuntu-26.04` follows the cu
 Official platform images identify the matching locale image in their OCI configuration. cpak reads the user's locale, imports only the required compiled directories, and adds the resulting shared layer to the application. Packages retain their own translation catalogs and do not need to include `locales-all`.
 
 The distribution choice defines the ABI and library versions available to the application. Pick the smallest base that already matches the software, pin the final application image by digest through cpak, and review base updates in CI before publishing them.
+
+Install additional runtime libraries and clean APT in the same layer:
+
+```dockerfile
+FROM ghcr.io/containerpak/gtk3:ubuntu-26.04
+
+RUN apt-get update && \
+    apt-get install -y libexample1 && \
+    cpak-clean-junk
+```
+
+The platform APT policy already disables recommended and suggested packages, downloaded package retention, manuals, package reports, and build documentation. Do not replace that policy or install `locales-all` in each application image. Keep application translation catalogs in the package; cpak supplies the compiled host locale through the shared locale layer.
 
 ## Layer layout
 
