@@ -54,6 +54,12 @@ Compatibility entry ownership is limited to the package identity that created it
 
 URI callbacks follow the opposite path. The host desktop starts the exported entry with `%u` or `%U`, and cpak forwards the URI to the declared application command. Loopback callbacks, such as an OAuth response on `127.0.0.1`, use the package network namespace selected by its manifest.
 
+## Native file choosers
+
+`filePicker` lets an application request files, folders, and save destinations without a permanent home mount. GTK and GIO calls use a restricted desktop-bus adapter that handles the file chooser protocol even when `socketSessionBus` is disabled. The proxy rejects unrelated bus destinations unless the manifest grants the complete session bus.
+
+The host presents the chooser and cpak attaches the accepted object to the package namespace. Scope and lifetime confirmations use the configured desktop dialog backend. See [File chooser access](/docs/file-access) for package policy and [Desktop dialog adapters](/docs/desktop-dialogs) for distribution configuration.
+
 ## Host applications
 
 Desktop cpaks can list applications installed by the host and launch a selected entry through the broker:

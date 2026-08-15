@@ -4,6 +4,14 @@
 
 	const announcements = [
 		{
+			section: 'cpak 2.4',
+			date: 'August 15, 2026',
+			title: 'File access without the whole home',
+			description:
+				'Applications can use their normal file chooser while cpak grants only the file or folder selected by the user.',
+			href: '/announcements/file-access-without-the-whole-home'
+		},
+		{
 			section: 'Engineering',
 			date: 'August 14, 2026',
 			title: '81 cpak images, 41 GiB lighter',

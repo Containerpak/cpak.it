@@ -45,6 +45,8 @@ Direct sockets and devices are opt-in manifest fields. Narrow system operations 
 
 Every compatibility shim maps to a typed request and its effective package permission.
 
+Native file chooser requests use a separate file grant path. cpak receives the selected object on the host and passes an open descriptor to the application mount namespace. A package without the session-bus permission receives a restricted adapter that handles the chooser without exposing other desktop services. See [File chooser access](/docs/file-access).
+
 ## User overrides
 
 The manifest defines package defaults. Users can remove access or add a local grant. Updates compare the effective old and new permissions and ask before accepting additions.

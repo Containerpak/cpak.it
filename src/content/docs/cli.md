@@ -58,6 +58,7 @@ Use `--instance` on supported commands to select a named instance of the same pa
 | ---------- | ----------------------------------------------------- |
 | `addon`    | List, enable, or disable an addon for an application. |
 | `override` | Replace one local permission value.                   |
+| `grant`    | List, manage, or revoke persistent file grants.       |
 | `doctor`   | Report host runtime capabilities.                     |
 | `audit`    | Check local store integrity and optionally repair it. |
 

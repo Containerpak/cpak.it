@@ -100,7 +100,25 @@ The URL must use HTTPS. cpak verifies the declared byte size and SHA-256 before 
 
 ## Permissions
 
-The `override` object declares the package defaults for sockets, devices, filesystem paths, networking, process sharing, nested user namespaces, resource limits, and system broker actions. See [Permissions](/docs/permissions) for every field and its effect.
+The `override` object declares the package defaults for sockets, devices, filesystem paths, file chooser operations, networking, process sharing, nested user namespaces, resource limits, and system broker actions. See [Permissions](/docs/permissions) for every field and its effect.
+
+### File chooser policy
+
+`filePicker` grants operations, not host paths. Each field is disabled by default:
+
+```json
+"filePicker": {
+  "openFile": true,
+  "openFolder": false,
+  "saveFile": true,
+  "persistent": false,
+  "containingFolder": false
+}
+```
+
+`openFile`, `openFolder`, and `saveFile` enable their matching chooser modes. `persistent` lets the confirmation offer a grant that survives the current environment. `containingFolder` lets a file request offer its parent directory as context. The user still approves the selected object and every wider or longer grant.
+
+Use `filesystem` for paths that must always exist inside the package. Use `filePicker` when access begins with an interactive user selection. See [File chooser access](/docs/file-access) for guest paths and revocation.
 
 ## Login sessions
 

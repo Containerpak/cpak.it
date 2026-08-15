@@ -48,6 +48,10 @@ Display, audio, devices, and explicitly requested sockets are mounted into the e
 
 Compatibility commands cover notifications, URI opening, host application launches, and supported host services. Each shim parses a finite request before it crosses the sandbox boundary. The broker checks the package policy and returns output, errors, exit status, and cancellation.
 
+File chooser requests use a separate grant channel. The host selects and opens the requested object, then sends its descriptor to a mount worker attached to the running package namespace. The application receives a path below `/run/cpak/grants` without receiving the host home or an unrestricted host path. Persistent grants are stored per package origin and restored only after their source is verified again.
+
+Runtime-owned confirmations and progress windows can use Adwaita, GTK, KDE, Qt, or the built-in interface. The official binary embeds the native helpers and extracts only the selected adapter. This UI layer is independent from package policy and from the file grant transport.
+
 ## Lifecycle
 
 An application can have named instances. `cpak run` starts or connects to the package environment and launches the selected binary. `cpak logs` reads instance output, while `cpak stop` terminates the supervised container.

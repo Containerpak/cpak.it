@@ -48,6 +48,10 @@ The portable `home` scope maps to the user's home directory. The `host` scope ma
 
 Avoid the legacy `fsHost`, `fsHostHome`, `fsHostEtc`, and `fsExtra` fields in new packages. They exist for v1 migration and are rejected by the strict v2 schema.
 
+## User-selected files
+
+`filePicker` permits native open, folder, and save requests without mounting the host home. Exact file access is read-only. A package can offer the containing folder as an explicit user choice and can allow grants to persist across launches. See [File chooser access](/docs/file-access) for the policy fields, runtime paths, and revocation commands.
+
 ## Network and processes
 
 `network` controls network access in the package namespace. `process` shares the host process namespace and should remain false unless the application must inspect host processes.
@@ -83,6 +87,7 @@ Users can replace one permission key for an installed application:
 ```bash
 cpak override github.com/example/app --key network --value false
 cpak override github.com/example/app --key filesystem --value '[{"path":"home","access":"read-only"}]'
+cpak override github.com/example/app --key filePicker --value '{"openFile":true}'
 ```
 
 Overrides are stored per application version. Review them after a major package change. `cpak update` reports permission additions before committing the new version.
