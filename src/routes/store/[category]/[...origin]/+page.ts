@@ -1,7 +1,8 @@
 import type { PageLoad } from './$types';
 
-const RAW_STORE_INDEX =
-    'https://raw.githubusercontent.com/Containerpak/store/main/index.json';
+const RAW_STORE_INDEX = 'https://raw.githubusercontent.com/Containerpak/store/main/index.json';
+const RAW_CATEGORIES_META =
+    'https://raw.githubusercontent.com/Containerpak/store/main/categories.json';
 
 interface CpakSpec {
     version: string;
@@ -20,8 +21,12 @@ function parseOrigin(origin: string): { owner: string; repo: string } {
 }
 
 export const load: PageLoad = async ({ fetch, params }) => {
-    const idxRes = await fetch(RAW_STORE_INDEX);
+    const [idxRes, catRes] = await Promise.all([
+        fetch(RAW_STORE_INDEX),
+        fetch(RAW_CATEGORIES_META),
+    ]);
     if (!idxRes.ok) throw new Error('Cannot load store index');
+    if (!catRes.ok) throw new Error('Cannot load categories metadata');
     const storeIndex = (await idxRes.json()) as Record<
         string,
         Record<
@@ -36,9 +41,14 @@ export const load: PageLoad = async ({ fetch, params }) => {
             }
         >
     >;
+    const categoriesMeta = (await catRes.json()) as Record<string, { icon: string; color: string }>;
 
     const categoryMap = storeIndex[params.category];
     if (!categoryMap) throw new Error(`Unknown category ${params.category}`);
+    const categoryMeta = categoriesMeta[params.category] ?? {
+        icon: 'inventory_2',
+        color: '#64748b',
+    };
     const entry = categoryMap[params.origin];
     if (!entry) throw new Error(`Unknown package ${params.origin}`);
 
@@ -77,12 +87,11 @@ export const load: PageLoad = async ({ fetch, params }) => {
     const showcase = showRes.ok ? showUrl : null;
 
     const description =
-        manifest.description?.trim() ||
-        entry.description?.trim() ||
-        cpak.description?.trim() ||
-        '';
+        manifest.description?.trim() || entry.description?.trim() || cpak.description?.trim() || '';
 
     return {
+        category: params.category,
+        categoryMeta,
         pkg: {
             origin: params.origin,
             name: entry.name,
@@ -93,7 +102,7 @@ export const load: PageLoad = async ({ fetch, params }) => {
             icon,
             screenshots,
             showcase,
-            rawCpakJson: cpakUrl
-        }
+            rawCpakJson: cpakUrl,
+        },
     };
 };

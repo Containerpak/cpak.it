@@ -3,8 +3,14 @@
 	import { onMount, tick } from 'svelte';
 	export let data: PageData;
 
-	type PermissionObject = Record<string, string | string[]>;
-	type PermissionValue = boolean | number | string | string[] | PermissionObject[];
+	type PermissionObject = Record<string, boolean | string | string[]>;
+	type PermissionValue =
+		| boolean
+		| number
+		| string
+		| string[]
+		| PermissionObject
+		| PermissionObject[];
 	type PermissionInfo = {
 		label: string;
 		description: string;
@@ -16,147 +22,152 @@
 		socketX11: {
 			label: 'X11 display',
 			description: 'Shows application windows through X11.',
-			icon: 'desktop_windows'
+			icon: 'desktop_windows',
 		},
 		socketWayland: {
 			label: 'Wayland display',
 			description: 'Shows application windows through Wayland.',
-			icon: 'desktop_windows'
+			icon: 'desktop_windows',
 		},
 		socketPulseAudio: {
 			label: 'Audio',
 			description: 'Plays and records audio through the desktop sound service.',
-			icon: 'volume_up'
+			icon: 'volume_up',
 		},
 		socketSessionBus: {
 			label: 'Desktop services',
 			description: 'Communicates with services in the current desktop session.',
-			icon: 'hub'
+			icon: 'hub',
 		},
 		socketSystemBus: {
 			label: 'System services',
 			description: 'Communicates with services available to the whole system.',
 			icon: 'dns',
-			broad: true
+			broad: true,
 		},
 		socketSshAgent: {
 			label: 'SSH agent',
 			description: 'Uses SSH credentials managed by the current session.',
-			icon: 'key'
+			icon: 'key',
 		},
 		socketCups: {
 			label: 'Printing',
 			description: 'Sends documents to printers configured on the host.',
-			icon: 'print'
+			icon: 'print',
 		},
 		socketGpgAgent: {
 			label: 'GPG agent',
 			description: 'Uses GPG keys managed by the current session.',
-			icon: 'encrypted'
+			icon: 'encrypted',
 		},
 		socketAtSpiBus: {
 			label: 'Accessibility',
 			description: 'Works with desktop accessibility services.',
-			icon: 'accessibility_new'
+			icon: 'accessibility_new',
 		},
 		socketBluetooth: {
 			label: 'Bluetooth',
 			description: 'Communicates with the host Bluetooth service.',
-			icon: 'bluetooth'
+			icon: 'bluetooth',
 		},
 		deviceDri: {
 			label: 'Graphics devices',
 			description: 'Uses hardware accelerated graphics.',
-			icon: 'videogame_asset'
+			icon: 'videogame_asset',
 		},
 		deviceKvm: {
 			label: 'Virtualization',
 			description: 'Uses hardware virtualization through KVM.',
-			icon: 'memory'
+			icon: 'memory',
 		},
 		deviceShm: {
 			label: 'Shared memory',
 			description: 'Uses the host shared memory device.',
-			icon: 'memory_alt'
+			icon: 'memory_alt',
 		},
 		deviceAlsa: {
 			label: 'ALSA devices',
 			description: 'Accesses audio devices directly.',
-			icon: 'speaker'
+			icon: 'speaker',
 		},
 		deviceVideo: {
 			label: 'Video devices',
 			description: 'Accesses cameras and video capture devices.',
-			icon: 'videocam'
+			icon: 'videocam',
 		},
 		deviceFuse: {
 			label: 'FUSE',
 			description: 'Creates userspace filesystems.',
-			icon: 'account_tree'
+			icon: 'account_tree',
 		},
 		deviceTun: {
 			label: 'TUN/TAP',
 			description: 'Creates virtual network interfaces.',
-			icon: 'lan'
+			icon: 'lan',
 		},
 		deviceUsb: {
 			label: 'USB devices',
 			description: 'Accesses USB devices connected to the host.',
-			icon: 'usb'
+			icon: 'usb',
 		},
 		deviceAll: {
 			label: 'Host devices',
 			description: 'Accesses host devices required by hardware and gaming features.',
 			icon: 'devices',
-			broad: true
+			broad: true,
 		},
 		notification: {
 			label: 'Notifications',
 			description: 'Shows desktop notifications.',
-			icon: 'notifications'
+			icon: 'notifications',
 		},
 		openURI: {
 			label: 'Open links',
 			description: 'Opens web and application links on the host.',
-			icon: 'open_in_new'
+			icon: 'open_in_new',
+		},
+		filePicker: {
+			label: 'Selected files',
+			description: 'Opens the native file chooser and grants only the items selected by the user.',
+			icon: 'file_open',
 		},
 		filesystem: {
 			label: 'Files',
 			description: 'Reads or writes selected host folders.',
-			icon: 'folder_open'
+			icon: 'folder_open',
 		},
 		network: {
 			label: 'Network',
 			description: 'Connects to local networks and the internet.',
-			icon: 'language'
+			icon: 'language',
 		},
 		process: {
 			label: 'Host processes',
 			description: 'Shares the host process namespace.',
 			icon: 'account_tree',
-			broad: true
+			broad: true,
 		},
 		userNamespaces: {
 			label: 'Nested sandboxes',
 			description: 'Creates user namespaces for nested application sandboxes.',
-			icon: 'deployed_code'
+			icon: 'deployed_code',
 		},
 		asRoot: {
 			label: 'Container root',
 			description: 'Runs the application as root inside its container.',
 			icon: 'admin_panel_settings',
-			broad: true
+			broad: true,
 		},
 		hostActions: {
 			label: 'Host services',
 			description: 'Uses the listed capabilities from a built-in cpak provider.',
-			icon: 'shield_lock'
+			icon: 'shield_lock',
 		},
 		allowedHostCommands: {
 			label: 'Legacy host integration',
 			description: 'Uses an older manifest field converted to typed permissions during install.',
-			icon: 'history'
-		}
+			icon: 'history',
+		},
 	};
 	const overrides = data.pkg.cpak.override as Record<string, PermissionValue>;
 	const permissionEntries = Object.entries(overrides).filter(([key]) => permissions[key]);
@@ -164,6 +175,7 @@
 		if (Array.isArray(value)) return value.length > 0;
 		if (typeof value === 'boolean') return value;
 		if (typeof value === 'number') return value > 0;
+		if (typeof value === 'object') return Object.values(value).some(Boolean);
 		return Boolean(value);
 	};
 	const permissionDetail = (key: string, value: PermissionValue) => {
@@ -174,7 +186,9 @@
 					const path = Array.isArray(entry.path) ? entry.path.join(', ') : entry.path;
 					const access = Array.isArray(entry.access)
 						? entry.access.join(', ')
-						: entry.access.replace('-', ' ');
+						: typeof entry.access === 'string'
+							? entry.access.replace('-', ' ')
+							: '';
 					return `${path} (${access})`;
 				})
 				.join(', ');
@@ -189,6 +203,19 @@
 					return `${entry.provider}: ${capabilities}`;
 				})
 				.join('; ');
+		}
+		if (key === 'filePicker' && !Array.isArray(value) && typeof value === 'object') {
+			const labels: Record<string, string> = {
+				openFile: 'open files',
+				openFolder: 'open folders',
+				saveFile: 'save files',
+				persistent: 'persistent access',
+				containingFolder: 'optional folder context',
+			};
+			return Object.entries(value)
+				.filter(([key, enabled]) => labels[key] && enabled === true)
+				.map(([key]) => labels[key])
+				.join(', ');
 		}
 		if (key === 'allowedHostCommands' && Array.isArray(value)) return value.join(', ');
 		return '';
@@ -241,34 +268,53 @@
 	<title>{data.pkg.name} | v{data.pkg.version} | cpak Store</title>
 </svelte:head>
 
-<div class="mx-auto max-w-4xl space-y-12 px-6 py-16">
-	<section class="flex flex-col items-start justify-between gap-8 md:flex-row md:items-center">
-		<div class="relative flex items-center gap-6">
-			<div class="rounded-2xl border border-slate-200 bg-slate-50 p-2 shadow-sm">
-				<img src={data.pkg.icon} alt="" class="h-20 w-20 rounded-xl" />
-			</div>
+<div
+	class="package-page mx-auto max-w-5xl space-y-14 px-6 py-16"
+	style="--category-color: {data.categoryMeta.color}; --category-soft: {data.categoryMeta.color}1a;"
+>
+	<section
+		class="package-hero relative flex flex-col items-start justify-between gap-10 py-6 md:flex-row md:items-center md:py-10"
+	>
+		<div class="pointer-events-none absolute inset-0 overflow-hidden">
+			<img
+				src={data.pkg.icon}
+				alt=""
+				aria-hidden="true"
+				class="absolute -top-20 -right-8 h-72 w-72 rotate-12 object-contain opacity-[0.055] grayscale"
+			/>
+			<div class="package-hero-fade absolute inset-0"></div>
+		</div>
+
+		<div class="relative z-10 flex items-center gap-6">
+			<img src={data.pkg.icon} alt="" class="h-24 w-24 shrink-0 object-contain" />
 			<div class="min-w-0">
-				<h1 class="text-3xl font-extrabold text-gray-900">
+				<p class="mb-2 text-sm font-semibold" style="color: {data.categoryMeta.color}">
+					{data.category}
+				</p>
+				<h1 class="text-4xl font-extrabold text-gray-900">
 					{data.pkg.name}
-					<span class="ml-2 align-middle text-base font-semibold text-gray-500"
+					<span class="ml-2 align-middle text-sm font-semibold text-gray-500"
 						>v{data.pkg.version}</span
 					>
 				</h1>
-				<p class="mt-2 max-w-2xl text-gray-700">{data.pkg.description}</p>
+				<p class="mt-3 max-w-2xl text-lg leading-7 text-gray-600">
+					{data.pkg.description}
+				</p>
 			</div>
 		</div>
-		<div class="relative z-10 flex shrink-0 items-stretch">
+		<div class="relative z-20 flex shrink-0 items-stretch">
 			<a
 				href={installerPath}
-				class={`rounded-l-full bg-[#3E7BFF] px-4 py-2 text-white shadow transition hover:bg-[#356fdb] ${
-					copied ? 'bg-green-500' : ''
-				}`}
+				class="rounded-l-2xl px-5 py-3 font-semibold text-white shadow-lg transition hover:brightness-110"
+				style="background-color: {data.categoryMeta.color}"
 			>
 				Download installer
 			</a>
 			<button
 				on:click={toggleDropdown}
-				class="flex items-center justify-center rounded-r-full bg-[#3E7BFF]/90 px-3 py-2 text-white shadow transition hover:bg-[#356fdb]/90"
+				class="flex items-center justify-center rounded-r-2xl border-l border-white/20 px-3 py-3 text-white shadow-lg transition hover:brightness-110"
+				style="background-color: {data.categoryMeta.color}"
+				aria-label="Installation options"
 			>
 				<span class="material-symbols-outlined text-sm">keyboard_arrow_down</span>
 			</button>
@@ -324,34 +370,36 @@
 	</section>
 
 	{#if slides.length}
-		<section class="relative mx-auto max-w-4xl overflow-visible">
-			<div
-				class="flex transition-transform duration-500 ease-in-out"
-				style="transform: translateX(calc(-100% * {idx}));"
-			>
-				{#each slides as src}
-					<div class="w-full max-w-4xl flex-shrink-0 px-2">
-						<!-- svelte-ignore a11y_media_has_caption -->
-						<!-- svelte-ignore element_invalid_self_closing_tag -->
-						{#if src.endsWith('.webm')}
+		<section class="relative mx-auto max-w-5xl">
+			<div class="overflow-hidden rounded-3xl">
+				<div
+					class="flex transition-transform duration-500 ease-in-out"
+					style="transform: translateX(calc(-100% * {idx}));"
+				>
+					{#each slides as src}
+						<div class="flex aspect-video w-full flex-shrink-0 items-center justify-center p-3">
 							<!-- svelte-ignore a11y_media_has_caption -->
-							<video {src} controls class="w-full rounded-xl shadow" />
-						{:else}
-							<img {src} alt="Slide {idx + 1}" class="w-full rounded-xl object-contain shadow" />
-						{/if}
-					</div>
-				{/each}
+							<!-- svelte-ignore element_invalid_self_closing_tag -->
+							{#if src.endsWith('.webm')}
+								<!-- svelte-ignore a11y_media_has_caption -->
+								<video {src} controls class="h-full w-full rounded-2xl object-contain" />
+							{:else}
+								<img {src} alt="Slide {idx + 1}" class="h-full w-full rounded-2xl object-contain" />
+							{/if}
+						</div>
+					{/each}
+				</div>
 			</div>
 
 			<button
 				on:click={prev}
-				class="absolute top-1/2 -left-3 flex h-10 w-10 -translate-y-1/2 cursor-pointer items-center justify-center rounded-full bg-white p-2 shadow transition hover:shadow-lg"
+				class="carousel-control absolute top-1/2 left-3 flex h-11 w-11 -translate-y-1/2 cursor-pointer items-center justify-center rounded-full bg-white/80 p-2 shadow-lg backdrop-blur transition hover:bg-white"
 			>
 				<span class="material-symbols-outlined">chevron_left</span>
 			</button>
 			<button
 				on:click={next}
-				class="absolute top-1/2 -right-3 flex h-10 w-10 -translate-y-1/2 cursor-pointer items-center justify-center rounded-full bg-white p-2 shadow transition hover:shadow-lg"
+				class="carousel-control absolute top-1/2 right-3 flex h-11 w-11 -translate-y-1/2 cursor-pointer items-center justify-center rounded-full bg-white/80 p-2 shadow-lg backdrop-blur transition hover:bg-white"
 			>
 				<span class="material-symbols-outlined">chevron_right</span>
 			</button>
@@ -363,8 +411,8 @@
 					<!-- svelte-ignore a11y_no_static_element_interactions -->
 					<!-- svelte-ignore element_invalid_self_closing_tag -->
 					<div
-						class="h-3 w-3 cursor-pointer rounded-full bg-gray-300"
-						class:bg-gray-700={i === idx}
+						class="h-2.5 w-2.5 cursor-pointer rounded-full bg-gray-300 transition"
+						style={i === idx ? `background-color: ${data.categoryMeta.color}` : ''}
 						on:click={() => go(i)}
 					/>
 				{/each}
@@ -377,13 +425,14 @@
 			<h2 class="text-2xl font-semibold text-gray-900">Permissions</h2>
 			<p class="mt-1 text-sm text-gray-500">What this package can access on your system.</p>
 		</div>
-		<div class="mb-4 grid gap-4 sm:grid-cols-2">
+		<div class="mb-4 grid auto-rows-fr gap-4 sm:grid-cols-2">
 			{#each permissionEntries.filter(([_, value]) => isGranted(value)) as [key, value]}
 				<div
-					class="flex min-w-0 items-start gap-4 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm"
+					class="package-surface flex h-full min-w-0 items-start gap-4 rounded-2xl border border-slate-200 p-4 shadow-sm"
 				>
 					<div
-						class="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-slate-100 text-[#3158c7]"
+						class="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-slate-100"
+						style="color: {data.categoryMeta.color}"
 					>
 						<span class="material-symbols-outlined text-xl">{permissions[key].icon}</span>
 					</div>
@@ -439,7 +488,7 @@
 		{/if}
 	</section>
 
-	<section class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+	<section class="package-surface rounded-3xl border border-slate-200 p-6 shadow-sm">
 		<h2 class="mb-5 text-xl font-semibold text-gray-900">Package details</h2>
 		<dl class="grid grid-cols-1 gap-x-10 gap-y-6 text-sm text-gray-700 sm:grid-cols-2">
 			<div class="min-w-0">
@@ -466,10 +515,11 @@
 	</section>
 
 	<section class="space-y-3">
-		<details class="group rounded-2xl border border-slate-200 bg-white shadow-sm">
+		<details class="package-surface group rounded-2xl border border-slate-200 shadow-sm">
 			<summary class="flex cursor-pointer list-none items-center gap-4 p-5">
 				<span
-					class="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-slate-100 text-[#3158c7]"
+					class="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-slate-100"
+					style="color: {data.categoryMeta.color}"
 				>
 					<span class="material-symbols-outlined">account_tree</span>
 				</span>
@@ -500,10 +550,11 @@
 			</div>
 		</details>
 
-		<details class="group rounded-2xl border border-slate-200 bg-white shadow-sm">
+		<details class="package-surface group rounded-2xl border border-slate-200 shadow-sm">
 			<summary class="flex cursor-pointer list-none items-center gap-4 p-5">
 				<span
-					class="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-slate-100 text-[#3158c7]"
+					class="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-slate-100"
+					style="color: {data.categoryMeta.color}"
 				>
 					<span class="material-symbols-outlined">extension</span>
 				</span>
@@ -556,3 +607,29 @@
 		</ul>
 	</section>
 </div>
+
+<style>
+	.package-hero {
+		background: radial-gradient(circle at 82% 42%, var(--category-soft), transparent 38%);
+	}
+
+	.package-hero-fade {
+		background: linear-gradient(90deg, transparent 56%, rgb(255 255 255 / 0.78));
+	}
+
+	.package-surface {
+		background: linear-gradient(145deg, var(--category-soft), transparent 60%), #fff;
+	}
+
+	.carousel-control {
+		color: #111827;
+	}
+
+	:global(html[data-theme='dark']) .package-hero-fade {
+		background: linear-gradient(90deg, transparent 56%, rgb(17 24 39 / 0.76));
+	}
+
+	:global(html[data-theme='dark']) .package-surface {
+		background: linear-gradient(145deg, var(--category-soft), transparent 60%), #111827;
+	}
+</style>

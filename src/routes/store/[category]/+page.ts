@@ -1,7 +1,8 @@
 import type { PageLoad } from './$types';
 
-const RAW_STORE_INDEX =
-    'https://raw.githubusercontent.com/Containerpak/store/main/index.json';
+const RAW_STORE_INDEX = 'https://raw.githubusercontent.com/Containerpak/store/main/index.json';
+const RAW_CATEGORIES_META =
+    'https://raw.githubusercontent.com/Containerpak/store/main/categories.json';
 
 function parseOrigin(origin: string): { owner: string; repo: string } {
     const [, owner, repo] = origin.split('/');
@@ -9,8 +10,12 @@ function parseOrigin(origin: string): { owner: string; repo: string } {
 }
 
 export const load: PageLoad = async ({ fetch, params }) => {
-    const idxRes = await fetch(RAW_STORE_INDEX);
+    const [idxRes, catRes] = await Promise.all([
+        fetch(RAW_STORE_INDEX),
+        fetch(RAW_CATEGORIES_META),
+    ]);
     if (!idxRes.ok) throw new Error('Cannot load store index');
+    if (!catRes.ok) throw new Error('Cannot load categories metadata');
     const storeIndex = (await idxRes.json()) as Record<
         string,
         Record<
@@ -25,9 +30,14 @@ export const load: PageLoad = async ({ fetch, params }) => {
             }
         >
     >;
+    const categoriesMeta = (await catRes.json()) as Record<string, { icon: string; color: string }>;
 
     const categoryMap = storeIndex[params.category];
     if (!categoryMap) throw new Error(`Unknown category ${params.category}`);
+    const categoryMeta = categoriesMeta[params.category] ?? {
+        icon: 'inventory_2',
+        color: '#64748b',
+    };
 
     const packages = await Promise.all(
         Object.entries(categoryMap).map(async ([origin, entry]) => {
@@ -57,23 +67,24 @@ export const load: PageLoad = async ({ fetch, params }) => {
             const icon = `${storeBase}/icon.svg`;
 
             const description =
-                manifest.description?.trim()
-                || entry.description?.trim()
-                || cpak.description?.trim()
-                || '';
+                manifest.description?.trim() ||
+                entry.description?.trim() ||
+                cpak.description?.trim() ||
+                '';
 
             return {
                 origin,
                 name: entry.name,
                 description,
                 version: cpak.version,
-                icon
+                icon,
             };
-        })
+        }),
     );
 
     return {
         category: params.category,
-        packages
+        categoryMeta,
+        packages,
     };
 };
