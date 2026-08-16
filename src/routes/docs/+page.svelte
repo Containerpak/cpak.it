@@ -1,5 +1,6 @@
 <script lang="ts">
   import { groupedArticles } from "$lib/docs";
+  import Seo from "$lib/components/Seo.svelte";
 
   const paths = [
     {
@@ -29,13 +30,11 @@
   ];
 </script>
 
-<svelte:head>
-  <title>Documentation - cpak</title>
-  <meta
-    name="description"
-    content="Complete documentation for using, packaging, operating, and contributing to cpak."
-  />
-</svelte:head>
+<Seo
+  title="cpak documentation - Build and distribute Linux applications"
+  description="Documentation for installing cpak, building OCI application packages, defining permissions, publishing packages and operating the runtime."
+  path="/docs"
+/>
 
 <section class="border-b border-slate-200 bg-white">
   <div class="mx-auto max-w-7xl px-6 py-20">
@@ -100,7 +99,7 @@
           {#each group.articles as article}
             <a
               href={`/docs/${article.slug}`}
-              class="group border-b border-slate-200 p-6 transition last:border-b-0 hover:bg-slate-50 md:border-r md:[&:nth-last-child(-n+2)]:border-b-0 md:[&:nth-child(2n)]:border-r-0"
+              class="group border-b border-slate-200 p-6 transition last:border-b-0 hover:bg-slate-50 md:border-r md:[&:nth-child(2n)]:border-r-0 md:[&:nth-last-child(-n+2)]:border-b-0"
             >
               <div class="flex items-start justify-between gap-5">
                 <div>

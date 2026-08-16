@@ -1,90 +1,121 @@
-import type { PageLoad } from './$types';
+import { error } from "@sveltejs/kit";
+import type { PageLoad } from "./$types";
+import {
+  CATEGORY_DESCRIPTIONS,
+  SITE_URL,
+  fetchStore,
+  jsonLd,
+  packageSlug,
+  repositoryUrl,
+  storeAssetBase,
+} from "$lib/store";
 
-const RAW_STORE_INDEX = 'https://raw.githubusercontent.com/Containerpak/store/main/index.json';
-const RAW_CATEGORIES_META =
-    'https://raw.githubusercontent.com/Containerpak/store/main/categories.json';
+export const load: PageLoad = async ({ fetch, params, setHeaders }) => {
+  const store = await fetchStore(fetch);
+  if (!store) error(502, "The Store catalog is temporarily unavailable");
 
-function parseOrigin(origin: string): { owner: string; repo: string } {
-    const [, owner, repo] = origin.split('/');
-    return { owner, repo };
-}
+  const categoryMap = store.index[params.category];
+  if (!categoryMap) error(404, "Category not found");
+  const categoryMeta = store.categories[params.category] ?? {
+    icon: "inventory_2",
+    color: "#64748b",
+  };
 
-export const load: PageLoad = async ({ fetch, params }) => {
-    const [idxRes, catRes] = await Promise.all([
-        fetch(RAW_STORE_INDEX),
-        fetch(RAW_CATEGORIES_META),
-    ]);
-    if (!idxRes.ok) throw new Error('Cannot load store index');
-    if (!catRes.ok) throw new Error('Cannot load categories metadata');
-    const storeIndex = (await idxRes.json()) as Record<
-        string,
-        Record<
-            string,
-            {
-                name: string;
-                description?: string;
-                branch?: string;
-                commit?: string;
-                release?: string;
-                manifest: string;
-            }
-        >
-    >;
-    const categoriesMeta = (await catRes.json()) as Record<string, { icon: string; color: string }>;
+  const packages = await Promise.all(
+    Object.entries(categoryMap).map(async ([origin, entry]) => {
+      const mfRes = await fetch(entry.manifest);
+      if (!mfRes.ok) throw new Error(`Cannot fetch manifest for ${origin}`);
+      const manifest = (await mfRes.json()) as {
+        branch?: string;
+        commit?: string;
+        release?: string;
+        description?: string;
+      };
 
-    const categoryMap = storeIndex[params.category];
-    if (!categoryMap) throw new Error(`Unknown category ${params.category}`);
-    const categoryMeta = categoriesMeta[params.category] ?? {
-        icon: 'inventory_2',
-        color: '#64748b',
-    };
+      const ref = manifest.branch ?? manifest.commit ?? manifest.release;
+      if (!ref) throw new Error(`No ref in manifest for ${origin}`);
 
-    const packages = await Promise.all(
-        Object.entries(categoryMap).map(async ([origin, entry]) => {
-            const mfRes = await fetch(entry.manifest);
-            if (!mfRes.ok) throw new Error(`Cannot fetch manifest for ${origin}`);
-            const manifest = (await mfRes.json()) as {
-                branch?: string;
-                commit?: string;
-                release?: string;
-                description?: string;
-            };
+      const repoUrl = repositoryUrl(origin);
+      if (!repoUrl) error(502, `Invalid origin for ${origin}`);
+      const upstreamBase = `${repoUrl.replace("https://github.com/", "https://raw.githubusercontent.com/")}/${ref}`;
+      const cpakUrl = `${upstreamBase}/cpak.json`;
+      const cpakRes = await fetch(cpakUrl);
+      if (!cpakRes.ok) throw new Error(`Missing cpak.json for ${origin}`);
+      const cpak = (await cpakRes.json()) as {
+        version: string;
+        description?: string;
+      };
 
-            const ref = manifest.branch ?? manifest.commit ?? manifest.release;
-            if (!ref) throw new Error(`No ref in manifest for ${origin}`);
+      const storeBase = storeAssetBase(entry.manifest);
+      const icon = `${storeBase}/icon.svg`;
 
-            const { owner, repo } = parseOrigin(origin);
-            const upstreamBase = `https://raw.githubusercontent.com/${owner}/${repo}/${ref}`;
-            const cpakUrl = `${upstreamBase}/cpak.json`;
-            const cpakRes = await fetch(cpakUrl);
-            if (!cpakRes.ok) throw new Error(`Missing cpak.json for ${origin}`);
-            const cpak = (await cpakRes.json()) as {
-                version: string;
-                description?: string;
-            };
+      const description =
+        manifest.description?.trim() ||
+        entry.description?.trim() ||
+        cpak.description?.trim() ||
+        "";
 
-            const storeBase = entry.manifest.replace(/\/[^/]+$/, '');
-            const icon = `${storeBase}/icon.svg`;
+      return {
+        origin,
+        slug: packageSlug(origin),
+        name: entry.name,
+        description,
+        version: cpak.version,
+        icon,
+      };
+    }),
+  );
 
-            const description =
-                manifest.description?.trim() ||
-                entry.description?.trim() ||
-                cpak.description?.trim() ||
-                '';
+  const description =
+    CATEGORY_DESCRIPTIONS[params.category] ??
+    `Browse ${params.category} applications packaged for cpak.`;
+  const path = `/store/${encodeURIComponent(params.category)}`;
+  const schema = jsonLd({
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "CollectionPage",
+        name: `${params.category} applications for Linux`,
+        description,
+        url: `${SITE_URL}${path}`,
+        mainEntity: {
+          "@type": "ItemList",
+          numberOfItems: packages.length,
+          itemListElement: packages.map((pkg, index) => ({
+            "@type": "ListItem",
+            position: index + 1,
+            name: pkg.name,
+            url: `${SITE_URL}/store/apps/${pkg.slug}`,
+          })),
+        },
+      },
+      {
+        "@type": "BreadcrumbList",
+        itemListElement: [
+          {
+            "@type": "ListItem",
+            position: 1,
+            name: "Store",
+            item: `${SITE_URL}/store`,
+          },
+          {
+            "@type": "ListItem",
+            position: 2,
+            name: params.category,
+            item: `${SITE_URL}${path}`,
+          },
+        ],
+      },
+    ],
+  });
 
-            return {
-                origin,
-                name: entry.name,
-                description,
-                version: cpak.version,
-                icon,
-            };
-        }),
-    );
-
-    return {
-        category: params.category,
-        categoryMeta,
-        packages,
-    };
+  setHeaders({ "cache-control": "public, max-age=300, s-maxage=3600" });
+  return {
+    category: params.category,
+    categoryMeta,
+    description,
+    packages,
+    path,
+    schema,
+  };
 };

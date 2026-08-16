@@ -1,6 +1,30 @@
 <script lang="ts">
   import Header from "$lib/components/Header.svelte";
   import Footer from "$lib/components/Footer.svelte";
+  import Seo from "$lib/components/Seo.svelte";
+  import { SITE_URL, jsonLd } from "$lib/store";
+
+  const homeSchema = jsonLd({
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "WebSite",
+        "@id": `${SITE_URL}/#website`,
+        name: "cpak",
+        url: SITE_URL,
+        description: "The OCI application package format for Linux.",
+      },
+      {
+        "@type": "Organization",
+        "@id": `${SITE_URL}/#organization`,
+        name: "Containerpak",
+        alternateName: "cpak",
+        url: SITE_URL,
+        logo: `${SITE_URL}/cpak-icon.png`,
+        sameAs: ["https://github.com/Containerpak"],
+      },
+    ],
+  });
 
   const features = [
     {
@@ -46,37 +70,37 @@
       name: "Bottles",
       description: "Run Windows applications on Linux with Wine and Proton.",
       icon: "/store-icons/bottles.svg",
-      href: "/store/Utilities/github.com/bottlesdevs/bottles",
+      href: "/store/apps/bottles",
     },
     {
       name: "Firefox",
       description: "A private, fast web browser.",
       icon: "/store-icons/firefox.svg",
-      href: "/store/Web/github.com/containerpak/firefox",
+      href: "/store/apps/firefox",
     },
     {
       name: "Visual Studio Code",
       description: "A code editor ready for your next project.",
       icon: "/store-icons/vscode.svg",
-      href: "/store/Development/github.com/containerpak/vscode",
+      href: "/store/apps/vscode",
     },
     {
       name: "GIMP",
       description: "Create and edit images.",
       icon: "/store-icons/gimp.svg",
-      href: "/store/Graphics/github.com/containerpak/gimp",
+      href: "/store/apps/gimp",
     },
     {
       name: "OBS Studio",
       description: "Record, stream and share video.",
       icon: "/store-icons/obs-studio.svg",
-      href: "/store/Multimedia/github.com/containerpak/obs-studio",
+      href: "/store/apps/obs-studio",
     },
     {
       name: "UMU",
       description: "Run Windows games with Proton outside Steam.",
       icon: "/store-icons/umu.svg",
-      href: "/store/Games/github.com/containerpak/umu",
+      href: "/store/apps/umu",
     },
   ];
 
@@ -93,13 +117,12 @@
   }
 </script>
 
-<svelte:head>
-  <title>cpak - Deploy as freely as you develop</title>
-  <meta
-    name="description"
-    content="cpak is a decentralized and versatile software distribution format for any context."
-  />
-</svelte:head>
+<Seo
+  title="cpak - The OCI application package format for Linux"
+  description="Build, distribute and run Linux applications as OCI packages with explicit permissions, native desktop integration and shared storage."
+  path="/"
+  structuredData={homeSchema}
+/>
 
 <Header />
 
@@ -119,8 +142,8 @@
         Deploy as <span class="text-[#3E7BFF]">freely</span><br />as you develop
       </h1>
       <p class="mx-auto mt-8 max-w-md text-xl text-gray-600 lg:mx-0">
-        <span class="font-semibold text-gray-900">cpak</span> is a decentralized
-        and versatile software distribution format for any context.
+        <span class="font-semibold text-gray-900">cpak</span> is the OCI application
+        package format for Linux desktops, servers and devices.
       </p>
       <div class="mt-12 flex justify-center gap-4 lg:justify-start">
         <a

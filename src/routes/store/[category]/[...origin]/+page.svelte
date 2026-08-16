@@ -1,7 +1,7 @@
 <script lang="ts">
-	import type { PageData } from './$types';
 	import { onMount, tick } from 'svelte';
-	export let data: PageData;
+	import Seo from '$lib/components/Seo.svelte';
+	export let data: any;
 
 	type PermissionObject = Record<string, boolean | string | string[]>;
 	type PermissionValue =
@@ -264,14 +264,28 @@
 	let showDisabled = false;
 </script>
 
-<svelte:head>
-	<title>{data.pkg.name} | v{data.pkg.version} | cpak Store</title>
-</svelte:head>
+<Seo
+	title={`${data.pkg.name} for Linux - Install with cpak`}
+	description={`Install ${data.pkg.name} ${data.pkg.version} on Linux with cpak. ${data.pkg.description}`}
+	path={data.canonicalPath}
+	image={data.pkg.icon}
+	type="product"
+	structuredData={data.schema}
+/>
 
 <div
 	class="package-page mx-auto max-w-5xl space-y-14 px-6 py-16"
 	style="--category-color: {data.categoryMeta.color}; --category-soft: {data.categoryMeta.color}1a;"
 >
+	<nav class="flex items-center gap-2 text-sm text-gray-500" aria-label="Breadcrumb">
+		<a href="/store" class="hover:text-[#3E7BFF]">Store</a>
+		<span class="material-symbols-outlined text-base">chevron_right</span>
+		<a href={`/store/${encodeURIComponent(data.category)}`} class="hover:text-[#3E7BFF]">
+			{data.category}
+		</a>
+		<span class="material-symbols-outlined text-base">chevron_right</span>
+		<span>{data.pkg.name}</span>
+	</nav>
 	<section
 		class="package-hero relative flex flex-col items-start justify-between gap-10 py-6 md:flex-row md:items-center md:py-10"
 	>
@@ -286,7 +300,11 @@
 		</div>
 
 		<div class="relative z-10 flex items-center gap-6">
-			<img src={data.pkg.icon} alt="" class="h-24 w-24 shrink-0 object-contain" />
+			<img
+				src={data.pkg.icon}
+				alt={`${data.pkg.name} icon`}
+				class="h-24 w-24 shrink-0 object-contain"
+			/>
 			<div class="min-w-0">
 				<p class="mb-2 text-sm font-semibold" style="color: {data.categoryMeta.color}">
 					{data.category}
@@ -384,7 +402,11 @@
 								<!-- svelte-ignore a11y_media_has_caption -->
 								<video {src} controls class="h-full w-full rounded-2xl object-contain" />
 							{:else}
-								<img {src} alt="Slide {idx + 1}" class="h-full w-full rounded-2xl object-contain" />
+								<img
+									{src}
+									alt={`${data.pkg.name} screenshot ${idx + 1}`}
+									class="h-full w-full rounded-2xl object-contain"
+								/>
 							{/if}
 						</div>
 					{/each}
@@ -453,7 +475,7 @@
 							{permissions[key].description}
 						</p>
 						{#if permissionDetail(key, value)}
-							<p class="mt-2 break-words text-xs font-medium text-gray-700">
+							<p class="mt-2 text-xs font-medium break-words text-gray-700">
 								{permissionDetail(key, value)}
 							</p>
 						{/if}
@@ -606,6 +628,28 @@
 			</li>
 		</ul>
 	</section>
+
+	{#if data.related.length}
+		<section>
+			<h2 class="text-2xl font-semibold text-gray-900">
+				More from {data.category}
+			</h2>
+			<div class="mt-5 grid gap-4 sm:grid-cols-3">
+				{#each data.related as related}
+					<a
+						href={`/store/apps/${related.slug}`}
+						class="package-surface rounded-2xl border border-slate-200 p-5 transition hover:-translate-y-0.5 hover:shadow-lg"
+					>
+						<img src={related.icon} alt={`${related.name} icon`} class="h-12 w-12 object-contain" />
+						<h3 class="mt-4 font-semibold text-gray-900">{related.name}</h3>
+						<p class="mt-1 line-clamp-2 text-sm text-gray-500">
+							{related.description}
+						</p>
+					</a>
+				{/each}
+			</div>
+		</section>
+	{/if}
 </div>
 
 <style>

@@ -63,7 +63,7 @@
 		</div>
 
 		<a
-			href="/store/Utilities/github.com/bottlesdevs/bottles"
+			href="/store/apps/bottles"
 			class="mt-14 inline-flex items-center gap-2 rounded-full bg-[#3E7BFF] px-6 py-3 font-semibold text-white transition hover:brightness-110"
 		>
 			View Bottles in the Store

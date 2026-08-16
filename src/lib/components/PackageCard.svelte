@@ -1,17 +1,17 @@
 <script lang="ts">
 	export let pkg: {
 		origin: string;
+		slug: string;
 		name: string;
 		description: string;
 		version: string;
 		icon: string;
 	};
-	export let category: string;
 	export let color: string;
 </script>
 
 <a
-	href={`/store/${category}/${pkg.origin}`}
+	href={`/store/apps/${pkg.slug}`}
 	class="package-card group relative flex h-full min-h-[19rem] flex-col overflow-hidden rounded-3xl border border-slate-200 p-6 shadow-sm transition duration-300 hover:-translate-y-1 hover:shadow-xl"
 	style="--package-color: {color}; --package-soft: {color}1a;"
 >

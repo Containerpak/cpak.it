@@ -3,6 +3,7 @@
   import { onMount } from "svelte";
   import { searchQuery } from "$lib/stores/search";
   import ThemePicker from "$lib/components/ThemePicker.svelte";
+  import { packageSlug } from "$lib/store";
 
   let query = "";
   let showDropdown = false;
@@ -48,12 +49,12 @@
         Record<string, { name: string; manifest: string }>
       >;
       const apps: AppItem[] = [];
-      for (const [cat, entries] of Object.entries(storeIndex)) {
+      for (const entries of Object.values(storeIndex)) {
         for (const [origin, entry] of Object.entries(entries)) {
           const base = entry.manifest.replace(/\/[^/]+$/, "");
           apps.push({
             name: entry.name,
-            url: `/store/${cat}/${origin}`,
+            url: `/store/apps/${packageSlug(origin)}`,
             icon: `${base}/icon.svg`,
           });
         }
@@ -109,7 +110,7 @@
         bind:value={query}
         on:input={handleInput}
         placeholder="Search docs & apps"
-        class="hidden lg:block h-12 w-full max-w-[480px] xl:max-w-[560px] rounded-full border border-slate-200 bg-white px-5 text-sm placeholder-gray-400 shadow-sm focus:ring-2 focus:ring-[#3E7BFF] focus:outline-none"
+        class="hidden h-12 w-full max-w-[480px] rounded-full border border-slate-200 bg-white px-5 text-sm placeholder-gray-400 shadow-sm focus:ring-2 focus:ring-[#3E7BFF] focus:outline-none lg:block xl:max-w-[560px]"
       />
       {#if showDropdown}
         <div
@@ -165,12 +166,12 @@
     <div class="flex shrink-0 items-center gap-6">
       <ThemePicker />
       <button
-        class="lg:hidden flex items-center justify-center rounded-full bg-transparent p-2 text-gray-700 shadow-none transition duration-200 hover:bg-white hover:shadow-sm"
+        class="flex items-center justify-center rounded-full bg-transparent p-2 text-gray-700 shadow-none transition duration-200 hover:bg-white hover:shadow-sm lg:hidden"
         on:click={() => (showMobileMenu = !showMobileMenu)}
       >
         <span class="material-symbols-outlined">menu</span>
       </button>
-      <div class="hidden lg:flex items-center gap-6">
+      <div class="hidden items-center gap-6 lg:flex">
         <a
           href="/docs"
           class="text-sm font-medium text-gray-900 hover:underline">Docs</a
@@ -198,7 +199,7 @@
     </div>
   </div>
   {#if showMobileMenu}
-    <div class="lg:hidden absolute top-full left-0 w-full bg-white shadow-md">
+    <div class="absolute top-full left-0 w-full bg-white shadow-md lg:hidden">
       <a
         href="/docs"
         class="block px-6 py-4 text-sm font-medium text-gray-900 hover:bg-slate-100"
@@ -230,7 +231,7 @@
         bind:value={query}
         on:input={handleInput}
         placeholder="Search docs & apps"
-        class="block w-full px-6 py-4 text-sm border-t border-slate-200 focus:ring-2 focus:ring-[#3E7BFF] focus:outline-none"
+        class="block w-full border-t border-slate-200 px-6 py-4 text-sm focus:ring-2 focus:ring-[#3E7BFF] focus:outline-none"
       />
     </div>
   {/if}

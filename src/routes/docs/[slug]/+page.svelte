@@ -2,12 +2,54 @@
   import { afterNavigate } from "$app/navigation";
   import type { PageData } from "./$types";
   import { extractHeadings, groupedArticles, renderMarkdown } from "$lib/docs";
+  import Seo from "$lib/components/Seo.svelte";
+  import { SITE_URL, jsonLd } from "$lib/store";
 
   let { data }: { data: PageData } = $props();
   let documentationNavigation: HTMLElement;
   let article = $derived(data.article);
   let body = $derived(renderMarkdown(article.body));
   let headings = $derived(extractHeadings(article.body));
+  let schema = $derived(
+    jsonLd({
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "TechArticle",
+          headline: article.title,
+          description: article.description,
+          url: `${SITE_URL}/docs/${article.slug}`,
+          author: {
+            "@type": "Organization",
+            name: "Containerpak",
+            url: SITE_URL,
+          },
+          publisher: {
+            "@type": "Organization",
+            name: "Containerpak",
+            url: SITE_URL,
+          },
+        },
+        {
+          "@type": "BreadcrumbList",
+          itemListElement: [
+            {
+              "@type": "ListItem",
+              position: 1,
+              name: "Documentation",
+              item: `${SITE_URL}/docs`,
+            },
+            {
+              "@type": "ListItem",
+              position: 2,
+              name: article.title,
+              item: `${SITE_URL}/docs/${article.slug}`,
+            },
+          ],
+        },
+      ],
+    }),
+  );
 
   afterNavigate(() => {
     const active = documentationNavigation.querySelector<HTMLElement>(
@@ -23,10 +65,13 @@
   });
 </script>
 
-<svelte:head>
-  <title>{article.title} - Documentation - cpak</title>
-  <meta name="description" content={article.description} />
-</svelte:head>
+<Seo
+  title={`${article.title} - cpak documentation`}
+  description={article.description}
+  path={`/docs/${article.slug}`}
+  type="article"
+  structuredData={schema}
+/>
 
 <div
   class="mx-auto grid max-w-[92rem] grid-cols-1 gap-10 px-6 py-12 lg:grid-cols-[15rem_minmax(0,48rem)] xl:grid-cols-[15rem_minmax(0,48rem)_13rem]"

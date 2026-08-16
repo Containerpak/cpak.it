@@ -1,61 +1,65 @@
-import type { PageLoad } from './$types';
+import { error } from "@sveltejs/kit";
+import type { PageLoad } from "./$types";
+import {
+  CATEGORY_DESCRIPTIONS,
+  SITE_URL,
+  fetchStore,
+  jsonLd,
+  packageSlug,
+  storeAssetBase,
+} from "$lib/store";
 
-const RAW_STORE_INDEX = 'https://raw.githubusercontent.com/Containerpak/store/main/index.json';
-const RAW_CATEGORIES_META =
-    'https://raw.githubusercontent.com/Containerpak/store/main/categories.json';
+export const load: PageLoad = async ({ fetch, setHeaders }) => {
+  const store = await fetchStore(fetch);
+  if (!store) error(502, "The Store catalog is temporarily unavailable");
 
-const CATEGORY_DESCRIPTIONS: Record<string, string> = {
-    'AI-ML': 'Local assistants, model tools and AI workspaces.',
-    Database: 'Database clients, query tools and data explorers.',
-    'Desktop Environments': 'Complete desktop sessions installed and managed as cpak packages.',
-    Development: 'Editors, IDEs, SDKs and tools for building software.',
-    DevOps: 'Infrastructure and operations tools for local and remote systems.',
-    Games: 'Games, launchers, emulators and gaming utilities.',
-    Graphics: 'Creative tools for images, 3D work and digital production.',
-    Multimedia: 'Audio, video, recording and media playback.',
-    Networking: 'Communication, remote access, syncing and network tools.',
-    Productivity: 'Writing, notes, office work and everyday organization.',
-    Security: 'Password managers and tools that protect your data.',
-    System: 'Hardware, virtualization and desktop system utilities.',
-    Utilities: 'Useful tools that do one job well.',
-    Web: 'Browsers and applications built around the web.',
-};
+  const categories = Object.entries(store.categories)
+    .map(([name, meta]) => {
+      const entries = store.index[name] ?? {};
+      const origins = Object.keys(entries);
+      return {
+        name,
+        icon: meta.icon,
+        color: meta.color,
+        count: origins.length,
+        appIcons: origins
+          .slice(0, 8)
+          .map(
+            (origin) => `${storeAssetBase(entries[origin].manifest)}/icon.svg`,
+          ),
+        description:
+          CATEGORY_DESCRIPTIONS[name] ?? "Browse packages in this category.",
+      };
+    })
+    .sort((left, right) => right.count - left.count)
+    .map((category, index) => ({ ...category, featured: index === 0 }));
 
-export const load: PageLoad = async ({ fetch }) => {
-    const [idxRes, catRes] = await Promise.all([
-        fetch(RAW_STORE_INDEX),
-        fetch(RAW_CATEGORIES_META),
-    ]);
-    if (!idxRes.ok) throw new Error('Cannot load store index');
-    if (!catRes.ok) throw new Error('Cannot load categories metadata');
+  const packages = Object.entries(store.index).flatMap(([category, entries]) =>
+    Object.entries(entries).map(([origin, entry]) => ({
+      category,
+      name: entry.name,
+      slug: packageSlug(origin),
+    })),
+  );
+  const schema = jsonLd({
+    "@context": "https://schema.org",
+    "@type": "CollectionPage",
+    name: "cpak Store",
+    description:
+      "Browse Linux desktop applications, developer tools, games and complete environments distributed with cpak.",
+    url: `${SITE_URL}/store`,
+    mainEntity: {
+      "@type": "ItemList",
+      numberOfItems: packages.length,
+      itemListElement: packages.map((pkg, index) => ({
+        "@type": "ListItem",
+        position: index + 1,
+        name: pkg.name,
+        url: `${SITE_URL}/store/apps/${pkg.slug}`,
+      })),
+    },
+  });
 
-    const storeIndex = (await idxRes.json()) as Record<string, Record<string, any>>;
-    const categoriesMeta = (await catRes.json()) as Record<string, { icon: string; color: string }>;
-
-    const temp = Object.entries(categoriesMeta).map(([name, meta]) => {
-        const entries = storeIndex[name] || {};
-        const origins = Object.keys(entries);
-        const count = origins.length;
-        const appIcons = origins.slice(0, 8).map((origin) => {
-            const manifest = (entries[origin] as any).manifest as string;
-            return `${manifest.replace(/\/[^/]+$/, '')}/icon.svg`;
-        });
-        return {
-            name,
-            icon: meta.icon,
-            color: meta.color,
-            count,
-            appIcons,
-            description: CATEGORY_DESCRIPTIONS[name] || 'Browse packages in this category.',
-        };
-    });
-
-    temp.sort((a, b) => b.count - a.count);
-
-    const categories = temp.map((category, index) => ({
-        ...category,
-        featured: index === 0,
-    }));
-
-    return { categories };
+  setHeaders({ "cache-control": "public, max-age=300, s-maxage=3600" });
+  return { categories, packageCount: packages.length, schema };
 };
