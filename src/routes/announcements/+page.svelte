@@ -4,6 +4,14 @@
 
 	const announcements = [
 		{
+			section: 'Desktop',
+			date: 'August 16, 2026',
+			title: 'Singularity Desktop arrives as a cpak session',
+			description:
+				'Singularity Desktop is the first desktop environment to use cpak desktop sessions as an additional distribution path.',
+			href: '/announcements/singularity-desktop-sessions'
+		},
+		{
 			section: 'Platform',
 			date: 'August 15, 2026',
 			title: 'The platform under every official cpak',
