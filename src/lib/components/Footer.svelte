@@ -1,3 +1,9 @@
+<script>
+  import ProjectStrip from "$lib/components/ProjectStrip.svelte";
+</script>
+
+<ProjectStrip />
+
 <footer class="w-full bg-slate-100">
   <div
     class="mx-auto grid max-w-7xl grid-cols-1 gap-12 px-6 py-16 text-sm sm:grid-cols-2 lg:grid-cols-5"
