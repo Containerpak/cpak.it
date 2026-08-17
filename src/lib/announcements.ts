@@ -1,5 +1,14 @@
 export const announcements = [
   {
+    section: "cpak 2.6",
+    date: "August 18, 2026",
+    published: "2026-08-18",
+    title: "Refusing to launch what changed",
+    description:
+      "cpak records what an application is when you install it and refuses to start it when the store no longer holds that.",
+    href: "/announcements/refusing-to-launch-what-changed",
+  },
+  {
     section: "Desktop",
     date: "August 16, 2026",
     published: "2026-08-16",

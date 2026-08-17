@@ -58,3 +58,8 @@ The manifest defines package defaults. Users can remove access or add a local gr
 A package with read-write home access can modify user files. A package with the session bus can call services exposed on that bus. Full devices, process sharing, system bus access, host root mounts, and root inside the environment all expand the trusted surface.
 
 Review the manifest before running an untrusted package. The Store highlights high-risk permissions. The manifest and local override define the authoritative policy.
+
+The boundary above says what a running application may reach. It says nothing
+about whether the application on disk is still the one that was installed, which
+is a separate question with a separate answer: see
+[Verified launch](/docs/verified-launch).

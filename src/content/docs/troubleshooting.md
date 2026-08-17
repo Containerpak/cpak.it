@@ -70,6 +70,27 @@ Audit repairs active package records. Garbage collection removes unreferenced co
 
 Confirm that the manifest path is absolute, ends in `.desktop`, and exists in the final image. Its `Exec` target must be a declared or available binary. Reinstall or update the package after changing only manifest metadata so cpak refreshes the exported entry.
 
+## An application refuses to start after verified launch is on
+
+Run `cpak system explain <origin>`: it puts what the ledger holds beside what
+the launch derives, which is the difference between an application nobody
+enrolled and one whose store no longer holds what it recorded.
+
+An application that was never enrolled is refused only at `refuse`. Update it,
+or run `cpak audit --backfill-bindings` for an installation made before verified
+launch existed.
+
+A store that contradicts itself is refused at every level, including `off`, and
+that is deliberate: it is not an unknown, it is a disagreement inside the store.
+`cpak update <origin>` records the application again from what the registry
+serves.
+
+Changing permissions with `cpak override`, or enabling an addon, changes what a
+launch derives, so cpak records the application again as part of the same
+command. A narrower permission set is recorded without asking. A wider one asks
+for an administrator password, once, and declining it leaves the application
+updated but unenrolled.
+
 ## A login session does not appear in the display manager
 
 Run `cpak system status` first: on a host with a read-only `/usr/local` the integration installs under another prefix, and the session directory moves with it. `cpak system setup` prints what it could not configure, so read its output. SDDM and LightDM are configured through their own files and work under any init. GDM and greetd read the directory from their service environment, which cpak sets automatically under systemd and OpenRC only; under runit, s6, dinit, and sysvinit the setup reports the directory to add and to which service. A greeter that sets `XDG_DATA_DIRS` itself has to list the directory too, because its own value wins.
