@@ -70,6 +70,10 @@ Audit repairs active package records. Garbage collection removes unreferenced co
 
 Confirm that the manifest path is absolute, ends in `.desktop`, and exists in the final image. Its `Exec` target must be a declared or available binary. Reinstall or update the package after changing only manifest metadata so cpak refreshes the exported entry.
 
+## A login session does not appear in the display manager
+
+Run `cpak system status` first: on a host with a read-only `/usr/local` the integration installs under another prefix, and the session directory moves with it. `cpak system setup` prints what it could not configure, so read its output. SDDM and LightDM are configured through their own files and work under any init. GDM and greetd read the directory from their service environment, which cpak sets automatically under systemd and OpenRC only; under runit, s6, dinit, and sysvinit the setup reports the directory to add and to which service. A greeter that sets `XDG_DATA_DIRS` itself has to list the directory too, because its own value wins.
+
 ## A cpak application is not used as the default
 
 Check both desktop resolvers:

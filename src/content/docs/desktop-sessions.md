@@ -48,6 +48,18 @@ cpak system status
 
 The setup installs a fixed root-owned launcher, D-Bus activation policy, and Polkit actions. Package sessions are registered separately.
 
+On a host whose `/usr/local` is read-only, which is the normal shape of an image based distribution, cpak installs under the first prefix that accepts a privileged write: `/usr/local`, then `/opt/cpak`, then `/var/lib/cpak`. The rest of the integration follows the chosen prefix. The bus policy declares the relocated service directory so activation still resolves, and the Polkit action is written to `/etc/polkit-1/actions`, one of the directories polkitd scans. `cpak system status` reports the installation wherever it landed.
+
+## Transports
+
+The authority answers on the system bus and on a Unix socket at `/run/cpak/authority.sock`. The bus is used whenever it exists, because it is what carries an interactive Polkit authorization. The socket exists for hosts that run no system bus. It identifies the caller from the credentials the kernel attaches to the connection rather than from a bus name, and it accepts session changes only from root, since an unprivileged request has no way to be authorized without Polkit.
+
+Root needs neither transport. Run as root, `cpak session enable` changes the registry directly, so a headless server needs no bus, no Polkit, and no running daemon:
+
+```bash
+sudo cpak session enable github.com/example/desktop com.example.desktop
+```
+
 ## Register a session
 
 ```bash
@@ -67,19 +79,19 @@ Removing the last installed package version which provides that identifier also 
 
 ## Display manager support
 
-cpak stores login entries in `/usr/local/share/wayland-sessions`, the local system data directory defined by the XDG base directory specification. `cpak system setup` configures display managers which do not search that directory by default.
+cpak stores login entries under the prefix it installed into, which is `/usr/local/share/wayland-sessions` on a normal host and moves with the prefix on a read-only one. `cpak system setup` then points the installed display managers at that directory.
 
-| Display manager | Status                                                                                                                   |
-| --------------- | ------------------------------------------------------------------------------------------------------------------------ |
-| GDM             | Works without extra configuration. GDM reads Wayland sessions from the XDG system data directories.                      |
-| SDDM            | Configured automatically by `cpak system setup`.                                                                         |
-| LightDM         | Configured automatically by `cpak system setup`. Existing system, X11, and Wayland session directories remain available. |
-| greetd          | Supported through the selected greeter. Configure the greeter to scan `/usr/local/share/wayland-sessions`.               |
+| Display manager | Status                                                                                                                                                                                       |
+| --------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| SDDM            | Configured automatically. The generated search path keeps the standard session directories, so the sessions the distribution ships stay listed beside the cpak ones.                         |
+| LightDM         | Configured automatically. Existing system, X11, and Wayland session directories remain available.                                                                                            |
+| GDM             | A standard install needs nothing: GDM reads the XDG system data directories. A relocated directory is published through the service environment, since GDM has no session directory setting. |
+| greetd          | greetd has no session concept of its own, so the greeter enumerates the sessions. cpak publishes the directory through the service environment as it does for GDM.                           |
 
-For example, tuigreet accepts the cpak directory through its existing session option:
+The environment based path is applied automatically under systemd, through a drop-in that sorts last and preserves the value another drop-in already set, and under OpenRC, through a marked block in the service configuration file. Under runit, s6, dinit, and sysvinit the packaged service scripts read no environment file of their own, so writing one would produce a file nothing loads. There `cpak system setup` reports the directory to add and to which service, and leaves the host alone.
+
+A greeter that sets `XDG_DATA_DIRS` itself overrides what the service environment provides, so the directory has to be listed in the greeter as well. Greeters with an explicit session option accept it directly:
 
 ```bash
 tuigreet --sessions /usr/local/share/wayland-sessions:/usr/share/wayland-sessions
 ```
-
-Other display managers can use the generated entries when they scan XDG system data directories or allow `/usr/local/share/wayland-sessions` to be added to their session path.
