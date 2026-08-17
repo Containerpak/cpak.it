@@ -47,7 +47,10 @@ export const GET: RequestHandler = async ({ fetch, params, url }) => {
     return new Response("Unsupported architecture", { status: 400 });
   }
 
-  const release = env.CPAK_INSTALLER_RELEASE || "v2.1.0";
+  // An explicit pin is honoured as it stands. Without one the endpoint follows
+  // the latest published release instead of a tag that may no longer exist.
+  const pinnedRelease = env.CPAK_INSTALLER_RELEASE;
+  let release = pinnedRelease ?? "";
   let catalogResponse: Response;
   let installerResponse: Response;
   if (env.CPAK_INSTALLER_BASE_URL) {
@@ -57,7 +60,9 @@ export const GET: RequestHandler = async ({ fetch, params, url }) => {
     ]);
   } else {
     const releaseResponse = await fetch(
-      `${RELEASE_API}/tags/${encodeURIComponent(release)}`,
+      pinnedRelease
+        ? `${RELEASE_API}/tags/${encodeURIComponent(pinnedRelease)}`
+        : `${RELEASE_API}/latest`,
       {
         headers: githubHeaders("application/vnd.github+json"),
       },
@@ -69,7 +74,8 @@ export const GET: RequestHandler = async ({ fetch, params, url }) => {
     }
     const releaseDetails = (await releaseResponse.json()) as GitHubRelease;
     if (
-      releaseDetails.tag_name !== release ||
+      (pinnedRelease && releaseDetails.tag_name !== pinnedRelease) ||
+      !releaseDetails.tag_name ||
       !Array.isArray(releaseDetails.assets)
     ) {
       return new Response(
@@ -79,6 +85,7 @@ export const GET: RequestHandler = async ({ fetch, params, url }) => {
         },
       );
     }
+    release = releaseDetails.tag_name;
     const catalogAsset = releaseDetails.assets.find(
       (asset) => asset.name === "cpak-installer-catalog.json",
     );
@@ -108,7 +115,7 @@ export const GET: RequestHandler = async ({ fetch, params, url }) => {
   }
 
   const catalog = (await catalogResponse.json()) as InstallerCatalog;
-  if (catalog.schema !== 1 || catalog.release !== release) {
+  if (catalog.schema !== 1 || (release && catalog.release !== release)) {
     return new Response(
       "Installer catalog does not match the selected release",
       {
