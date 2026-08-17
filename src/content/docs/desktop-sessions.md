@@ -54,11 +54,13 @@ On a host whose `/usr/local` is read-only, which is the normal shape of an image
 
 The authority answers on the system bus and on a Unix socket at `/run/cpak/authority.sock`. The bus is used whenever it exists, because it is what carries an interactive Polkit authorization. The socket exists for hosts that run no system bus. It identifies the caller from the credentials the kernel attaches to the connection rather than from a bus name, and it accepts session changes only from root, since an unprivileged request has no way to be authorized without Polkit.
 
-Root needs neither transport. Run as root, `cpak session enable` changes the registry directly, so a headless server needs no bus, no Polkit, and no running daemon:
+You never run the whole command as an administrator, and cpak refuses it if you try: the package store belongs to your user, and root would look for the package inside its own. Run it as yourself:
 
 ```bash
-sudo cpak session enable github.com/example/desktop com.example.desktop
+cpak session enable github.com/example/desktop com.example.desktop
 ```
+
+When no transport can carry the request, which is the normal situation on a server with no bus, cpak escalates the one step that needs privilege and leaves the rest running as you. It uses what the host actually provides: `pkexec` or `run0` in a graphical session, `sudo` or `doas` on a terminal. If the host has none of them, cpak says so instead of guessing, and the step can be run directly as root.
 
 ## Register a session
 
