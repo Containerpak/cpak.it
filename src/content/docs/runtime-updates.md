@@ -56,7 +56,7 @@ Set `CPAK_OPTS_FILE` to test a specific configuration file.
 Build a package-manager-owned binary with:
 
 ```bash
-make VERSION=v2.1.0 SELF_UPDATE_MODE=managed DIALOG_BACKEND=auto
+make VERSION=v2.1.2 SELF_UPDATE_MODE=managed DIALOG_BACKEND=auto
 ```
 
 Managed builds continue to check the official release. The CLI and desktop notice identify the available version and direct the user to the package maintainer. Direct binary replacement is disabled.

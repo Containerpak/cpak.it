@@ -122,9 +122,10 @@ trusted, and it is the right guarantee for a desktop: an application, or
 anything else running as you, cannot alter another application, its permissions,
 or the launcher that would have checked, without the next launch refusing.
 
-It is not authenticity. It does not prove the package came from its author, and
-nothing in this mechanism claims otherwise. Publisher signing is what would make
-that claim, and it is not here yet.
+Enrolment on its own is not authenticity. It does not prove the package came
+from its author: for that a publisher has to sign what they publish, and cpak
+has to check the signature before it records anything. That is
+[publisher signing](/docs/publishing-signatures), and a host can require it.
 
 Two more limits, stated because a guarantee nobody can see the edges of is
 worse than a smaller one:
@@ -145,9 +146,11 @@ derived on the machine that installs the application, from the image, the
 manifest and the permission set you already publish. A package built before this
 existed is enrolled the same way as one built after it.
 
-Signing is a different statement, and it is not here yet. When it arrives it
-will prove that a package came from you, which enrolment deliberately does not
-claim. Until then a publisher has no key to manage and no step to add.
+Signing is a different statement and it is optional. It proves the package came
+from the CI of your repository, which enrolment on its own does not claim. There
+is no key to manage, because it is keyless through the identity of your CI. See
+[publisher signing](/docs/publishing-signatures) for the workflow, and note that
+a package with no signature installs and runs exactly as it does today.
 
 One thing does affect a publisher. A layer delivered through a partial pull is
 rebuilt from ranges and the blob its digest names is never read, so nothing can
@@ -156,6 +159,32 @@ that way is installed and left unenrolled, and at `refuse` it does not start
 until the user records what is on disk with `cpak audit --backfill-bindings`. If
 your images carry the chunked annotations and you want your users enrolled on
 the first install, publish them without.
+
+## Requiring a signature
+
+A host can decide that an application is enrolled only when a publisher signed
+what it installs, and that the identity that signed it may speak for the
+package's origin:
+
+```bash
+cpak system signatures
+cpak system set-signatures required
+```
+
+The default is optional, which behaves as described above: a signed package
+records who signed it, an unsigned one is enrolled all the same and the record
+says it was unsigned. Under `required` an application whose state is not signed
+by an identity that may speak for its origin is not enrolled at all, and at
+`refuse` it therefore does not start.
+
+Setting it asks for an administrator password, and the level is held next to the
+ledger where the launching account cannot rewrite it.
+
+One limit worth knowing before turning it on: an installation resolved through a
+lock file cannot present a verifiable signature today, because the lock rewrites
+the image reference in the manifest before the manifest is hashed, so no
+signature covers the state that results. Those applications stay unenrolled
+under `required`.
 
 ## For an administered machine
 

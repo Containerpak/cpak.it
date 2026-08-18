@@ -44,7 +44,7 @@ The installer verifies both runtime binaries for the selected architecture again
 Packagers build with `SELF_UPDATE_MODE=managed`. This keeps the version notice and disables direct replacement:
 
 ```bash
-make VERSION=v2.1.0 SELF_UPDATE_MODE=managed
+make VERSION=v2.1.2 SELF_UPDATE_MODE=managed
 ```
 
 The release version and update mode are compiled into the binary. Do not patch the runtime command or remove the update check in a package recipe.

@@ -111,11 +111,16 @@
 
 			<h2 class="pt-8 text-3xl font-bold tracking-tight text-gray-900">What the sketches did not show</h2>
 			<p>
-				The current runtime stores OCI layers by digest, shares equal layers across packages and can use
-				DaBaDee to remove duplicate files that arrived through different layer layouts. Package content,
-				writable application data and transaction state are kept apart. The sandbox is assembled directly
+				The current runtime stores OCI layers by digest and uses FVS content-defined blocks to share
+				equal ranges across different layer layouts. <code>cpak-storaged</code> mounts those immutable layers as
+				one read-only view below each application's writable state. The sandbox is assembled directly
 				with Linux namespaces, OverlayFS, seccomp and Landlock where the host supports them, without a
-				Docker or Podman daemon behind every application.
+				Docker or Podman daemon behind every application. The
+				<a
+					href="/announcements/fvs-storage"
+					class="font-semibold text-[#3158c7] underline underline-offset-4">FVS storage article</a
+				>
+				explains the change from the original design.
 			</p>
 			<p>
 				The drawings captured the two decisions that mattered most: an application should remain tied to

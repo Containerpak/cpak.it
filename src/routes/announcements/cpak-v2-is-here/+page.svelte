@@ -79,9 +79,15 @@
 			</p>
 			<p>
 				Storage follows the same rule. Equal OCI layers are downloaded once and shared by every package
-				that uses them. DaBaDee then catches equal files that arrived through different layer layouts,
-				so duplicated content can still share the same bytes on disk. Applications keep their writable
-				data separate, but they do not each need a private copy of the same operating system base.
+				that uses them. FVS stores equal content blocks once even when files arrived through different
+				layer layouts, so reuse is no longer limited to complete layers or files. Applications keep
+				their writable data separate, but they do not each need a private copy of the same operating
+				system base. The
+				<a
+					href="/announcements/fvs-storage"
+					class="font-semibold text-[#3158c7] underline underline-offset-4">storage migration</a
+				>
+				is automatic for existing installations.
 			</p>
 
 			<h2 class="pt-8 text-3xl font-bold tracking-tight text-gray-900">
