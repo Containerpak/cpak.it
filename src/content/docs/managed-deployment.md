@@ -8,15 +8,15 @@ order: 55
 
 # Managed deployment
 
-A signature tells you where a package came from. On its own that is a small
-statement: every package is signed by its own repository, so it proves the
-software arrived from where it says it did and nothing more. It does not say
-whether your organisation wants to run that publisher, and it does not say what
-the software may do once it runs.
+On a machine where the person at the keyboard is not the person who controls
+root, three decisions belong to the administrator: how much any application may
+ever do, which publishers may be installed, and what happens to an application
+the host cannot account for.
 
-A managed host answers both, and it answers them from a place the person at the
-keyboard cannot rewrite. There are three separate controls, and they are
-separate because they fail differently.
+Each is a separate control, held in a separate file, because they answer
+different questions and fail in different ways. All three live next to the
+integrity ledger, where the account that launches an application cannot write
+them.
 
 ## The ceiling: how much an application may ever do
 
@@ -45,10 +45,10 @@ An application whose manifest asks for the network gets no network. One that
 asks for the whole home gets read-only access to the download directory. One
 that asks for nothing keeps nothing: the ceiling never grants, it only limits.
 
-This is the control that does not depend on trusting anybody. It holds for a
-package nobody signed and for one signed by a publisher you approved, which is
-the point: approving a publisher once should not be a standing grant of whatever
-they decide to ask for later.
+The ceiling is independent of signatures. It applies to a package nobody
+signed and to one signed by an approved publisher alike, so approving a
+publisher does not become a standing grant of whatever that publisher asks for
+in a later release.
 
 ## The trust policy: who may publish
 
@@ -80,10 +80,10 @@ cpak system set-trust none
 }
 ```
 
-`approved_origins` is a list of exact origins, deliberately not patterns. A
-prefix such as an organisation namespace hands the decision back to anyone who
-can create a repository inside it, which is the tautology this control exists to
-break.
+`approved_origins` holds exact origins, not patterns. A pattern that matched
+an organisation namespace would extend approval to every repository anyone can
+create inside it, which is a much larger set of people than those who can
+sign.
 
 `revoked` withdraws trust from what was already approved. A revocation with no
 generation withdraws every generation of that origin. Revocation always beats
@@ -106,8 +106,22 @@ the publisher's word alone.
 }
 ```
 
-This is what stops the trust being self-referential. Without it the only party
-attesting to a package is the party that made it.
+Without an approval, the only party attesting to a package is the party that
+built it. A counter-signature adds a second one.
+
+## Requiring a signature
+
+A host can refuse to enrol anything a publisher has not signed:
+
+```bash
+cpak system signatures
+cpak system set-signatures required
+cpak system set-signatures optional
+```
+
+`optional` is the default and behaves as cpak always has. Under `required` an
+unsigned package is installed but never enrolled, which under a refusing
+enforcement level means it does not start.
 
 ## Enforcement: what happens to what is not recognised
 

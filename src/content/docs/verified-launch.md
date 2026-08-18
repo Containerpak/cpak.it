@@ -61,7 +61,7 @@ because it is not an unknown, it is a disagreement inside the store.
 one. Refused when the application is enrolled.
 
 **Unbound**: a layer carries no binding, so the launch cannot be described at
-all. The remedy is named in the message rather than left to the reader.
+all. The message names the command that fixes it.
 
 **Unenrolled**: the ledger holds nothing for this application. What happens next
 is the one thing the enforcement level decides.
