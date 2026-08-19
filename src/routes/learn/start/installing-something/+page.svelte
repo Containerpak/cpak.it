@@ -29,8 +29,33 @@
 
   <p>
     Before anything is downloaded, cpak fetches the manifest and prints what it
-    asks for. Name, description, what it will add to your applications menu, and
-    then the permissions, one line each.
+    asks for. This is the whole of it, for the command above:
+  </p>
+
+  <pre><code>The following cpak(s) will be installed:
+  - VLC: Play video, audio and network streams.
+
+The following will be exported:
+  - (binary) /usr/bin/vlc
+  - (desktop entry) /usr/share/applications/vlc.desktop
+
+The following permissions will be granted:
+  - socket-x11: true
+  - socket-wayland: true
+  - socket-pulse-audio: true
+  - socket-session-bus: true
+  - socket-system-bus: false
+  - socket-ssh-agent: false
+  - device-dri: true
+  - device-kvm: false
+  ... twenty more, each one true or false
+
+Do you want to continue? [y/N]</code></pre>
+
+  <p>
+    Every line is either true or false, and the false ones are printed too. A
+    permission missing from the list is not a permission you have to guess
+    about: there are no missing ones.
   </p>
 
   <p>

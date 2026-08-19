@@ -1,7 +1,12 @@
 <script lang="ts">
   import Seo from "$lib/components/Seo.svelte";
   import LessonShell from "$lib/components/learn/LessonShell.svelte";
+  import CeilingPlayground from "$lib/components/learn/playgrounds/CeilingPlayground.svelte";
+  import { PLAYGROUNDS, waiting, type PlaygroundStatus } from "$lib/learn/playgrounds";
   import { COURSE } from "../course";
+
+  const meta = PLAYGROUNDS.ceiling;
+  let status = $state<PlaygroundStatus>(waiting());
 
   const lesson = COURSE.modules[1].lessons[1];
 </script>
@@ -12,7 +17,17 @@
   path="/learn/start/a-ceiling-never-grants"
 />
 
-<LessonShell course={COURSE} {lesson}>
+<LessonShell
+  course={COURSE}
+  {lesson}
+  playgroundTitle={meta.title}
+  playgroundLink={{ href: meta.href, label: "Open on its own" }}
+  playgroundStatus={status}
+>
+  {#snippet playground()}
+    <CeilingPlayground onstatus={(next) => (status = next)} />
+  {/snippet}
+
   <p>
     On a machine you do not hold root on, an administrator writes a ceiling: the
     widest policy that host allows. Whatever a package asks for, and whatever
@@ -68,7 +83,7 @@
   </p>
 
   <p>
-    Open the <a href="/learn/play/ceiling">ceiling playground</a> to set a manifest,
+    Use the playground beside this text to set a manifest,
     an owner override and a ceiling against each other and read what survives
     all three. <a href="/docs/managed-deployment">Managed deployment</a> is the reference
     behind this lesson.
