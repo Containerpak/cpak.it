@@ -47,6 +47,11 @@
       <a href="/docs/contributing" class="block text-gray-600 hover:underline"
         >Contributing</a
       >
+      <a href="/learn" class="block text-gray-600 hover:underline">Learn cpak</a
+      >
+      <a href="/verify" class="block text-gray-600 hover:underline"
+        >Check a credential</a
+      >
     </div>
 
     <div class="space-y-3">

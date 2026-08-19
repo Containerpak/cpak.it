@@ -5,6 +5,14 @@
   import ThemePicker from "$lib/components/ThemePicker.svelte";
   import { packageSlug } from "$lib/store";
 
+  // Who is signed in, when the page is one of Learn's. The rest of the site
+  // has no account, so it passes nothing and no profile is drawn.
+  export let account: {
+    handle: string;
+    avatar: string;
+    provider: string;
+  } | null = null;
+
   let query = "";
   let showDropdown = false;
   let showMobileMenu = false;
@@ -238,6 +246,32 @@
         >
           Get started
         </a>
+        {#if inLearn}
+          {#if account}
+            <a
+              href="/learn/account"
+              title="Your courses and credentials"
+              class="flex h-9 w-9 shrink-0 items-center justify-center overflow-hidden rounded-full border border-slate-200 bg-slate-100 text-sm font-semibold text-gray-700 transition hover:border-slate-300 focus-visible:ring-2 focus-visible:ring-[#3E7BFF] focus-visible:outline-none"
+            >
+              {#if account.avatar}
+                <img
+                  src={account.avatar}
+                  alt=""
+                  class="h-full w-full object-cover"
+                />
+                <span class="sr-only">{account.handle}</span>
+              {:else}
+                {account.handle.slice(0, 1).toUpperCase()}
+                <span class="sr-only">{account.handle}</span>
+              {/if}
+            </a>
+          {:else}
+            <a
+              href="/learn/account"
+              class="text-sm font-medium text-gray-900 hover:underline">Sign in</a
+            >
+          {/if}
+        {/if}
       </div>
     </div>
   </div>
