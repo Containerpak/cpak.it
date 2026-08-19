@@ -178,7 +178,9 @@
       return "No manifest yet. Pick a case or paste one.";
     if (blocked === "invalid") return "The pane is not JSON yet.";
     if (refusal) return `cpak will not migrate this: ${refusal}`;
-    if (!board) return "";
+    // The module is here but has not read this manifest yet. It is a moment,
+    // and a bar that goes blank for it reads as an answer of nothing.
+    if (!board) return "Working out what each field becomes.";
     if (board.migration.changes.length === 0) {
       return `Nothing to migrate: this manifest is already version ${board.migration.manifestVersion}.`;
     }

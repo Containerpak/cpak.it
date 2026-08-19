@@ -301,7 +301,9 @@
       return "No manifest yet. Pick a case or write one.";
     if (blocked === "invalid") return "One of the three panes is not JSON yet.";
     if (refusal) return `cpak refuses this: ${refusal}`;
-    if (!board) return "";
+    // The module is here but has not answered these three panes yet. It is a
+    // moment, and a bar that goes blank for it reads as an answer of nothing.
+    if (!board) return "Working out what runs.";
     const runs = `The application runs with ${count(board.carries.length, "permission", "permissions")} and ${count(board.policy.mounts.length, "mount", "mounts")}.`;
     if (board.named.length === 0) return `No ceiling on this host. ${runs}`;
     // A permission the ceiling never named that reaches what it did name is
