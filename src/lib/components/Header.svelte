@@ -84,6 +84,7 @@
   }
 
   $: current = $page.url.pathname;
+  $: inLearn = current === "/learn" || current.startsWith("/learn/");
 </script>
 
 <nav class="relative w-full bg-slate-50">
@@ -96,14 +97,52 @@
         <span class="material-symbols-outlined">arrow_back</span>
       </button>
     {/if}
-    <a href="/" class="flex shrink-0 items-center gap-2">
-      <img src="/cpak-brand.svg" alt="cpak logo" class="theme-logo-light" />
-      <img
-        src="/presskit/full/cpak-brand-dark.svg"
-        alt="cpak logo"
-        class="theme-logo-dark h-[46px] w-[104px] object-contain"
-      />
-    </a>
+    <div class="flex shrink-0 items-center gap-2 sm:gap-3">
+      <a href="/" class="flex shrink-0 items-center gap-2">
+        {#if inLearn}
+          <span class="flex items-center sm:hidden">
+            <img
+              src="/presskit/icon/cpak-icon.svg"
+              alt="cpak logo"
+              class="theme-logo-light h-[46px] w-10 object-contain"
+            />
+            <img
+              src="/presskit/icon/cpak-icon-dark.svg"
+              alt="cpak logo"
+              class="theme-logo-dark h-[46px] w-10 object-contain"
+            />
+          </span>
+          <span class="hidden items-center sm:flex">
+            <img src="/cpak-brand.svg" alt="cpak logo" class="theme-logo-light" />
+            <img
+              src="/presskit/full/cpak-brand-dark.svg"
+              alt="cpak logo"
+              class="theme-logo-dark h-[46px] w-[104px] object-contain"
+            />
+          </span>
+        {:else}
+          <img src="/cpak-brand.svg" alt="cpak logo" class="theme-logo-light" />
+          <img
+            src="/presskit/full/cpak-brand-dark.svg"
+            alt="cpak logo"
+            class="theme-logo-dark h-[46px] w-[104px] object-contain"
+          />
+        {/if}
+      </a>
+      {#if inLearn}
+        <span
+          aria-hidden="true"
+          class="h-6 w-0 shrink-0 border-l border-slate-200"
+        ></span>
+        <a
+          href="/learn"
+          aria-current={current === "/learn" ? "page" : undefined}
+          style="font-family: 'Outfit', sans-serif"
+          class="shrink-0 rounded-sm text-lg font-bold text-gray-900 hover:underline focus-visible:ring-2 focus-visible:ring-[#3E7BFF] focus-visible:outline-none"
+          >learn</a
+        >
+      {/if}
+    </div>
     <div class="flex flex-grow justify-end lg:justify-center">
       <input
         type="search"
