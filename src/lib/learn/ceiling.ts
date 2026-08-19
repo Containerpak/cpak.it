@@ -1,5 +1,6 @@
-// The worked cases the ceiling board opens with. Each one is a manifest that
-// means something and the least policy around it that makes one point.
+// The worked cases the ceiling board opens with, and the machines they are
+// computed for. Each case is a manifest that means something and the least
+// policy around it that makes one point.
 
 import { format, type Host } from "$lib/learn/policy";
 
@@ -26,7 +27,7 @@ export const MACHINES: Machine[] = [
   {
     id: "headless",
     label: "Headless host",
-    note: "The same user with no compositor and no extra device nodes. The same policy produces fewer mounts, because a mount is only made where there is something to mount.",
+    note: "The same user with no compositor and no extra device nodes. The same policy makes fewer mounts, because a mount is only made where there is something to mount.",
     host: { uid: 1000, home: "/home/ada", env: {}, paths: [], sockets: [] },
   },
 ];
@@ -80,7 +81,7 @@ export const CASES: Case[] = [
     id: "closes-nothing",
     label: "A ceiling that closes nothing",
     lesson:
-      "The ceiling closes deviceAll. The manifest never asked for deviceAll, it asked for deviceDri, and a ceiling decides only the keys it names. The GPU is still there.",
+      "The ceiling closes deviceAll. The manifest never asked for deviceAll: it asked for deviceDri, which the ceiling does not name. The GPU is still there.",
     machine: "wayland",
     manifest: manifest(asks),
     user: "",
@@ -90,7 +91,7 @@ export const CASES: Case[] = [
     id: "same-door",
     label: "One door, two names",
     lesson:
-      "socketBluetooth mounts the socket socketSystemBus mounts. Closing one and leaving the other would close nothing, so naming either one holds both.",
+      "socketBluetooth opens the socket socketSystemBus opens. Closing one and leaving the other would close nothing, so naming either one holds both.",
     machine: "wayland",
     manifest: manifest(asks),
     user: "",
