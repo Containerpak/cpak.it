@@ -96,46 +96,28 @@
 </script>
 
 <nav class="relative w-full bg-slate-50">
-  <div class="mx-auto flex max-w-7xl items-center gap-6 px-6 py-4">
+  <div class="mx-auto flex max-w-7xl items-center gap-3 px-4 py-4 sm:gap-6 sm:px-6">
     {#if current !== "/"}
       <button
         on:click={() => history.back()}
-        class="flex cursor-pointer items-center rounded-full bg-transparent p-2 text-gray-700 shadow-none transition duration-200 hover:bg-white hover:shadow-sm"
+        aria-label="Back"
+        class="hidden cursor-pointer items-center rounded-full bg-transparent p-2 text-gray-700 shadow-none transition duration-200 hover:bg-white hover:shadow-sm sm:flex"
       >
         <span class="material-symbols-outlined">arrow_back</span>
       </button>
     {/if}
     <div class="flex shrink-0 items-center gap-2 sm:gap-3">
       <a href="/" class="flex shrink-0 items-center gap-2">
-        {#if inLearn}
-          <span class="flex items-center sm:hidden">
-            <img
-              src="/presskit/icon/cpak-icon.svg"
-              alt="cpak logo"
-              class="theme-logo-light h-[46px] w-10 object-contain"
-            />
-            <img
-              src="/presskit/icon/cpak-icon-dark.svg"
-              alt="cpak logo"
-              class="theme-logo-dark h-[46px] w-10 object-contain"
-            />
-          </span>
-          <span class="hidden items-center sm:flex">
-            <img src="/cpak-brand.svg" alt="cpak logo" class="theme-logo-light" />
-            <img
-              src="/presskit/full/cpak-brand-dark.svg"
-              alt="cpak logo"
-              class="theme-logo-dark h-[46px] w-[104px] object-contain"
-            />
-          </span>
-        {:else}
-          <img src="/cpak-brand.svg" alt="cpak logo" class="theme-logo-light" />
-          <img
-            src="/presskit/full/cpak-brand-dark.svg"
-            alt="cpak logo"
-            class="theme-logo-dark h-[46px] w-[104px] object-contain"
-          />
-        {/if}
+        <!-- The wordmark stays at every width, inside Learn as well. Dropping
+             it to the icon on a narrow screen left the mark beside it reading
+             as the name of the product, which is the one thing the pipe was
+             there to prevent. -->
+        <img src="/cpak-brand.svg" alt="cpak logo" class="theme-logo-light" />
+        <img
+          src="/presskit/full/cpak-brand-dark.svg"
+          alt="cpak logo"
+          class="theme-logo-dark h-[46px] w-[104px] object-contain"
+        />
       </a>
       {#if inLearn}
         <span
