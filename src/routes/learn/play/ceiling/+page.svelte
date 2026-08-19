@@ -733,20 +733,31 @@
               <table class="w-full min-w-[30rem] text-left text-sm">
                 <thead class="bg-slate-50">
                   <tr>
-                    <th class="px-3 py-2 font-semibold text-gray-900">
+                    <th
+                      scope="col"
+                      class="px-3 py-2 font-semibold text-gray-900"
+                    >
                       Permission
                     </th>
-                    <th class="px-3 py-2 font-semibold text-gray-900">
+                    <th
+                      scope="col"
+                      class="px-3 py-2 font-semibold text-gray-900"
+                    >
                       Asked for
                     </th>
-                    <th class="px-3 py-2 font-semibold text-gray-900">Runs</th>
+                    <th
+                      scope="col"
+                      class="px-3 py-2 font-semibold text-gray-900">Runs</th
+                    >
                   </tr>
                 </thead>
                 <tbody class="divide-y divide-slate-200">
                   {#each board.changed as key}
                     <tr>
-                      <td class="px-3 py-2 font-mono text-xs text-gray-800"
-                        >{key}</td
+                      <th
+                        scope="row"
+                        class="px-3 py-2 font-mono text-xs font-normal text-gray-800"
+                        >{key}</th
                       >
                       <td class="px-3 py-2 text-xs text-gray-600"
                         >{show(board.policy.requested[key])}</td
