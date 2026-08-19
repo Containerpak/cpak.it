@@ -48,7 +48,15 @@
           >
         </li>
         <li aria-hidden="true">/</li>
-        <li>Playground</li>
+        <li>
+          <a
+            href="/learn#playgrounds"
+            class="rounded-sm text-slate-300 hover:text-white hover:underline focus-visible:ring-2 focus-visible:ring-[#8aa8ff] focus-visible:outline-none"
+            >Playgrounds</a
+          >
+        </li>
+        <li aria-hidden="true">/</li>
+        <li aria-current="page">{title}</li>
       </ol>
     </nav>
 
@@ -65,9 +73,12 @@
       </div>
       <a
         href={reference.href}
-        class="rounded-full border border-white/20 px-4 py-2 text-sm font-medium text-slate-200 hover:bg-white/10 hover:text-white focus-visible:ring-2 focus-visible:ring-[#8aa8ff] focus-visible:outline-none"
+        class="inline-flex shrink-0 items-center gap-2 rounded-full border border-white/20 px-4 py-2 text-sm font-medium text-slate-200 hover:bg-white/10 hover:text-white focus-visible:ring-2 focus-visible:ring-[#8aa8ff] focus-visible:outline-none"
       >
-        {reference.label}
+        <span class="material-symbols-outlined text-[18px]" aria-hidden="true"
+          >menu_book</span
+        >
+        Read the docs on {reference.label.toLowerCase()}
       </a>
     </div>
 

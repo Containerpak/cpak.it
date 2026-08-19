@@ -96,7 +96,7 @@
       href="/learn"
       class="text-sm font-medium text-[#4670EC] hover:underline focus-visible:ring-2 focus-visible:ring-[#3E7BFF] focus-visible:outline-none"
     >
-      cpak Learn
+      Learn
     </a>
     <div
       class="mt-4 flex flex-wrap items-start justify-between gap-x-8 gap-y-6"
@@ -293,12 +293,12 @@
           <p
             class="rounded-xl border border-yellow-200 bg-yellow-100 p-4 text-sm leading-6 text-yellow-800"
           >
-            Development sign-in. GitHub is not configured on this machine, so
-            this form stands in for it: it opens a real session against a real
-            account row, and it checks nothing about the handle you type.
-            Credentials issued to it say so wherever they appear, and this form
-            disappears the moment GITHUB_CLIENT_ID and GITHUB_CLIENT_SECRET are
-            set.
+            This is a development sign-in, and it checks nothing. It stands in
+            for GitHub while this copy of the site is running on somebody's own
+            machine: type any handle and you get a real account under it.
+            Anything issued to that account is labelled with where it came from,
+            everywhere it appears. On cpak.it you sign in with GitHub and this
+            form is not there.
           </p>
           <label
             for="handle"

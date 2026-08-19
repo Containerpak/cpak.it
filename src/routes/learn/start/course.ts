@@ -43,5 +43,16 @@ export const COURSE: Course = {
         },
       ],
     },
+    {
+      title: "Check what you know",
+      lessons: [
+        {
+          slug: "check-what-you-know",
+          title: "Five questions",
+          href: "/learn/start/check-what-you-know",
+          kind: "test",
+        },
+      ],
+    },
   ],
 };

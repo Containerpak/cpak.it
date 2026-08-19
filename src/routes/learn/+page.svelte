@@ -73,9 +73,9 @@
       </p>
       <h2 class="mt-2 text-2xl font-bold text-gray-900">Start here</h2>
       <p class="mt-3 leading-7 text-gray-600">
-        Four lessons, about twenty minutes, assuming nothing. What cpak is, what
-        you are shown before you install something, and what an application is
-        allowed to do afterwards.
+        Four lessons and five questions, about twenty-five minutes, assuming
+        nothing. What cpak is, what you are shown before you install something,
+        and what an application is allowed to do afterwards.
       </p>
       <a
         href="/learn/start"
@@ -118,7 +118,7 @@
   </section>
 {/each}
 
-<section class="mx-auto max-w-6xl px-6 py-16">
+<section id="playgrounds" class="mx-auto max-w-6xl px-6 py-16">
   <h2 class="text-3xl font-bold tracking-tight text-gray-900">Playgrounds</h2>
   <p class="mt-3 max-w-2xl text-lg leading-8 text-gray-600">
     Five tools you can open on their own. Each one asks cpak a question and
