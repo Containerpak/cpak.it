@@ -110,6 +110,11 @@
 			description: 'Accesses USB devices connected to the host.',
 			icon: 'usb',
 		},
+		deviceSerial: {
+			label: 'Serial ports',
+			description: 'Talks to boards and instruments on a serial port.',
+			icon: 'cable',
+		},
 		deviceAll: {
 			label: 'Host devices',
 			description: 'Accesses host devices required by hardware and gaming features.',

@@ -10,6 +10,8 @@ order: 30
 
 The `override` object in `cpak.json` is the package's default permission set. The name reflects the same structure used for local user overrides. Each field maps to a concrete runtime action.
 
+A permission a manifest does not declare is not granted. There is no field that is on unless you turn it off, so a package reaches the display, the session bus, audio, the GPU or the network only by asking for each of them by name. `cpak init` writes every field out explicitly, which is the recommended shape for a manifest: it says what the package needs and, just as usefully, what it does not.
+
 ## Display and desktop sockets
 
 | Field              | Access                                                                |
@@ -30,6 +32,8 @@ Use the system broker for notifications and external URIs. Each permission expos
 ## Devices
 
 `deviceDri` grants access to graphics devices under `/dev/dri`. Other booleans cover KVM, shared memory, ALSA, video capture, FUSE, TUN/TAP, and USB. `deviceAll` exposes all host devices and should be reserved for packages that cannot work with narrower grants.
+
+`deviceSerial` covers `/dev/ttyUSB*` and `/dev/ttyACM*`, which is how boards, printers, radios and meters appear. Use it instead of `deviceAll` for anything that talks to a serial port. Device globs are resolved when the container is built, so a port plugged in afterwards is not visible to a running application.
 
 NVIDIA userspace libraries are resolved from the host at launch when GPU passthrough is active. Package images use that resolved driver stack.
 

@@ -30,20 +30,27 @@ cpak system set-ceiling /etc/cpak/ceiling.json
 cpak system set-ceiling none
 ```
 
-The file is a permission set, the same shape as an override:
+The file is a permission set, the same shape as an override, and it decides
+only the permissions it names. A key that is not in the file is left to the
+manifest and to the owner of the application:
 
 ```json
 {
-  "socketWayland": true,
-  "deviceDri": true,
+  "socketSessionBus": false,
   "network": false,
   "filesystem": [{ "path": "xdg-download", "access": "read-only" }]
 }
 ```
 
-An application whose manifest asks for the network gets no network. One that
-asks for the whole home gets read-only access to the download directory. One
-that asks for nothing keeps nothing: the ceiling never grants, it only limits.
+That file closes the session bus and the network, and holds every filesystem
+request down to read-only access to the download directory. It says nothing
+about audio, devices or the accessibility bus, so applications keep whatever
+their manifests ask for there.
+
+Writing a permission as `true` is therefore not a grant. The ceiling is met by
+intersection, so `"deviceDri": true` says only that the host does not stand in
+the way, which is the same as leaving it out. An application that asks for
+nothing keeps nothing: the ceiling never grants, it only limits.
 
 The ceiling is independent of signatures. It applies to a package nobody
 signed and to one signed by an approved publisher alike, so approving a
