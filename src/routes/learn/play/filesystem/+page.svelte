@@ -125,7 +125,9 @@
     if (phase === "loading") return "Waiting for the decision module.";
     if (phase === "failed") return "The decision module could not be loaded.";
     if (broke) return `The module could not answer: ${broke}`;
-    if (!plan) return "";
+    // The module is here but has not read this list yet. It is a moment, and a
+    // line that goes blank for it reads as an answer of nothing.
+    if (!plan) return "Working out where each entry lands.";
     if (entries.length === 0)
       return "No entries. The application reaches none of the host.";
     const counted = [
