@@ -198,7 +198,7 @@
 
   /**
    * Everything the page shows, asked of the module: whether cpak accepts the
-   * manifest, what it binds on the fixture, and which permissions the manifest
+   * manifest, what it binds on the made-up machine, and which permissions the manifest
    * never mentions.
    */
   function decide(loaded: Core, manifest: Manifest, chosen: string[]): Answer {
@@ -569,11 +569,11 @@
     >
       <div class="border-b border-slate-200 px-5 py-4 sm:px-6">
         <h2 id="opens-heading" class="text-lg font-semibold text-gray-900">
-          What it opens on {FIXTURE.id}
+          What it opens
         </h2>
         <p class="mt-1 text-sm leading-6 text-gray-500">
-          The fixture is {FIXTURE.summary}. It is sent with every question, so
-          this is never about the machine you are reading on.
+          On a made-up machine: {FIXTURE.summary}. The same one every time, and
+          never the machine you are reading on.
         </p>
         <p aria-live="polite" class="mt-2 text-sm font-medium text-gray-900">
           {summary}
@@ -838,10 +838,9 @@
       </h2>
       <p class="mt-2 leading-7 text-gray-600">
         A mount resolves against a machine: the user id, the home directory, a
-        few environment variables and what is on disk. This page uses one
-        written down in full,
-        <span class="font-mono text-sm">{FIXTURE.id}</span>, and sends it with
-        every question, so two people comparing this page see the same paths.
+        few environment variables and what is on disk. This page uses one made
+        up and written down in full, and sends it with every question, so two
+        people comparing this page see the same paths.
       </p>
       <ul class="mt-4 space-y-1 text-sm leading-6 text-gray-600">
         {#each FIXTURE.notes as note (note)}
@@ -857,7 +856,7 @@
         <!-- svelte-ignore a11y_no_noninteractive_tabindex -->
         <pre
           role="region"
-          aria-label="The fixture host, as JSON"
+          aria-label="The machine these answers are about, as JSON"
           tabindex="0"
           class="mt-3 overflow-auto rounded-xl bg-slate-950 p-4 font-mono text-xs leading-6 text-slate-100 focus:ring-2 focus:ring-[#3E7BFF] focus:outline-none">{JSON.stringify(
             FIXTURE.host,
