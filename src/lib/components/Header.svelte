@@ -216,6 +216,10 @@
           class="text-sm font-medium text-gray-900 hover:underline">Docs</a
         >
         <a
+          href="/learn"
+          class="text-sm font-medium text-gray-900 hover:underline">Learn</a
+        >
+        <a
           href="/announcements"
           class="text-sm font-medium text-gray-900 hover:underline"
           >Announcements</a
@@ -243,6 +247,11 @@
         href="/docs"
         class="block px-6 py-4 text-sm font-medium text-gray-900 hover:bg-slate-100"
         >Docs</a
+      >
+      <a
+        href="/learn"
+        class="block px-6 py-4 text-sm font-medium text-gray-900 hover:bg-slate-100"
+        >Learn</a
       >
       <a
         href="/announcements"
