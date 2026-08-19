@@ -40,7 +40,7 @@ export type PlaygroundMeta = {
 export const PLAYGROUNDS: Record<PlaygroundId, PlaygroundMeta> = {
   permissions: {
     id: "permissions",
-    title: "Permission board",
+    title: "Permissions",
     sentence:
       "Tick a permission and read the exact host paths cpak binds into the container, and what each one reaches.",
     href: "/learn/play/permissions",
@@ -48,7 +48,7 @@ export const PLAYGROUNDS: Record<PlaygroundId, PlaygroundMeta> = {
   },
   filesystem: {
     id: "filesystem",
-    title: "Filesystem permissions",
+    title: "Filesystem access",
     sentence:
       "Write the filesystem list a manifest would carry and read where every entry lands: the directory it comes from on the host, and the path the application finds it at.",
     href: "/learn/play/filesystem",
@@ -56,7 +56,7 @@ export const PLAYGROUNDS: Record<PlaygroundId, PlaygroundMeta> = {
   },
   ceiling: {
     id: "ceiling",
-    title: "The ceiling board",
+    title: "Ceiling",
     sentence:
       "Three parties decide what an application may do: the manifest asks, the owner of the installation may replace that request, and the administrator's ceiling narrows what survived. Change any of them and read what runs.",
     href: "/learn/play/ceiling",
@@ -67,7 +67,7 @@ export const PLAYGROUNDS: Record<PlaygroundId, PlaygroundMeta> = {
   },
   migration: {
     id: "migration",
-    title: "The migration board",
+    title: "Manifest migration",
     sentence:
       "A version 1 manifest reached the host through flags and named the commands it could run; version 2 has neither. Paste one and read the manifest cpak writes for it, field by field.",
     href: "/learn/play/migration",
@@ -75,7 +75,7 @@ export const PLAYGROUNDS: Record<PlaygroundId, PlaygroundMeta> = {
   },
   "desktop-entry": {
     id: "desktop-entry",
-    title: "Desktop entry",
+    title: "Desktop entries",
     sentence:
       "Paste the .desktop file your image ships and read the two files cpak exports for it, line by line.",
     href: "/learn/play/desktop-entry",

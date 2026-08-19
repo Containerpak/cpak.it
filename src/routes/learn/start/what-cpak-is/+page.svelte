@@ -7,7 +7,7 @@
 </script>
 
 <Seo
-  title="What cpak is - cpak"
+  title="An application that starts with nothing - cpak"
   description="The first lesson: what cpak is, what it installs, and why an application you install with it cannot read the rest of your files."
   path="/learn/start/what-cpak-is"
 />

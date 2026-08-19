@@ -18,7 +18,7 @@ export const COURSE: Course = {
       lessons: [
         {
           slug: "what-cpak-is",
-          title: "What cpak is",
+          title: "An application that starts with nothing",
           href: "/learn/start/what-cpak-is",
         },
         {
