@@ -3,6 +3,7 @@
 // credentials table.
 
 import type { Account, Credential, Store } from "./store";
+import { signCredential } from "./signing";
 
 // Crockford's alphabet: no I, L, O or U, so a code read aloud or copied off a
 // screen lands on the right record.
@@ -56,7 +57,7 @@ export async function issue(
 ): Promise<Credential> {
   const held = await store.readCredentials(account.key);
   const now = new Date();
-  const entry: Credential = {
+  const facts = {
     code: newCode(),
     account: account.key,
     provider: account.provider,
@@ -67,6 +68,13 @@ export async function issue(
     issuedAt: now.toISOString(),
     expiresAt: plusMonths(now, MONTHS),
     supersededBy: null,
+    // Taken before the row is written, and never taken again for this
+    // credential: the position is what the status list is indexed by.
+    statusIndex: await store.nextStatusIndex(),
+  };
+  const entry: Credential = {
+    ...facts,
+    token: await signCredential(facts),
   };
   await store.writeCredential(entry);
   for (const earlier of held) {

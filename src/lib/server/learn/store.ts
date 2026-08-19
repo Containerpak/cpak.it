@@ -42,6 +42,17 @@ export type Credential = {
   issuedAt: string;
   expiresAt: string;
   supersededBy: string | null;
+  /**
+   * Where this credential sits in the published status list. Allocated once,
+   * never reused, so a position that has been revoked stays revoked.
+   */
+  statusIndex: number;
+  /**
+   * The signed form, when a signing key was configured at the moment it was
+   * issued. Empty means the code is the only proof there is, and every page
+   * that shows the credential says which of the two it is.
+   */
+  token: string;
 };
 
 export type Erased = {
@@ -83,6 +94,10 @@ export type Store = {
   supersede: (code: string, by: string) => Promise<void>;
   readCredential: (code: string) => Promise<Credential | null>;
   readCredentials: (account: string) => Promise<Credential[]>;
+  /** The next unused position in the status list. */
+  nextStatusIndex: () => Promise<number>;
+  /** Every position whose credential no longer stands. */
+  revokedStatusIndexes: () => Promise<number[]>;
   erase: (account: string) => Promise<Erased>;
 };
 
@@ -121,9 +136,18 @@ const SCHEMA = [
     result text not null,
     issued_at text not null,
     expires_at text not null,
-    superseded_by text
+    superseded_by text,
+    status_index integer not null default 0,
+    token text not null default ''
   )`,
   `create index if not exists credentials_account on credentials (account)`,
+  `create unique index if not exists credentials_status on credentials (status_index)`,
+  // One row per counter. A status list position may never be handed out
+  // twice: reusing one would un-revoke a credential somebody else is holding.
+  `create table if not exists counters (
+    name text primary key,
+    value integer not null
+  )`,
 ];
 
 type AccountRow = {
@@ -155,6 +179,8 @@ type CredentialRow = {
   issued_at: string;
   expires_at: string;
   superseded_by: string | null;
+  status_index: number;
+  token: string;
 };
 
 function asProvider(value: string): Provider {
@@ -195,6 +221,8 @@ function toCredential(row: CredentialRow): Credential {
     issuedAt: row.issued_at,
     expiresAt: row.expires_at,
     supersededBy: row.superseded_by,
+    statusIndex: row.status_index ?? 0,
+    token: row.token ?? "",
   };
 }
 
@@ -308,8 +336,8 @@ function onD1(db: Database): Store {
         .prepare(
           `insert into credentials
              (code, account, provider, handle, exam, title, result,
-              issued_at, expires_at, superseded_by)
-           values (?, ?, ?, ?, ?, ?, ?, ?, ?, null)`,
+              issued_at, expires_at, superseded_by, status_index, token)
+           values (?, ?, ?, ?, ?, ?, ?, ?, ?, null, ?, ?)`,
         )
         .bind(
           entry.code,
@@ -321,8 +349,34 @@ function onD1(db: Database): Store {
           entry.result,
           entry.issuedAt,
           entry.expiresAt,
+          entry.statusIndex,
+          entry.token,
         )
         .run();
+    },
+
+    async nextStatusIndex() {
+      await ready(db);
+      // One statement, so two credentials issued at the same moment cannot be
+      // given the same position.
+      const row = await db
+        .prepare(
+          `insert into counters (name, value) values ('status_index', 0)
+             on conflict(name) do update set value = value + 1
+           returning value`,
+        )
+        .first<{ value: number }>();
+      return row?.value ?? 0;
+    },
+
+    async revokedStatusIndexes() {
+      await ready(db);
+      const rows = await db
+        .prepare(
+          `select status_index from credentials where superseded_by is not null`,
+        )
+        .all<{ status_index: number }>();
+      return rows.results.map((row) => row.status_index);
     },
 
     // The only write a credential row ever takes after it is inserted.
@@ -383,6 +437,7 @@ const accounts = new Map<string, Account>();
 const sessions = new Map<string, { account: string; expiresAt: string }>();
 const completions = new Map<string, Map<string, Completion>>();
 const credentials = new Map<string, Credential>();
+let statusIndexes = 0;
 
 const memory: Store = {
   durable: false,
@@ -427,6 +482,15 @@ const memory: Store = {
     return [...held.values()].sort((a, b) =>
       a.completedAt.localeCompare(b.completedAt),
     );
+  },
+  async nextStatusIndex() {
+    return statusIndexes++;
+  },
+
+  async revokedStatusIndexes() {
+    return [...credentials.values()]
+      .filter((entry) => entry.supersededBy !== null)
+      .map((entry) => entry.statusIndex);
   },
 
   async writeCredential(entry) {

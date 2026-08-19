@@ -37,6 +37,7 @@ export const load: PageServerLoad = async ({
       issuedAt: entry.issuedAt,
       expiresAt: entry.expiresAt,
       supersededBy: entry.supersededBy,
+      signed: entry.token !== "",
     },
     successorIssuedAt: successor?.issuedAt ?? null,
   };

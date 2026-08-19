@@ -13,6 +13,8 @@ export type Held = {
   issuedAt: string;
   expiresAt: string;
   supersededBy: string | null;
+  /** Whether a signed form of this record can be fetched and checked. */
+  signed?: boolean;
 };
 
 // Read on both pages, so the private view and the public view cannot drift
@@ -55,6 +57,11 @@ export function standingLine(entry: Held, now = new Date()) {
 // Deliberately short, and deliberately outside /learn: whoever follows this
 // link is checking a record, not taking a course, and the address has to
 // outlive whatever the learning area is called next year.
+/** Where the signed form of a credential is served. */
+export function tokenPath(code: string) {
+  return `/verify/${code}/token`;
+}
+
 export function verifyPath(code: string) {
   return `/verify/${code}`;
 }

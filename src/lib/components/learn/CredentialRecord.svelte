@@ -11,6 +11,7 @@
     longDate,
     standing,
     standingLine,
+    tokenPath,
     verifyPath,
     type Held,
   } from "$lib/learn/credential";
@@ -85,6 +86,24 @@
         class="font-mono text-[#3158c7] underline underline-offset-2 hover:no-underline focus-visible:ring-2 focus-visible:ring-[#3E7BFF] focus-visible:outline-none"
         >{held.supersededBy}</a
       >. This one is not deleted, and stays readable here.
+    </p>
+  {/if}
+
+  {#if held.signed}
+    <p class="mt-6 max-w-2xl text-sm leading-6 text-gray-600">
+      This record is also published in a signed form, at
+      <a
+        href={tokenPath(held.code)}
+        class="text-[#3158c7] underline underline-offset-2 hover:no-underline focus-visible:ring-2 focus-visible:ring-[#3E7BFF] focus-visible:outline-none"
+        >{tokenPath(held.code)}</a
+      >. Anybody can check it against the key at
+      <a
+        href="/.well-known/jwks.json"
+        class="text-[#3158c7] underline underline-offset-2 hover:no-underline focus-visible:ring-2 focus-visible:ring-[#3E7BFF] focus-visible:outline-none"
+        >/.well-known/jwks.json</a
+      >
+      without asking this site anything, which is what makes it worth keeping a copy
+      of.
     </p>
   {/if}
 
