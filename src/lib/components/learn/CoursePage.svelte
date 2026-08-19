@@ -42,6 +42,13 @@
     order.find((lesson) => !done.has(lessonKey(course, lesson))) ?? order[0],
   );
   let started = $derived(finished > 0);
+  let complete = $derived(order.length > 0 && finished === order.length);
+  // Three states, three words. "Resume" on a course with nothing left to
+  // resume is the button telling somebody they have not finished when they
+  // have.
+  let way = $derived(
+    complete ? "Read it again" : started ? "Resume" : "Start the course",
+  );
 
   function isDone(lesson: Lesson): boolean {
     return done.has(lessonKey(course, lesson));
@@ -92,12 +99,17 @@
           href={next?.href}
           class="mt-5 inline-flex items-center gap-2 rounded-full bg-[#4670EC] px-6 py-3 text-sm font-semibold text-white transition hover:bg-[#3158c7] focus-visible:ring-2 focus-visible:ring-[#3E7BFF] focus-visible:ring-offset-2 focus-visible:outline-none"
         >
-          {started ? "Resume" : "Start the course"}
+          {way}
           <span class="material-symbols-outlined text-lg" aria-hidden="true"
             >arrow_forward</span
           >
         </a>
-        {#if started}
+        {#if complete}
+          <p class="mt-3 text-xs text-slate-500">
+            Every lesson marked done. Nothing here checked that you understood
+            them, and the questions at the end are the closest it comes.
+          </p>
+        {:else if started}
           <p class="mt-3 text-xs text-slate-500">Next: {next?.title}</p>
         {/if}
       </div>
