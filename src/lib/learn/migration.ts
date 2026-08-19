@@ -82,17 +82,30 @@ export const CASES: Case[] = [
   },
 ];
 
-export const WHY: Record<string, string> = {
+const FIELDS: Record<string, string> = {
   manifest_version:
     "The manifest is read by the version 2 rules from here on, and a legacy filesystem field left in it becomes an error rather than an older spelling.",
   fsHost:
-    "The whole host, read-only, mounted at /run/host. It is the widest filesystem grant there is, and read-only is the only access it may have.",
+    "The whole host, read-only, arriving at /run/host so an application handed the entire filesystem cannot mistake it for its own root. It is the widest filesystem grant there is.",
   fsHostEtc:
     "The host /etc, read-only. In version 2 it is an ordinary path in the filesystem list, so it can be narrowed like any other.",
   fsHostHome:
     "The home directory, read-write, because that is what the flag did. Nothing narrows it for you: an application that only opens documents should ask for that directory instead.",
   fsExtra:
     "Every extra path becomes a typed grant with read-write access, because version 1 had no way to ask for less. This is the field worth reading again by hand.",
-  allowedHostCommands:
-    "A host program the application was allowed to run becomes the capability that program stood for. The command is not exposed: the request goes to the broker, which decides.",
 };
+
+const COMMANDS: Record<string, string> = {
+  openURI:
+    "xdg-open was the host program that opened a link or a file in whatever the desktop uses for it. The permission asks the broker for the same thing, and the command itself is never exposed.",
+  notification:
+    "notify-send was the host program that put a notification on the screen. The permission asks the broker to post it instead, so the application never runs anything on the host.",
+  hostApplications:
+    "cpak-launch-app was how one package started another. The permission carries that, and the broker decides whether the application it names may be started.",
+};
+
+/** Why a field became what it became, said once per field. */
+export function reasonFor(field: string, became: string): string {
+  if (field === "allowedHostCommands") return COMMANDS[became] ?? "";
+  return FIELDS[field] ?? "";
+}
