@@ -64,24 +64,22 @@
                 onclick={() => answer(index, at)}
                 disabled={reveal}
                 aria-pressed={chosen}
-                class="block w-full rounded-xl border px-4 py-3 text-left text-sm leading-6 transition
-                  {reveal && choice.correct
-                  ? 'border-emerald-300 bg-emerald-50 text-emerald-900'
+                class="choice {reveal && choice.correct
+                  ? 'is-right'
                   : chosen
-                    ? 'border-red-300 bg-red-50 text-red-900'
+                    ? 'is-wrong'
                     : reveal
-                      ? 'border-slate-200 text-gray-500'
-                      : 'border-slate-200 text-gray-900 hover:border-slate-400 hover:bg-slate-50'}
-                  focus-visible:ring-2 focus-visible:ring-[#3E7BFF] focus-visible:outline-none"
+                      ? 'is-passed'
+                      : 'is-open'}"
               >
                 <span class="flex items-start gap-3">
                   {#if reveal}
                     <span
                       class="material-symbols-outlined shrink-0 text-[20px] {choice.correct
-                        ? 'text-emerald-600'
+                        ? 'mark-right'
                         : chosen
-                          ? 'text-red-600'
-                          : 'text-transparent'}"
+                          ? 'mark-wrong'
+                          : 'opacity-0'}"
                       aria-hidden="true"
                     >
                       {choice.correct ? "check_circle" : "cancel"}
@@ -146,6 +144,86 @@
 </div>
 
 <style>
+  /* An answered choice has to stay readable on both grounds. The light and the
+     dark set are written out rather than left to a single pair of utilities:
+     a dark green word on a dark green card is the same mistake as a pale one
+     on white, and only one of the two is ever visible to whoever wrote it. */
+  .choice {
+    display: block;
+    width: 100%;
+    border-radius: 0.75rem;
+    border: 1px solid;
+    padding: 0.75rem 1rem;
+    text-align: left;
+    font-size: 0.875rem;
+    line-height: 1.5rem;
+    transition:
+      background-color 120ms,
+      border-color 120ms;
+  }
+  .choice:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 2px #3e7bff;
+  }
+
+  .is-open {
+    border-color: #e2e8f0;
+    color: #111827;
+  }
+  .is-open:hover {
+    border-color: #94a3b8;
+    background: #f8fafc;
+  }
+  .is-passed {
+    border-color: #e2e8f0;
+    color: #6b7280;
+  }
+  .is-right {
+    border-color: #6ee7b7;
+    background: #ecfdf5;
+    color: #064e3b;
+  }
+  .is-wrong {
+    border-color: #fca5a5;
+    background: #fef2f2;
+    color: #7f1d1d;
+  }
+  .mark-right {
+    color: #059669;
+  }
+  .mark-wrong {
+    color: #dc2626;
+  }
+
+  :global(html[data-theme="dark"]) .is-open {
+    border-color: #334155;
+    color: #e2e8f0;
+  }
+  :global(html[data-theme="dark"]) .is-open:hover {
+    border-color: #64748b;
+    background: #1e293b;
+  }
+  :global(html[data-theme="dark"]) .is-passed {
+    border-color: #334155;
+    color: #94a3b8;
+  }
+  :global(html[data-theme="dark"]) .is-right {
+    border-color: #047857;
+    background: #052e23;
+    color: #d1fae5;
+  }
+  :global(html[data-theme="dark"]) .is-wrong {
+    border-color: #b91c1c;
+    background: #3b0d0d;
+    color: #fee2e2;
+  }
+  :global(html[data-theme="dark"]) .mark-right {
+    color: #34d399;
+  }
+  :global(html[data-theme="dark"]) .mark-wrong {
+    color: #f87171;
+  }
+
   /* The lesson body styles every ol as prose. These are questions, not a
      numbered list: the number is inside the question, where it can sit next
      to the words rather than in the margin beside a group of buttons. */
