@@ -28,7 +28,7 @@
     audience: string;
   } = $props();
 
-  const order = lessonsOf(course);
+  let order = $derived(lessonsOf(course));
 
   let done = $state(new Set<string>());
   $effect(() => {
@@ -53,7 +53,7 @@
     <nav aria-label="Breadcrumb" class="text-sm text-slate-500">
       <a href="/learn" class="hover:underline">Learn</a>
       <span aria-hidden="true" class="px-1.5">/</span>
-      <span>Course</span>
+      <span aria-current="page">{course.title}</span>
     </nav>
 
     <div class="mt-4 gap-10 lg:flex lg:items-start lg:justify-between">

@@ -68,7 +68,7 @@
   </p>
 
   <p>
-    Open the <a href="/learn/play/ceiling">ceiling board</a> to set a manifest,
+    Open the <a href="/learn/play/ceiling">ceiling playground</a> to set a manifest,
     an owner override and a ceiling against each other and read what survives
     all three. <a href="/docs/managed-deployment">Managed deployment</a> is the reference
     behind this lesson.

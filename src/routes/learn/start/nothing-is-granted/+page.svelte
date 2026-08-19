@@ -12,7 +12,7 @@
 
 <Seo
   title="Nothing is granted unless the manifest asks - cpak"
-  description="The first lesson on cpak permissions: a package reaches the display, the bus, audio or the network only by naming each of them, and the board beside the text shows the paths each name binds."
+  description="The first lesson on cpak permissions: a package reaches the display, the bus, audio or the network only by naming each of them, and the playground beside the text shows the paths each name binds."
   path="/learn/start/nothing-is-granted"
 />
 
@@ -28,7 +28,7 @@
   {/snippet}
 
   <p>
-    Press <em>Nothing at all</em> on the board. Every path disappears and twenty-nine
+    Press <em>Nothing at all</em> in the playground. Every path disappears and twenty-nine
     permissions are listed underneath, none of them granted. That is where a package
     starts: no directory, no socket, no device, no route off the machine.
   </p>
@@ -64,7 +64,7 @@
 
   <p>
     Most permissions open one socket or one directory. Eight open more than the
-    thing they name, and the board keeps them at the top of the list.
+    thing they name, and the playground keeps them at the top of the list.
   </p>
 
   <p>

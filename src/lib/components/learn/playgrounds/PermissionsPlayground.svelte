@@ -88,8 +88,25 @@
   // that open one named thing from the rows that do not.
   let weights = $state(new Map<string, Weighed>());
   let explicit = $state(false);
+  // The page opens on a package that asks for something, not on one that asks
+  // for nothing: somebody arriving has to see paths appear before they can tell
+  // what the tool is for. Pressing "Nothing at all" is then a thing they choose,
+  // and it teaches more as a contrast than as a first impression.
+  const OPENS_WITH = [
+    "socketWayland",
+    "socketPulseAudio",
+    "notification",
+    "openURI",
+    "network",
+  ];
   let text = $state(
-    format(manifestFor(["socketWayland"], { socketWayland: true }, false)),
+    format(
+      manifestFor(
+        OPENS_WITH,
+        Object.fromEntries(OPENS_WITH.map((key) => [key, true])),
+        false,
+      ),
+    ),
   );
   let lastRead = $state<Manifest | null>(null);
 
@@ -306,8 +323,8 @@
     const narrow = rest.filter((permission) => kindOf(permission) !== "broker");
     return [
       {
-        title: "Wider than the name says",
-        note: "Not a list of the dangerous ones. Each permission here was asked what it binds on its own, and these are the ones whose answer is not a single named thing. Every row further down opens exactly what it says.",
+        title: "These open more than their name suggests",
+        note: "Not a list of the dangerous ones. cpak was asked what each permission opens, and these are the ones whose answer is more than one file or socket. Every row below opens exactly what its name says.",
         items: wide,
       },
       {
@@ -360,7 +377,7 @@
       "host paths",
     )} bound, ${count(answer.shims.length, "broker command", "broker commands")}.`;
     if (widened.length === 0) return line;
-    return `${line} Wider than the name says: ${widened.join(", ")}.`;
+    return `${line} These open more than their name suggests: ${widened.join(", ")}.`;
   });
 
 
@@ -387,14 +404,19 @@
           What the manifest asks for
         </h2>
         <p class="mt-1 text-sm text-gray-500">
-          Nothing is granted by omission, so this list starts at nothing and
-          every path on the right is there because a tick put it there.
+          A package gets what it ticks here and nothing else. Every path on the
+          right is there because one of these put it there.
         </p>
       </div>
 
       <div class="px-5 py-5 sm:px-6">
-        <h3 class="text-sm font-semibold text-gray-900">Start from</h3>
-        <div class="mt-2 flex flex-wrap gap-2">
+        <h3 class="text-sm font-semibold text-gray-900">
+          Start from a package like this
+        </h3>
+        <p class="mt-1 text-sm text-gray-500">
+          Press one, then tick or untick anything below it.
+        </p>
+        <div class="mt-3 flex flex-wrap gap-2">
           {#each STARTS as preset}
             <button
               type="button"
@@ -407,21 +429,35 @@
           {/each}
         </div>
 
-        <label class="mt-5 flex items-start gap-3 rounded-xl bg-slate-50 p-4">
-          <input
-            type="checkbox"
-            checked={explicit}
+        <div class="mt-5 flex items-start justify-between gap-4 border-t border-slate-200 pt-4">
+          <div>
+            <p class="text-sm font-medium text-gray-900">
+              Write every permission out
+            </p>
+            <p class="mt-0.5 text-sm leading-6 text-gray-500">
+              Spell out the refusals as well, the way <code class="font-mono"
+                >cpak init</code
+              > does. The application gets the same thing either way.
+            </p>
+          </div>
+          <button
+            type="button"
+            role="switch"
+            aria-checked={explicit}
+            aria-label="Write every permission out"
             disabled={status !== "ready" || !read}
-            onchange={(event) => writeOut(event.currentTarget.checked)}
-            class="mt-1 h-4 w-4 shrink-0 rounded border-slate-300 text-[#3E7BFF] focus:ring-[#3E7BFF]"
-          />
-          <span class="text-sm leading-6 text-gray-600">
-            Write every permission out, the way <code class="font-mono"
-              >cpak init</code
-            > does. The refusals are then on the page too, and the application gets
-            exactly what it got while they were missing.
-          </span>
-        </label>
+            onclick={() => writeOut(!explicit)}
+            class="mt-1 inline-flex h-6 w-11 shrink-0 items-center rounded-full border border-transparent transition focus-visible:ring-2 focus-visible:ring-[#3E7BFF] focus-visible:ring-offset-2 focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50 {explicit
+              ? 'bg-[#4670EC]'
+              : 'bg-slate-300'}"
+          >
+            <span
+              class="h-5 w-5 rounded-full bg-white shadow transition-transform {explicit
+                ? 'translate-x-5'
+                : 'translate-x-0.5'}"
+            ></span>
+          </button>
+        </div>
 
         {#if status === "loading"}
           <div class="mt-6 space-y-3" aria-hidden="true">
@@ -439,17 +475,6 @@
             to tick until it loads.
           </p>
         {:else}
-          {#if wide.length > 0}
-            <p
-              class="mt-6 rounded-xl bg-yellow-100 p-4 text-sm leading-6 text-yellow-800"
-            >
-              {wide.length} of these do not open one named thing. Each one binds
-              a whole tree, or a bus, or nothing at all because what it changes
-              is the container itself. They come first, and each one says what
-              makes it wider.
-            </p>
-          {/if}
-
           {#if !read}
             <p
               class="mt-4 rounded-xl border border-red-200 bg-red-100 p-4 text-sm leading-6 text-red-700"
@@ -739,19 +764,18 @@
             </p>
           {:else if answer.ungranted.length > 0}
             <p class="mt-1 text-sm leading-6 text-gray-600">
-              None of them is granted. A permission written as false and one
-              nobody wrote arrive the same way: the application does not have
-              it.
+              Writing false and writing nothing have the same result: the
+              application does not get it.
             </p>
-            <div class="mt-3 flex flex-wrap gap-2">
+            <ul
+              class="mt-3 columns-2 gap-x-6 text-xs leading-6 sm:columns-3"
+            >
               {#each answer.ungranted as key (key)}
-                <code
-                  class="rounded-full bg-slate-100 px-3 py-1 font-mono text-xs text-gray-600"
-                >
+                <li class="font-mono break-inside-avoid text-gray-500">
                   {key}
-                </code>
+                </li>
               {/each}
-            </div>
+            </ul>
           {:else}
             <p class="mt-1 text-sm leading-6 text-gray-600">
               Every permission is written down, most of them as false, and the
@@ -770,7 +794,7 @@
   >
     <div class="flex flex-wrap items-baseline justify-between gap-x-6 gap-y-1">
       <h2 id="manifest-heading" class="text-lg font-semibold text-gray-900">
-        The manifest these ticks describe
+        The manifest you are building
       </h2>
       <p class="text-sm text-gray-500">Edit it and the answers follow.</p>
     </div>
@@ -810,7 +834,7 @@
       class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6"
     >
       <h2 class="text-lg font-semibold text-gray-900">
-        The host these answers are about
+        About this machine
       </h2>
       <p class="mt-2 leading-7 text-gray-600">
         A mount resolves against a machine: the user id, the home directory, a

@@ -4,20 +4,20 @@
   import PermissionsPlayground from "$lib/components/learn/playgrounds/PermissionsPlayground.svelte";
   import { PLAYGROUNDS, waiting, type PlaygroundStatus } from "$lib/learn/playgrounds";
 
-  const board = PLAYGROUNDS.permissions;
+  const play = PLAYGROUNDS.permissions;
   let status = $state<PlaygroundStatus>(waiting());
 </script>
 
 <Seo
-  title="Permission board - cpak"
+  title="Permissions - cpak"
   description="Tick a cpak permission and see the exact host paths it binds into the sandbox and what each one reaches, decided by cpak's own code running in the page."
   path="/learn/play/permissions"
 />
 
 <PlaygroundPage
-  title={board.title}
-  sentence={board.sentence}
-  reference={board.reference}
+  title={play.title}
+  sentence={play.sentence}
+  reference={play.reference}
   phase={status.phase}
   version={status.version}
   error={status.error}

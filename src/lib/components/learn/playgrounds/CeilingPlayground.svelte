@@ -452,7 +452,7 @@
             <p class="mt-1 text-xs leading-5 text-gray-500">
               A mount is made against a real host. This one is written down
               rather than read off your computer, so two people comparing this
-              board see the same answer.
+              playground see the same answer.
             </p>
             <div class="mt-3 flex flex-wrap gap-x-6 gap-y-2">
               {#each MACHINES as entry}
@@ -827,7 +827,7 @@
               <a
                 href="/learn/play/filesystem"
                 class="font-medium text-[#4670EC] hover:underline"
-                >the filesystem board</a
+                >the filesystem playground</a
               > works through.
             </p>
           </div>
@@ -895,7 +895,7 @@
       <a
         href="/learn/play/migration"
         class="font-medium text-[#4670EC] hover:underline"
-        >the migration board</a
+        >the migration playground</a
       >
       shows what each of them becomes. The controls themselves are documented in
       <a

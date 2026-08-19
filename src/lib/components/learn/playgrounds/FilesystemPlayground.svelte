@@ -502,7 +502,7 @@
         <summary
           class="cursor-pointer rounded-sm text-sm font-medium text-[#4670EC] focus-visible:ring-2 focus-visible:ring-[#3E7BFF] focus-visible:outline-none"
         >
-          The question this board asked
+          The question just asked
         </summary>
         <pre
           class="mt-3 max-h-96 overflow-auto rounded-xl bg-slate-950 p-4 font-mono text-xs leading-6 text-slate-100">{JSON.stringify(

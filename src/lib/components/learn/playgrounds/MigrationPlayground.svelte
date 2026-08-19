@@ -486,13 +486,13 @@
       decided on the host it runs on:
       <a
         href="/learn/play/ceiling"
-        class="font-medium text-[#4670EC] hover:underline">the ceiling board</a
+        class="font-medium text-[#4670EC] hover:underline">the ceiling playground</a
       >
       puts an owner override and an administrator ceiling around one, and
       <a
         href="/learn/play/filesystem"
         class="font-medium text-[#4670EC] hover:underline"
-        >the filesystem board</a
+        >the filesystem playground</a
       >
       resolves the grants this one produces against a real home directory.
     </p>

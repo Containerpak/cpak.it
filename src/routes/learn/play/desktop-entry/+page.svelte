@@ -4,20 +4,20 @@
   import DesktopEntryPlayground from "$lib/components/learn/playgrounds/DesktopEntryPlayground.svelte";
   import { PLAYGROUNDS, waiting, type PlaygroundStatus } from "$lib/learn/playgrounds";
 
-  const board = PLAYGROUNDS["desktop-entry"];
+  const play = PLAYGROUNDS["desktop-entry"];
   let status = $state<PlaygroundStatus>(waiting());
 </script>
 
 <Seo
-  title="Desktop entry board - cpak"
+  title="Desktop entries - cpak"
   description="Paste a .desktop file and see exactly what cpak exports for it, line by line, decided by cpak's own code running in the page."
   path="/learn/play/desktop-entry"
 />
 
 <PlaygroundPage
-  title={board.title}
-  sentence={board.sentence}
-  reference={board.reference}
+  title={play.title}
+  sentence={play.sentence}
+  reference={play.reference}
   phase={status.phase}
   version={status.version}
   error={status.error}

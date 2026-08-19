@@ -36,12 +36,12 @@
     course: Course;
     /** The lesson being read. It has to be one of the course's own. */
     lesson: Lesson;
-    /** The board, when this lesson has one. Absent is the common case. */
+    /** The playground, when this lesson has one. Absent is the common case. */
     playground?: Snippet | null;
     playgroundTitle?: string;
-    /** Where the same board lives on its own, for somebody who wants it alone. */
+    /** Where the same playground lives on its own, for somebody who wants it alone. */
     playgroundLink?: { href: string; label: string } | null;
-    /** What the board says about the decision module, said once, here. */
+    /** Whether cpak is ready in the browser yet, said once, here. */
     playgroundStatus?: PlaygroundStatus | null;
     children: Snippet;
   } = $props();
@@ -93,16 +93,18 @@
   }
 </script>
 
-<div class="mx-auto flex max-w-[110rem] gap-8 px-4 py-8 sm:px-6 lg:py-10">
+<div class="flex min-h-[calc(100vh-4rem)]">
   {#if railShown}
-    <aside class="hidden w-64 shrink-0 lg:block">
-      <div class="sticky top-6 max-h-[calc(100vh-3rem)] overflow-y-auto pr-4">
+    <aside
+      class="hidden w-72 shrink-0 self-stretch border-r border-slate-200 bg-slate-50 lg:block"
+    >
+      <div class="sticky top-0 max-h-screen overflow-y-auto px-5 py-8">
         <CourseRail {course} current={lesson.slug} {done} />
       </div>
     </aside>
   {/if}
 
-  <div class="flex min-w-0 flex-1 flex-col">
+  <div class="flex min-w-0 flex-1 flex-col px-4 py-8 sm:px-8 lg:py-10">
     <div class="flex flex-wrap items-center justify-between gap-x-6 gap-y-2">
       <nav aria-label="Breadcrumb" class="min-w-0 text-sm">
         <ol class="flex flex-wrap items-center gap-2 text-slate-500">
@@ -180,8 +182,8 @@
     >
       <article
         class={playground
-          ? "min-w-0 rounded-2xl border border-slate-200 bg-white px-6 py-8 sm:px-8"
-          : "mx-auto w-full max-w-3xl min-w-0 rounded-2xl border border-slate-200 bg-white px-6 py-8 sm:px-8"}
+          ? "min-w-0 py-2"
+          : "mx-auto w-full max-w-3xl min-w-0 py-2"}
       >
         {#if module}
           <p class="text-xs font-bold tracking-wide text-slate-500 uppercase">
@@ -229,13 +231,13 @@
               aria-live="polite"
             >
               {#if playgroundStatus.phase === "ready"}
-                Answered by cpak {playgroundStatus.version} running in this tab. Nothing
-                you type is sent anywhere.
+                These answers come from cpak itself, running in your browser.
+                Nothing you type leaves this page.
               {:else if playgroundStatus.phase === "loading"}
-                Loading cpak's decision module.
+                Getting cpak ready in your browser.
               {:else}
                 {playgroundStatus.error ||
-                  "The decision module could not be loaded."}
+                  "cpak could not be loaded in this browser."}
                 <button
                   type="button"
                   onclick={() => playgroundStatus?.retry()}

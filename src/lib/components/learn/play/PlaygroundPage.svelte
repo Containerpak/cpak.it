@@ -28,6 +28,8 @@
     children: Snippet;
   } = $props();
 
+  let showBuild = $state(false);
+
   const megabytes = (CORE_MODULE.bytes / 1024 / 1024).toFixed(1);
   const digest = `${CORE_MODULE.digest.slice(0, 12)}…`;
 </script>
@@ -81,8 +83,7 @@
             aria-hidden="true">progress_activity</span
           >
           <span>
-            Loading cpak's decision module, {megabytes} MB. The page checks it against
-            the digest it was built with before running it.
+            Getting cpak ready in your browser, {megabytes} MB.
           </span>
         </p>
       {:else if phase === "ready"}
@@ -91,13 +92,26 @@
             class="material-symbols-outlined text-[18px] text-[#8aa8ff]"
             aria-hidden="true">verified</span
           >
-          <span class="font-medium text-white">Answered by cpak {version}</span>
-          <span>
-            running in this tab, from the build
-            <code class="font-mono text-xs text-slate-200">{digest}</code>.
-            Nothing you type is sent anywhere.
-          </span>
+          <span class="font-medium text-white"
+            >These answers come from cpak itself, running in your browser.</span
+          >
+          <span>Nothing you type leaves this page.</span>
+          <button
+            type="button"
+            onclick={() => (showBuild = !showBuild)}
+            aria-expanded={showBuild}
+            class="underline decoration-slate-500 underline-offset-2 hover:text-white focus-visible:ring-2 focus-visible:ring-[#8aa8ff] focus-visible:outline-none"
+          >
+            {showBuild ? "Hide the build" : "Which build?"}
+          </button>
         </p>
+        {#if showBuild}
+          <p class="mt-2 text-xs leading-6 text-slate-400">
+            cpak {version}, compiled to WebAssembly, build
+            <code class="font-mono text-slate-300">{digest}</code>. A course
+            pins one build so an answer means the same thing tomorrow.
+          </p>
+        {/if}
       {:else}
         <div class="flex flex-wrap items-center gap-x-3 gap-y-2">
           <p class="flex items-start gap-2 text-[#fda4af]">

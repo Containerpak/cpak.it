@@ -68,24 +68,14 @@ const asks = {
 
 export const CASES: Case[] = [
   {
-    id: "unmanaged",
-    label: "No ceiling",
+    id: "one-directory",
+    label: "Held to one directory",
     lesson:
-      "Nothing stands above the manifest, so the application runs with what it asked for and the mounts follow from that.",
+      "The ceiling allows read-only access to the home directory. The home request is narrowed to it and /mnt/work is dropped, because a path the ceiling does not cover is not downgraded, it is gone.",
     machine: "wayland",
     manifest: manifest(asks),
     user: "",
-    ceiling: "",
-  },
-  {
-    id: "closes-nothing",
-    label: "A ceiling that closes nothing",
-    lesson:
-      "The ceiling closes deviceAll. The manifest never asked for deviceAll: it asked for deviceDri, which the ceiling does not name. The GPU is still there.",
-    machine: "wayland",
-    manifest: manifest(asks),
-    user: "",
-    ceiling: format({ deviceAll: false }),
+    ceiling: format({ filesystem: [{ path: "home", access: "read-only" }] }),
   },
   {
     id: "same-door",
@@ -98,14 +88,14 @@ export const CASES: Case[] = [
     ceiling: format({ socketSystemBus: false }),
   },
   {
-    id: "one-directory",
-    label: "Held to one directory",
+    id: "closes-nothing",
+    label: "A ceiling that closes nothing",
     lesson:
-      "The ceiling allows read-only access to the home directory. The home request is narrowed to it and /mnt/work is dropped, because a path the ceiling does not cover is not downgraded, it is gone.",
+      "The ceiling closes deviceAll. The manifest never asked for deviceAll: it asked for deviceDri, which the ceiling does not name. The GPU is still there.",
     machine: "wayland",
     manifest: manifest(asks),
     user: "",
-    ceiling: format({ filesystem: [{ path: "home", access: "read-only" }] }),
+    ceiling: format({ deviceAll: false }),
   },
   {
     id: "owner",
@@ -121,5 +111,15 @@ export const CASES: Case[] = [
       filesystem: [{ path: "/mnt/work", access: "read-only" }],
     }),
     ceiling: format({ network: false }),
+  },
+  {
+    id: "unmanaged",
+    label: "No ceiling",
+    lesson:
+      "Nothing stands above the manifest, so the application runs with what it asked for and the mounts follow from that.",
+    machine: "wayland",
+    manifest: manifest(asks),
+    user: "",
+    ceiling: "",
   },
 ];
