@@ -20,8 +20,9 @@
     heading: string;
     sentence: string;
     action: { href: string; label: string };
+    reference: { href: string; label: string };
     ground: string;
-    note?: string;
+    note: string;
   };
 
   const AUDIENCES: Audience[] = [
@@ -29,17 +30,28 @@
       heading: "Packaging an application",
       sentence:
         "Write a manifest cpak accepts, ask for the access your program needs, and ship a desktop entry that survives being exported.",
-      action: { href: "/learn/play/filesystem", label: "Open the filesystem playground" },
+      action: {
+        href: "/learn/play/filesystem",
+        label: "Open the filesystem playground",
+      },
+      reference: { href: "/docs/manifest", label: "Read the manifest reference" },
       ground: "bg-[#EEF2FD]",
-      note: "The course for this is being written. The playgrounds below are the parts of it that already work.",
+      note: "Three of the playgrounds below are the packaging ones: filesystem access, manifest migration and desktop entries.",
     },
     {
       heading: "Running cpak on machines you look after",
       sentence:
         "Set one policy for other people's installations, and be able to say exactly what it closes and what it leaves open.",
-      action: { href: "/learn/play/ceiling", label: "Open the ceiling playground" },
+      action: {
+        href: "/learn/play/ceiling",
+        label: "Open the ceiling playground",
+      },
+      reference: {
+        href: "/docs/managed-deployment",
+        label: "Read the docs on managed deployment",
+      },
       ground: "bg-[#EAF4EF]",
-      note: "The course for this is being written. Start with the ceiling and read what survives it.",
+      note: "Write a ceiling, paste a manifest under it, and read which permissions come out the other side.",
     },
   ];
 </script>
@@ -101,18 +113,24 @@
           {audience.heading}
         </h2>
         <p class="mt-3 text-lg leading-8 text-gray-700">{audience.sentence}</p>
-        <a
-          href={audience.action.href}
-          class="mt-6 inline-flex items-center gap-2 rounded-full border border-slate-900 px-5 py-2.5 text-sm font-semibold text-slate-900 transition hover:bg-slate-900 hover:text-white focus-visible:ring-2 focus-visible:ring-[#3E7BFF] focus-visible:ring-offset-2 focus-visible:outline-none"
-        >
-          {audience.action.label}
-          <span class="material-symbols-outlined text-base" aria-hidden="true"
-            >arrow_forward</span
+        <div class="mt-6 flex flex-wrap items-center gap-x-6 gap-y-3">
+          <a
+            href={audience.action.href}
+            class="inline-flex items-center gap-2 rounded-full border border-slate-900 px-5 py-2.5 text-sm font-semibold text-slate-900 transition hover:bg-slate-900 hover:text-white focus-visible:ring-2 focus-visible:ring-[#3E7BFF] focus-visible:ring-offset-2 focus-visible:outline-none"
           >
-        </a>
-        {#if audience.note}
-          <p class="mt-4 text-sm text-slate-600">{audience.note}</p>
-        {/if}
+            {audience.action.label}
+            <span class="material-symbols-outlined text-base" aria-hidden="true"
+              >arrow_forward</span
+            >
+          </a>
+          <a
+            href={audience.reference.href}
+            class="text-sm font-medium text-slate-700 underline underline-offset-4 hover:text-slate-900 focus-visible:ring-2 focus-visible:ring-[#3E7BFF] focus-visible:outline-none"
+          >
+            {audience.reference.label}
+          </a>
+        </div>
+        <p class="mt-4 text-sm text-slate-600">{audience.note}</p>
       </div>
     </div>
   </section>
