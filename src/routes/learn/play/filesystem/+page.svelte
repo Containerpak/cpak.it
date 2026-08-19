@@ -30,6 +30,9 @@
     host: unknown;
   };
 
+  /** A resolved entry and which of the two answers it got. */
+  type Judged = Resolved & { kind: "landed" | "absent" | "refused" };
+
   let core = $state<Core | null>(null);
   let phase = $state<"loading" | "ready" | "failed">("loading");
   let failure = $state("");
@@ -87,15 +90,36 @@
 
   let plan = $derived(answer && answer.ok ? answer.result : null);
   let broke = $derived(answer && !answer.ok ? answer.error : "");
-  let resolved = $derived(
-    plan ? plan.entries.filter((entry) => entry.source) : [],
-  );
-  let unresolved = $derived(
-    plan ? plan.entries.filter((entry) => entry.error) : [],
-  );
-  let moved = $derived(
-    resolved.filter((entry) => entry.source !== entry.target),
-  );
+
+  /**
+   * Two different things stop a line, and they are not the same news.
+   *
+   * A line cpak refuses is a mistake in the manifest and is wrong on every
+   * machine. A line cpak accepts can still find nothing here, because a
+   * portable scope names a place and this host may not have it: the mount is
+   * dropped and the application starts without that directory.
+   *
+   * The module is asked which one a line is, one line at a time, rather than
+   * this page reading cpak's sentence and guessing at it.
+   */
+  let judged = $derived.by<Judged[]>(() => {
+    const asked = core;
+    if (!asked || !plan) return [];
+    return plan.entries.map((entry): Judged => {
+      if (!entry.error) return { ...entry, kind: "landed" };
+      const alone = asked.ask<Plan>("filesystemPlan", {
+        filesystem: [{ path: entry.path, access: entry.access }],
+        host: HOST,
+      });
+      const wrong = !alone.ok || !alone.result.valid;
+      return { ...entry, kind: wrong ? "refused" : "absent" };
+    });
+  });
+
+  let landed = $derived(judged.filter((entry) => entry.kind === "landed"));
+  let absent = $derived(judged.filter((entry) => entry.kind === "absent"));
+  let refused = $derived(judged.filter((entry) => entry.kind === "refused"));
+  let moved = $derived(landed.filter((entry) => entry.source !== entry.target));
 
   let summary = $derived.by(() => {
     if (phase === "loading") return "Waiting for the decision module.";
@@ -104,14 +128,18 @@
     if (!plan) return "";
     if (entries.length === 0)
       return "No entries. The application reaches none of the host.";
-    const counted = `${count(resolved.length, "entry", "entries")} resolved, ${count(
-      unresolved.length,
-      "refused",
-      "refused",
-    )}.`;
+    const counted = [
+      `${count(landed.length, "entry lands", "entries land")} on this host`,
+      absent.length > 0
+        ? `${count(absent.length, "finds", "find")} nothing here`
+        : "",
+      refused.length > 0 ? `${count(refused.length, "is", "are")} refused` : "",
+    ]
+      .filter((part) => part !== "")
+      .join(", ");
     return plan.valid
-      ? `${counted} cpak accepts the list.`
-      : `${counted} cpak refuses the list: ${plan.error}`;
+      ? `${counted}. cpak accepts the list.`
+      : `${counted}. cpak refuses the list: ${plan.error}`;
   });
 </script>
 
@@ -181,7 +209,9 @@
                   autocapitalize="off"
                   autocomplete="off"
                   placeholder="home, host, xdg-documents or an absolute path"
-                  aria-invalid={plan?.entries[index]?.error ? "true" : "false"}
+                  aria-invalid={judged[index]?.kind === "refused"
+                    ? "true"
+                    : "false"}
                   class="mt-1 w-full rounded-lg border border-slate-200 bg-white px-3 py-2 font-mono text-xs text-gray-800 focus:ring-2 focus:ring-[#3E7BFF] focus:outline-none"
                 />
               </div>
@@ -209,9 +239,14 @@
                 >
               </button>
             </div>
-            {#if plan?.entries[index]?.error}
+            {#if judged[index]?.kind === "refused"}
               <p class="mt-2 text-xs leading-5 text-red-600">
-                {plan.entries[index].error}
+                {judged[index].error}
+              </p>
+            {:else if judged[index]?.kind === "absent"}
+              <p class="mt-2 text-xs leading-5 text-gray-500">
+                {judged[index].error}. The line is accepted; this host has
+                nowhere to put it.
               </p>
             {/if}
           </li>
@@ -254,7 +289,7 @@
 
     <section
       aria-labelledby="plan-heading"
-      class="min-w-0 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6 lg:col-span-7 lg:col-start-6 lg:row-span-2 lg:row-start-1"
+      class="min-w-0 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6 lg:sticky lg:top-6 lg:col-span-7 lg:col-start-6 lg:row-span-2 lg:row-start-1"
     >
       <h2 id="plan-heading" class="text-lg font-semibold text-gray-900">
         Where each entry lands
@@ -327,6 +362,19 @@
           </p>
         {/if}
 
+        {#if absent.length > 0}
+          <p
+            class="mt-4 rounded-xl bg-slate-50 px-4 py-3 leading-7 text-gray-600"
+          >
+            {absent.length === 1
+              ? "One line here is written correctly and still finds nothing"
+              : `${absent.length} lines here are written correctly and still find nothing`}
+            on this host. That is not a refusal: a portable scope names a place rather
+            than a path, so a machine that has no such directory mounts nothing for
+            it and the application starts without it.
+          </p>
+        {/if}
+
         {#if plan.entries.length === 0}
           <p
             class="mt-6 rounded-xl bg-slate-50 px-4 py-3 leading-7 text-gray-600"
@@ -353,8 +401,8 @@
                 </tr>
               </thead>
               <tbody class="divide-y divide-slate-200">
-                {#each plan.entries as entry}
-                  <tr class={entry.error ? "bg-red-50" : ""}>
+                {#each judged as entry}
+                  <tr class={entry.kind === "refused" ? "bg-red-100" : ""}>
                     <th
                       scope="row"
                       class="px-3 py-2 align-top font-mono text-xs font-normal whitespace-nowrap text-gray-900"
@@ -364,11 +412,24 @@
                       class="px-3 py-2 align-top text-xs whitespace-nowrap text-gray-600"
                       >{entry.access}</td
                     >
-                    {#if entry.error}
+                    {#if entry.kind === "refused"}
                       <td
-                        class="px-3 py-2 align-top text-xs text-red-600"
+                        class="max-w-md px-3 py-2 align-top text-xs text-red-600"
                         colspan="2">{entry.error}</td
                       >
+                    {:else if entry.kind === "absent"}
+                      <td
+                        class="max-w-md px-3 py-2 align-top text-xs"
+                        colspan="2"
+                      >
+                        <span class="font-medium text-gray-900"
+                          >nothing here</span
+                        >
+                        <span class="text-gray-500">
+                          &mdash; {entry.error}. The application starts without
+                          it.</span
+                        >
+                      </td>
                     {:else}
                       <td
                         class="px-3 py-2 align-top font-mono text-xs whitespace-nowrap text-gray-800"

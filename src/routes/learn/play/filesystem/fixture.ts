@@ -39,7 +39,7 @@ export const HOST_SUMMARY =
 export const NOTES = [
   "The session renamed its user directories, so xdg-documents is not Documents here. cpak reads the same file the desktop wrote.",
   "A directory this session does not configure falls back to the name every desktop starts from, which is why xdg-pictures is still Pictures.",
-  "Public share is pointed at the home directory itself, which is how a desktop turns a user directory off. cpak refuses that entry rather than granting the home directory under another name.",
+  "Public share is pointed at the home directory itself, which is how a desktop turns a user directory off. cpak will not grant the home directory under another name, so that entry finds nothing here and the application starts without it.",
 ];
 
 export type Entry = { path: string; access: string };
