@@ -28,6 +28,17 @@ export function normaliseCode(given: string) {
   return [0, 4, 8, 12].map((start) => bare.slice(start, start + 4)).join("-");
 }
 
+// What somebody pastes into the verification field is either the code they
+// were read out or the whole address they were sent. Both end in the same
+// sixteen characters, so a failed read of the lot is retried on the last
+// segment of it.
+export function codeFrom(given: string) {
+  const whole = normaliseCode(given);
+  if (whole) return whole;
+  const last = given.trim().split(/[/?#]/).filter(Boolean).pop();
+  return last ? normaliseCode(last) : null;
+}
+
 function plusMonths(from: Date, months: number) {
   const later = new Date(from);
   later.setUTCMonth(later.getUTCMonth() + months);

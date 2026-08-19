@@ -52,8 +52,11 @@ export function standingLine(entry: Held, now = new Date()) {
   }
 }
 
+// Deliberately short, and deliberately outside /learn: whoever follows this
+// link is checking a record, not taking a course, and the address has to
+// outlive whatever the learning area is called next year.
 export function verifyPath(code: string) {
-  return `/learn/verify/${code}`;
+  return `/verify/${code}`;
 }
 
 export function longDate(value: string) {

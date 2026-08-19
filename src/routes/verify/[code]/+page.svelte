@@ -16,8 +16,10 @@
 </svelte:head>
 
 <div class="mx-auto max-w-3xl px-6 py-12 sm:py-16">
-  <p class="text-sm font-medium text-[#4670EC]">cpak Learn</p>
-  <h1 class="mt-5 text-4xl font-extrabold tracking-tight text-gray-900">
+  <p class="text-sm font-semibold tracking-[0.16em] text-[#4670EC] uppercase">
+    Verification
+  </p>
+  <h1 class="mt-4 text-4xl font-extrabold tracking-tight text-gray-900">
     {data.held ? "Credential" : "No credential with that code"}
   </h1>
 
@@ -36,7 +38,7 @@
 
     <section
       aria-labelledby="reading"
-      class="mt-8 rounded-2xl border border-slate-200 bg-slate-50 p-6"
+      class="mt-8 rounded-2xl border border-slate-200 bg-white p-6"
     >
       <h2 id="reading" class="text-lg font-semibold text-gray-900">
         If you are checking this on someone's behalf
@@ -69,10 +71,10 @@
       Codes are never reused, so this answer will not change later.
     </p>
     <a
-      href="/learn"
+      href="/verify"
       class="mt-8 inline-block rounded-full bg-[#4670EC] px-6 py-3 text-sm font-semibold text-white hover:brightness-110 focus-visible:ring-2 focus-visible:ring-[#3E7BFF] focus-visible:outline-none"
     >
-      What cpak Learn is
+      Try another code
     </a>
   {/if}
 </div>

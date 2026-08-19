@@ -1,11 +1,19 @@
 // The public page for one credential. No session is read here, so what a
 // stranger sees does not depend on who they are.
 
+import { error } from "@sveltejs/kit";
 import type { PageServerLoad } from "./$types";
 import { openStore } from "$lib/server/learn/store";
 import { normaliseCode } from "$lib/server/learn/credentials";
+import { TOO_OFTEN, askedTooOften } from "$lib/server/learn/ratelimit";
 
-export const load: PageServerLoad = async ({ params, platform }) => {
+export const load: PageServerLoad = async ({
+  params,
+  platform,
+  getClientAddress,
+}) => {
+  if (askedTooOften(getClientAddress())) error(429, TOO_OFTEN);
+
   const code = normaliseCode(params.code);
   if (!code) return { given: params.code, held: null, successorIssuedAt: null };
 
