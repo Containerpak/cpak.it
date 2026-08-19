@@ -17,7 +17,7 @@ export const EXAMPLES: Example[] = [
   {
     id: "spellings",
     name: "The same key, three ways",
-    note: "A launcher does not compare bytes. It skips the whitespace before the key and around the equals sign, so all three of these lines set Exec, and the last one is the one it runs.",
+    note: "A launcher does not compare bytes. It skips the whitespace before the key and around the equals sign, so a space, a tab and a gap before the equals sign all set Exec. All three are rewritten, and the one the launcher keeps is the last it reads in the group.",
     fileName: "org.example.Writer.desktop",
     entry: [
       "[Desktop Entry]",
@@ -27,11 +27,28 @@ export const EXAMPLES: Example[] = [
       " Exec=writer %F",
       "\tExec=writer --safe %U",
       "Exec =writer",
-      "#Exec=writer --debug",
       "TryExec=writer",
       "Icon=writer",
       "Categories=Office;WordProcessor;",
       "MimeType=text/plain;",
+    ].join("\n"),
+  },
+  {
+    id: "near-misses",
+    name: "Lines that only look like Exec",
+    note: "Four lines here contain the word Exec and only one of them sets the key. A comment is not a key, a locale suffix is a different key the launcher would never run, a longer name is a different key too, and a value that happens to spell Exec is only a value.",
+    fileName: "org.example.Reader.desktop",
+    entry: [
+      "[Desktop Entry]",
+      "Type=Application",
+      "Name=Reader",
+      "Comment=Exec=is only a word here",
+      "#Exec=reader --debug",
+      "Exec[it]=reader --lingua it",
+      "ExecPath=/usr/bin/reader",
+      "Exec=reader %f",
+      "Icon=reader",
+      "Terminal=false",
     ].join("\n"),
   },
   {
@@ -71,3 +88,22 @@ export const EXPORT_DEFAULTS = {
   launcher: "/usr/bin/cpak",
   icon: "/home/ada/.local/share/cpak/icons/example.org/writer.png",
 };
+
+// A second export of the same file, asked for with values nothing else uses.
+//
+// One export says what cpak wrote. Two say which lines cpak read: a line whose
+// key it acts on moves when these values change, and a line it never read
+// cannot. That is how this board can mark a key without parsing the file
+// itself, which would be this page guessing at what a launcher does instead of
+// showing what cpak does.
+export const PROBE = {
+  origin: "probe.invalid/probe",
+  cpakId: "0000000000000000",
+  launcher: "/probe/cpak",
+  icon: "/probe/icon.png",
+};
+
+/** A probe value that cannot collide with the one the board is asking about. */
+export function probe(value: string, mark: string): string {
+  return value.trim() === mark ? `${mark}-2` : mark;
+}
