@@ -27,6 +27,12 @@ export const HOST = {
   files: { [USER_DIRS_PATH]: USER_DIRS },
 };
 
+export const HOST_FACTS = [
+  "uid 1000",
+  "home /home/ada",
+  "a session in Italian",
+];
+
 export const HOST_SUMMARY =
   "One desktop user, uid 1000, home /home/ada, on a session in Italian.";
 
@@ -55,6 +61,19 @@ export const STARTING_POINTS: { name: string; entries: Entry[] }[] = [
     ],
   },
   {
+    name: "Every user directory",
+    entries: [
+      { path: "xdg-desktop", access: "read-only" },
+      { path: "xdg-documents", access: "read-only" },
+      { path: "xdg-download", access: "read-only" },
+      { path: "xdg-music", access: "read-only" },
+      { path: "xdg-pictures", access: "read-only" },
+      { path: "xdg-public-share", access: "read-only" },
+      { path: "xdg-templates", access: "read-only" },
+      { path: "xdg-videos", access: "read-only" },
+    ],
+  },
+  {
     name: "The whole machine",
     entries: [{ path: "host", access: "read-only" }],
   },
@@ -63,7 +82,8 @@ export const STARTING_POINTS: { name: string; entries: Entry[] }[] = [
     entries: [
       { path: "home", access: "read-write" },
       { path: "home", access: "read-only" },
-      { path: "xdg-public-share", access: "read-write" },
+      { path: "host", access: "read-write" },
+      { path: "home/../etc", access: "read-only" },
     ],
   },
 ];
@@ -71,20 +91,50 @@ export const STARTING_POINTS: { name: string; entries: Entry[] }[] = [
 export const SCOPES = [
   { path: "home", access: "read-write", note: "The whole home directory." },
   {
+    path: "home/.local/share/example",
+    access: "read-write",
+    note: "A path under home.",
+  },
+  {
     path: "host",
     access: "read-only",
     note: "The whole filesystem, read-only.",
   },
-  { path: "xdg-documents", access: "read-write", note: "A user directory." },
+  {
+    path: "xdg-desktop",
+    access: "read-only",
+    note: "Renamed by this session.",
+  },
+  {
+    path: "xdg-documents",
+    access: "read-write",
+    note: "Renamed by this session.",
+  },
+  {
+    path: "xdg-download",
+    access: "read-write",
+    note: "Renamed by this session.",
+  },
+  { path: "xdg-music", access: "read-only", note: "Renamed by this session." },
   {
     path: "xdg-pictures",
     access: "read-only",
     note: "One this session leaves alone.",
   },
   {
-    path: "home/.local/share/example",
-    access: "read-write",
-    note: "A path under home.",
+    path: "xdg-public-share",
+    access: "read-only",
+    note: "One this session turned off.",
+  },
+  {
+    path: "xdg-templates",
+    access: "read-only",
+    note: "One this session leaves alone.",
+  },
+  {
+    path: "xdg-videos",
+    access: "read-only",
+    note: "One this session leaves alone.",
   },
   { path: "/media/library", access: "read-only", note: "An absolute path." },
 ];
