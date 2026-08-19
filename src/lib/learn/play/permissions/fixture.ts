@@ -76,7 +76,11 @@ const PACKAGE: Manifest = {
  * Written out in full is the other habit, the one cpak init produces, where
  * every permission is on the page and most of them are false.
  */
-export function manifestFor(keys: string[], ticks: Ticks, explicit: boolean): Manifest {
+export function manifestFor(
+  keys: string[],
+  ticks: Ticks,
+  explicit: boolean,
+): Manifest {
   const override: Record<string, unknown> = {};
   for (const key of keys) {
     if (ticks[key]) override[key] = true;

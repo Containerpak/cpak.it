@@ -1,0 +1,102 @@
+<script lang="ts">
+  import Seo from "$lib/components/Seo.svelte";
+  import LessonShell from "$lib/components/learn/LessonShell.svelte";
+  import PermissionsBoard from "$lib/components/learn/boards/PermissionsBoard.svelte";
+  import { BOARDS, waiting, type BoardStatus } from "$lib/learn/boards";
+  import { COURSE } from "../course";
+
+  const board = BOARDS.permissions;
+  const lesson = COURSE.chapters[0].lessons[0];
+  let status = $state<BoardStatus>(waiting());
+</script>
+
+<Seo
+  title="Nothing is granted unless the manifest asks - cpak"
+  description="The first lesson on cpak permissions: a package reaches the display, the bus, audio or the network only by naming each of them, and the board beside the text shows the paths each name binds."
+  path="/learn/example/nothing-is-granted"
+/>
+
+<LessonShell
+  course={COURSE}
+  {lesson}
+  workbenchTitle={board.title}
+  workbenchLink={{ href: board.href, label: "Open on its own" }}
+  workbenchStatus={status}
+>
+  {#snippet workbench()}
+    <PermissionsBoard onstatus={(next) => (status = next)} />
+  {/snippet}
+
+  <p>
+    Press <em>Nothing at all</em> on the board. Every path disappears and twenty-nine
+    permissions are listed underneath, none of them granted. That is where a package
+    starts: no directory, no socket, no device, no route off the machine.
+  </p>
+
+  <p>
+    Press <em>A window and nothing else</em>. One permission comes back,
+    <code>socketWayland</code>, and two paths with it: the compositor socket and
+    the lock beside it. Read the line under the first. That socket is the
+    window, and without it the application draws nowhere.
+  </p>
+
+  <h2>Read a permission as the paths it opens</h2>
+
+  <p>
+    Tick <code>socketX11</code> as well. Two paths become eight. Four of the new
+    ones are X11's own socket directories, the fifth is the authority file a client
+    needs to connect, and the sixth is there only because both permissions are on
+    at once: the cookie Xwayland writes.
+  </p>
+
+  <p>
+    Read the note under the socket directory. X11 does not separate its clients,
+    so anything on that display can read the clipboard, watch what is typed into
+    other windows and copy their pixels. Wayland hands over none of that.
+  </p>
+
+  <p>
+    Both are one line in a manifest and both are called a permission. The name
+    tells you almost nothing. The paths tell you what the application can do.
+  </p>
+
+  <h2>Eight are wider than their name</h2>
+
+  <p>
+    Most permissions open one socket or one directory. Eight open more than the
+    thing they name, and the board keeps them at the top of the list.
+  </p>
+
+  <p>
+    Three of them open a bus rather than a service:
+    <code>socketSessionBus</code>, <code>socketSystemBus</code> and
+    <code>socketBluetooth</code>, which binds the same socket as the system bus
+    under a friendlier name. What a package reaches through a bus is whatever
+    the host has listening on it, which is settled on the machine rather than in
+    the manifest.
+  </p>
+
+  <p>
+    <code>deviceAll</code> binds <code>/dev/</code> whole, and eleven device permissions
+    below it stop meaning anything while it is on.
+  </p>
+
+  <p>
+    The last four bind no path at all, which is what makes them easy to skip
+    over. <code>network</code> gives the container a route off the machine
+    instead of a network namespace of its own. <code>process</code> shares the
+    host process namespace, so the package sees processes outside the sandbox.
+    <code>userNamespaces</code>
+    lets the application build a nested sandbox, which a browser needs and almost
+    nothing else does. <code>asRoot</code> runs the process as uid 0 inside the container.
+  </p>
+
+  <p>
+    Take the package you want to ship and ask which of those eight it cannot
+    work without. That question is what a manifest review is made of.
+  </p>
+
+  <p>
+    <a href="/docs/permissions">Permissions</a> is the reference behind this lesson.
+  </p>
+</LessonShell>

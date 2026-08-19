@@ -19,7 +19,8 @@ const MOUNTS: Note[] = [
   },
   {
     match: /^\/run\/user\/\d+\/wayland-[^/]+\.lock$/,
-    reach: "The lock beside the compositor socket, carried when the compositor keeps one.",
+    reach:
+      "The lock beside the compositor socket, carried when the compositor keeps one.",
   },
   {
     match: /^\/run\/user\/\d+\/[^/]*wayland[^/]*$/i,
@@ -36,15 +37,23 @@ const MOUNTS: Note[] = [
     reach:
       "The X11 socket directory. X11 does not separate its clients: anything on the display can read the clipboard, watch what is typed into other windows and copy their pixels.",
   },
-  { match: /^\/tmp\/\.ICE-unix\/$/, reach: "The ICE sockets, which X11 session management uses." },
+  {
+    match: /^\/tmp\/\.ICE-unix\/$/,
+    reach: "The ICE sockets, which X11 session management uses.",
+  },
   {
     match: /^\/tmp\/\.XIM-unix\/$/,
-    reach: "The X input method sockets, which is how an input method reaches an X11 client.",
+    reach:
+      "The X input method sockets, which is how an input method reaches an X11 client.",
   },
-  { match: /^\/tmp\/\.font-unix\/$/, reach: "The X font server socket directory." },
+  {
+    match: /^\/tmp\/\.font-unix\/$/,
+    reach: "The X font server socket directory.",
+  },
   {
     match: /^\/run\/user\/\d+\/ICEauthority$/,
-    reach: "The ICE authority file, which holds the cookies for those session connections.",
+    reach:
+      "The ICE authority file, which holds the cookies for those session connections.",
   },
   {
     match: /^\/run\/user\/\d+\/pulse\/native$/,
@@ -58,11 +67,13 @@ const MOUNTS: Note[] = [
   },
   {
     match: /^\/run\/user\/\d+\/gnupg\/S\.gpg-agent$/,
-    reach: "The GPG agent, on the same terms: signing and decryption with keys that stay inside it.",
+    reach:
+      "The GPG agent, on the same terms: signing and decryption with keys that stay inside it.",
   },
   {
     match: /^\/run\/cups\/cups\.sock$/,
-    reach: "The printing socket: the printers this machine knows about, and the jobs sent to them.",
+    reach:
+      "The printing socket: the printers this machine knows about, and the jobs sent to them.",
   },
   {
     match: /^\/run\/user\/\d+\/at-spi\//,
@@ -74,9 +85,19 @@ const MOUNTS: Note[] = [
     reach:
       "The whole device tree. Everything the separate device permissions grant is below it, which is why they stop mattering once this one is on.",
   },
-  { match: /^\/dev\/dri\/$/, reach: "The graphics devices: the render nodes and the display cards." },
-  { match: /^\/dev\/nvidia/, reach: "An NVIDIA device node, matched on this host." },
-  { match: /^\/dev\/kvm$/, reach: "Hardware virtualisation. A package with it can run virtual machines." },
+  {
+    match: /^\/dev\/dri\/$/,
+    reach: "The graphics devices: the render nodes and the display cards.",
+  },
+  {
+    match: /^\/dev\/nvidia/,
+    reach: "An NVIDIA device node, matched on this host.",
+  },
+  {
+    match: /^\/dev\/kvm$/,
+    reach:
+      "Hardware virtualisation. A package with it can run virtual machines.",
+  },
   {
     match: /^\/dev\/shm\/$/,
     reach:
@@ -84,18 +105,31 @@ const MOUNTS: Note[] = [
   },
   {
     match: /^\/dev\/snd\/$/,
-    reach: "The ALSA devices, which is the sound hardware itself rather than a sound server.",
+    reach:
+      "The ALSA devices, which is the sound hardware itself rather than a sound server.",
   },
-  { match: /^\/dev\/video\d*$/, reach: "A capture device. On this fixture that is the webcam." },
-  { match: /^\/dev\/fuse$/, reach: "The FUSE control device: the package can mount filesystems of its own." },
+  {
+    match: /^\/dev\/video\d*$/,
+    reach: "A capture device. On this fixture that is the webcam.",
+  },
+  {
+    match: /^\/dev\/fuse$/,
+    reach:
+      "The FUSE control device: the package can mount filesystems of its own.",
+  },
   {
     match: /^\/dev\/net\/tun$/,
-    reach: "TUN and TAP, which is what a VPN client needs to create a network interface.",
+    reach:
+      "TUN and TAP, which is what a VPN client needs to create a network interface.",
   },
-  { match: /^\/dev\/(bus\/)?usb\/$/, reach: "The USB devices, all of them, as raw devices." },
+  {
+    match: /^\/dev\/(bus\/)?usb\/$/,
+    reach: "The USB devices, all of them, as raw devices.",
+  },
   {
     match: /^\/dev\/tty(USB|ACM)\d+$/,
-    reach: "A serial port. Boards, printers, radios and meters arrive as one of these.",
+    reach:
+      "A serial port. Boards, printers, radios and meters arrive as one of these.",
   },
   {
     match: /^\/dev\/input\/$/,
@@ -116,13 +150,16 @@ const SHIMS: Record<string, string> = {
     "Launch requests for host applications, by opaque identifier. The broker picks which desktop entry that identifier means.",
   "cpak-file-picker":
     "The native file chooser. What you pick is what the package receives, and nothing around it.",
-  podman: "The containers host action provider, reached as typed requests rather than the host socket.",
+  podman:
+    "The containers host action provider, reached as typed requests rather than the host socket.",
   docker: "The same provider under the other name.",
 };
 
 const QUIET: Record<string, string> = {
-  network: "No path is bound. Without it the container gets a network namespace of its own, with no route off the machine.",
-  process: "No path is bound. It shares the host process namespace, so the package sees processes that are not in the sandbox.",
+  network:
+    "No path is bound. Without it the container gets a network namespace of its own, with no route off the machine.",
+  process:
+    "No path is bound. It shares the host process namespace, so the package sees processes that are not in the sandbox.",
   userNamespaces:
     "No path is bound. It lets the application create a nested user namespace, which is what a browser needs for its own sandbox.",
   asRoot: "No path is bound. The process runs as uid 0 inside the container.",
@@ -139,7 +176,8 @@ const QUIET: Record<string, string> = {
 export const DECIDING: Record<string, string> = {
   socketSessionBus:
     "One name along the bus is org.freedesktop.systemd1, which starts a process for you outside the sandbox.",
-  deviceAll: "Every device node on the machine, and it swallows the separate device permissions.",
+  deviceAll:
+    "Every device node on the machine, and it swallows the separate device permissions.",
   process:
     "The host process namespace. What is inside the sandbox can see, and signal, what is outside it.",
   userNamespaces:
@@ -166,5 +204,7 @@ export function reachOfShim(name: string): string {
 
 /** What a permission that binds no path and adds no command still changes. */
 export function reachOfQuiet(key: string): string {
-  return QUIET[key] ?? "No host path is bound for this permission on this fixture.";
+  return (
+    QUIET[key] ?? "No host path is bound for this permission on this fixture."
+  );
 }

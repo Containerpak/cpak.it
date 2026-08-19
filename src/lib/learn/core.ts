@@ -23,7 +23,9 @@ export type CoreCall =
   | "desktopEntry"
   | "permissionCatalog";
 
-export type CoreAnswer<T> = { ok: true; result: T } | { ok: false; error: string };
+export type CoreAnswer<T> =
+  | { ok: true; result: T }
+  | { ok: false; error: string };
 
 /**
  * Why the module could not be loaded. The page says different things for a
@@ -105,7 +107,10 @@ async function start(): Promise<Core> {
   };
 }
 
-type CoreApi = Record<string, ((request: string) => string) | string | undefined>;
+type CoreApi = Record<
+  string,
+  ((request: string) => string) | string | undefined
+>;
 
 /**
  * The module publishes its calls while main runs, which is a turn after the
@@ -130,7 +135,10 @@ async function download(url: string, digest: string): Promise<ArrayBuffer> {
   try {
     response = await fetch(url);
   } catch (error) {
-    throw new CoreError("download", `${url} could not be fetched: ${reason(error)}`);
+    throw new CoreError(
+      "download",
+      `${url} could not be fetched: ${reason(error)}`,
+    );
   }
   if (!response.ok) {
     throw new CoreError("download", `${url} answered ${response.status}.`);
