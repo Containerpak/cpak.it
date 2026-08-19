@@ -36,6 +36,16 @@
   });
 
   let finished = $derived(done.size);
+  // A quiz is a lesson to the arithmetic and not to the reader, who can see the
+  // Quiz mark on it in the list below. Counting it as one more lesson reads as
+  // an error on a page that then shows two.
+  let quizzes = $derived(order.filter((entry) => entry.kind === "test").length);
+  let reading = $derived(order.length - quizzes);
+  let shape = $derived(
+    quizzes === 0
+      ? `${reading} ${reading === 1 ? "lesson" : "lessons"}`
+      : `${reading} ${reading === 1 ? "lesson" : "lessons"} and ${quizzes === 1 ? "a quiz" : `${quizzes} quizzes`}`,
+  );
   // Where the primary action goes: the first lesson not yet marked through, or
   // the beginning again once the whole course is done.
   let next = $derived(
@@ -76,8 +86,7 @@
 
       <div class="mt-8 w-full shrink-0 lg:mt-1 lg:w-72">
         <p class="text-sm text-slate-600">
-          {order.length}
-          {order.length === 1 ? "lesson" : "lessons"}, about {minutes} minutes
+          {shape}, about {minutes} minutes
         </p>
         <p class="mt-3 text-sm text-slate-500">
           {progressLine(finished, order.length)}

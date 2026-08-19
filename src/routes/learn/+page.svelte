@@ -43,15 +43,15 @@
       sentence:
         "Set one policy for other people's installations, and be able to say exactly what it closes and what it leaves open.",
       action: {
-        href: "/learn/play/ceiling",
-        label: "Open the ceiling playground",
+        href: "/learn/administration",
+        label: "Start the administration course",
       },
       reference: {
         href: "/docs/managed-deployment",
         label: "Read the docs on managed deployment",
       },
       ground: "audience-green",
-      note: "Write a ceiling, paste a manifest under it, and read which permissions come out the other side.",
+      note: "Two lessons and four questions, with the ceiling playground beside the text.",
     },
   ];
 </script>
