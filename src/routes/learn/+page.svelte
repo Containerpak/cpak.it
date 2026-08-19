@@ -31,12 +31,12 @@
       sentence:
         "Write a manifest cpak accepts, ask for the access your program needs, and ship a desktop entry that survives being exported.",
       action: {
-        href: "/learn/play/filesystem",
-        label: "Open the filesystem playground",
+        href: "/learn/packaging",
+        label: "Start the packaging course",
       },
       reference: { href: "/docs/manifest", label: "Read the manifest reference" },
       ground: "audience-blue",
-      note: "Three of the playgrounds below are the packaging ones: filesystem access, manifest migration and desktop entries.",
+      note: "Three lessons and five questions, with the filesystem and desktop entry playgrounds beside the text.",
     },
     {
       heading: "Running cpak on machines you look after",

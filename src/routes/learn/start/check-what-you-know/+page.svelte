@@ -29,5 +29,5 @@
     <PermissionsPlayground onstatus={(next) => (status = next)} />
   {/snippet}
 
-  <Quiz questions={QUESTIONS} />
+  <Quiz questions={QUESTIONS} lessons={4} usesPlayground />
 </LessonShell>

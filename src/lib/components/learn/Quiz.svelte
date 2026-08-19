@@ -14,7 +14,15 @@
   export type Choice = { text: string; correct?: boolean; why: string };
   export type Question = { asks: string; choices: Choice[] };
 
-  let { questions }: { questions: Question[] } = $props();
+  let {
+    questions,
+    /** How many lessons this course has, so the page can say it rather than
+     *  guess. */
+    lessons,
+    /** Whether one of the questions needs the playground beside the text. */
+    usesPlayground = false,
+  }: { questions: Question[]; lessons: number; usesPlayground?: boolean } =
+    $props();
 
   // One slot per question, all unanswered. Read from the prop once, which is
   // what it is for: a page shows one quiz and never swaps the questions under
@@ -42,9 +50,10 @@
 <div class="not-prose">
   <p class="text-base leading-7 text-gray-600">
     {questions.length} questions on what you have just read. Nothing is recorded
-    and nothing is issued for it: it is here so you find out which of the four
-    lessons to read again, while you still have them open in the rail. One of
-    them needs the playground beside this text.
+    and nothing is issued for it: it is here so you find out which of the {lessons}
+    lessons to read again, while you still have them open in the rail.{usesPlayground
+      ? " One of them needs the playground beside this text."
+      : ""}
   </p>
 
   <ol class="quiz-questions mt-8 space-y-10">
