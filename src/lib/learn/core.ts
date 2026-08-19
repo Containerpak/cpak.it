@@ -5,8 +5,8 @@
 
 export const CORE_MODULE = {
   url: "/learn/cpak-core/cpak-core.wasm",
-  digest: "b37a206603d6db1602e09e01fd5cb48f048b3c8a2594820a3ebbb8000f1a4b1e",
-  bytes: 4588069,
+  digest: "114fece0083772b2d2293cb257b63d85040df700840e609edd27176b946c052c",
+  bytes: 4589212,
 };
 
 export const CORE_RUNTIME = {
