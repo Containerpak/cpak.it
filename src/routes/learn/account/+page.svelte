@@ -90,37 +90,94 @@
   <meta name="robots" content="noindex, nofollow" />
 </svelte:head>
 
-<div class="mx-auto max-w-4xl px-6 py-12 sm:py-16">
-  <a
-    href="/learn"
-    class="text-sm font-medium text-[#4670EC] hover:underline focus-visible:ring-2 focus-visible:ring-[#3E7BFF] focus-visible:outline-none"
-  >
-    cpak Learn
-  </a>
-  <h1 class="mt-5 text-4xl font-extrabold tracking-tight text-gray-900">
-    Your account
-  </h1>
-  <p class="mt-4 max-w-2xl text-lg leading-8 text-gray-600">
-    What you have worked through, and what you hold. Nothing on this page is
-    needed to read a lesson or open a workbench; an account exists so a
-    credential has an account to name.
-  </p>
-
-  {#if problem}
-    <div
-      class="mt-8 rounded-2xl border border-red-200 bg-red-100 p-5"
-      role="alert"
+<!-- Who you are here, and the one control that changes it. -->
+<section class="border-b border-slate-200 bg-white">
+  <div class="mx-auto max-w-4xl px-6 py-12 sm:py-14">
+    <a
+      href="/learn"
+      class="text-sm font-medium text-[#4670EC] hover:underline focus-visible:ring-2 focus-visible:ring-[#3E7BFF] focus-visible:outline-none"
     >
+      cpak Learn
+    </a>
+    <div
+      class="mt-4 flex flex-wrap items-start justify-between gap-x-8 gap-y-6"
+    >
+      <div class="min-w-0">
+        <h1 class="text-4xl font-extrabold tracking-tight text-gray-900">
+          Your account
+        </h1>
+        <p class="mt-3 max-w-2xl text-lg leading-8 text-gray-600">
+          What you have worked through, and what you hold.
+        </p>
+      </div>
+
+      {#if data.account}
+        <div class="flex min-w-0 items-center gap-4">
+          {#if data.account.avatar}
+            <img
+              src={data.account.avatar}
+              alt=""
+              width="48"
+              height="48"
+              class="h-12 w-12 rounded-full border border-slate-200"
+            />
+          {:else}
+            <span
+              class="flex h-12 w-12 items-center justify-center rounded-full border border-slate-200 bg-slate-100 text-lg font-semibold text-gray-500"
+              aria-hidden="true"
+            >
+              {data.account.handle.slice(0, 1).toUpperCase()}
+            </span>
+          {/if}
+          <div class="min-w-0">
+            <p class="truncate font-semibold text-gray-900">
+              {data.account.handle}
+            </p>
+            <p class="text-sm text-gray-600">
+              {data.account.provider === "github"
+                ? "GitHub account"
+                : "Local development account"}, here since {longDate(
+                data.account.createdAt,
+              )}
+            </p>
+            <form
+              method="POST"
+              action="?/signout"
+              use:enhance={() => submitting("signout")}
+              class="mt-2"
+            >
+              <button
+                type="submit"
+                disabled={working === "signout"}
+                class="text-sm font-medium text-[#3158c7] underline underline-offset-2 hover:no-underline focus-visible:ring-2 focus-visible:ring-[#3E7BFF] focus-visible:outline-none disabled:opacity-60"
+              >
+                {working === "signout" ? "Signing out..." : "Sign out"}
+              </button>
+            </form>
+          </div>
+        </div>
+      {/if}
+    </div>
+    {#if carrying}
+      <p class="mt-6 text-sm text-gray-600" role="status">
+        Carrying up what this browser had marked done.
+      </p>
+    {/if}
+  </div>
+</section>
+
+{#if problem}
+  <div class="border-b border-red-200 bg-red-100" role="alert">
+    <div class="mx-auto max-w-4xl px-6 py-5">
       <p class="text-sm font-semibold text-red-700">That did not work</p>
       <p class="mt-1 text-sm leading-6 text-red-700">{problem}</p>
     </div>
-  {/if}
+  </div>
+{/if}
 
-  {#if erased}
-    <div
-      class="mt-8 rounded-2xl border border-slate-200 bg-slate-50 p-6"
-      role="status"
-    >
+{#if erased}
+  <div class="border-b border-slate-200 bg-white" role="status">
+    <div class="mx-auto max-w-4xl px-6 py-6">
       <h2 class="text-lg font-semibold text-gray-900">Deleted</h2>
       <p class="mt-2 text-sm leading-6 text-gray-600">
         {erased.completions}
@@ -145,34 +202,76 @@
         </p>
       {/if}
     </div>
-  {/if}
+  </div>
+{/if}
 
-  {#if !data.durable}
-    <p
-      class="mt-8 rounded-2xl border border-slate-200 bg-yellow-100 p-4 text-sm leading-6 text-yellow-800"
-    >
-      No database is bound to this deployment, so accounts, progress and
-      credentials are held in the server's memory and are lost when it restarts.
-      Bind LEARN_DB to keep them.
-    </p>
-  {/if}
+<!-- A condition of the whole deployment, so it is a strip across the page and
+     not a note on one card. -->
+{#if !data.durable}
+  <div class="border-b border-yellow-200 bg-yellow-100">
+    <div class="mx-auto max-w-4xl px-6 py-4">
+      <p class="text-sm leading-6 text-yellow-800">
+        No database is bound to this deployment, so accounts, progress and
+        credentials are held in the server's memory and are lost when it
+        restarts. Bind LEARN_DB to keep them.
+      </p>
+    </div>
+  </div>
+{/if}
 
-  {#if !data.account}
-    <!-- Signed out -->
-    <section
-      aria-labelledby="signin"
-      class="mt-10 rounded-2xl border border-slate-200 bg-white p-6 sm:p-8"
-    >
-      <h2 id="signin" class="text-2xl font-semibold text-gray-900">Sign in</h2>
-      <p class="mt-3 max-w-2xl text-sm leading-6 text-gray-600">
-        A credential names the account that earned it, so there has to be an
-        account to name. GitHub is what cpak asks for: the people who take these
-        exams already have a handle there, and it is a name a reader can look
-        up. It proves the handle and nothing else, which is exactly as much as a
-        credential from here claims.
+{#if !data.account}
+  <!-- Signed out. What this browser has is the content and comes first; the
+       sign-in is how you keep it and comes after. -->
+  <section aria-labelledby="here" class="border-b border-slate-200">
+    <div class="mx-auto max-w-4xl px-6 py-12">
+      <h2 id="here" class="text-2xl font-semibold text-gray-900">
+        What this browser remembers
+      </h2>
+      <p class="mt-3 max-w-2xl leading-7 text-gray-600">
+        Marking a lesson done works signed out. It is written here, in this
+        browser, and it goes no further: another machine knows nothing about it,
+        and clearing site data ends it. Signing in carries it up once, and after
+        that the account is what a second machine reads.
+      </p>
+
+      {#if local === null}
+        <div
+          class="mt-6 animate-pulse rounded-2xl border border-slate-200 bg-white p-6"
+        >
+          <div class="h-4 w-48 rounded bg-slate-100"></div>
+          <div class="mt-4 h-3 w-full rounded bg-slate-100"></div>
+          <div class="mt-2 h-3 w-2/3 rounded bg-slate-100"></div>
+        </div>
+      {:else if tracks.length === 0}
+        <p
+          class="mt-6 rounded-2xl border border-slate-200 bg-white p-6 text-sm leading-6 text-gray-600"
+        >
+          Nothing yet. Open a lesson or a workbench and mark it done, and it
+          will be listed here.
+        </p>
+      {:else}
+        {@render completedList(tracks)}
+      {/if}
+    </div>
+  </section>
+
+  <section aria-labelledby="signin" class="bg-white">
+    <div class="mx-auto max-w-4xl px-6 py-12">
+      <h2 id="signin" class="text-2xl font-semibold text-gray-900">
+        Signing in
+      </h2>
+      <p class="mt-3 max-w-2xl leading-7 text-gray-600">
+        Nothing here is needed to read a lesson or open a workbench. An account
+        exists so a credential has an account to name.
       </p>
 
       {#if data.github}
+        <p class="mt-4 max-w-2xl text-sm leading-6 text-gray-600">
+          GitHub is what cpak asks for: the people who take these exams already
+          have a handle there, and it is a name a reader can look up. It proves
+          the handle and nothing else, which is exactly as much as a credential
+          from here claims.
+        </p>
         <a
           href="/learn/account/auth/github"
           data-sveltekit-reload
@@ -190,10 +289,10 @@
           method="POST"
           action="?/local"
           use:enhance={() => submitting("local")}
-          class="mt-6"
+          class="mt-6 max-w-2xl"
         >
           <p
-            class="rounded-xl border border-slate-200 bg-yellow-100 p-4 text-sm leading-6 text-yellow-800"
+            class="rounded-xl border border-yellow-200 bg-yellow-100 p-4 text-sm leading-6 text-yellow-800"
           >
             Development sign-in. GitHub is not configured on this machine, so
             this form stands in for it: it opens a real session against a real
@@ -229,109 +328,22 @@
         </form>
       {:else}
         <p
-          class="mt-6 rounded-xl border border-slate-200 bg-slate-50 p-4 text-sm leading-6 text-gray-600"
+          class="mt-6 max-w-2xl rounded-xl border border-slate-200 bg-slate-50 p-4 text-sm leading-6 text-gray-600"
         >
           Sign-in is not configured on this deployment yet, so there is no way
           to open an account here at the moment. Everything else in cpak Learn
           works without one.
         </p>
       {/if}
-    </section>
-
-    <section aria-labelledby="here" class="mt-12">
-      <h2 id="here" class="text-2xl font-semibold text-gray-900">
-        What this browser remembers
-      </h2>
-      <p class="mt-3 max-w-2xl text-sm leading-6 text-gray-600">
-        Marking a lesson done works signed out. It is written here, in this
-        browser, and it goes no further: another machine knows nothing about it,
-        and clearing site data ends it. Signing in carries it up once, and after
-        that the account is what a second machine reads.
-      </p>
-
-      {#if local === null}
-        <div
-          class="mt-6 animate-pulse rounded-2xl border border-slate-200 bg-white p-6"
-        >
-          <div class="h-4 w-48 rounded bg-slate-100"></div>
-          <div class="mt-4 h-3 w-full rounded bg-slate-100"></div>
-          <div class="mt-2 h-3 w-2/3 rounded bg-slate-100"></div>
-        </div>
-      {:else if tracks.length === 0}
-        <p
-          class="mt-6 rounded-2xl border border-slate-200 bg-white p-6 text-sm leading-6 text-gray-600"
-        >
-          Nothing yet. Open a lesson or a workbench and mark it done, and it
-          will be listed here.
-        </p>
-      {:else}
-        {@render completedList(tracks)}
-      {/if}
-    </section>
-  {:else}
-    <!-- Signed in -->
-    <section
-      aria-labelledby="who"
-      class="mt-10 rounded-2xl border border-slate-200 bg-white p-6"
-    >
-      <h2 id="who" class="sr-only">The account you are signed in as</h2>
-      <div class="flex flex-wrap items-center justify-between gap-4">
-        <div class="flex min-w-0 items-center gap-4">
-          {#if data.account.avatar}
-            <img
-              src={data.account.avatar}
-              alt=""
-              width="48"
-              height="48"
-              class="h-12 w-12 rounded-full border border-slate-200"
-            />
-          {:else}
-            <span
-              class="flex h-12 w-12 items-center justify-center rounded-full border border-slate-200 bg-slate-100 text-lg font-semibold text-gray-500"
-              aria-hidden="true"
-            >
-              {data.account.handle.slice(0, 1).toUpperCase()}
-            </span>
-          {/if}
-          <div class="min-w-0">
-            <p class="truncate text-lg font-semibold text-gray-900">
-              {data.account.handle}
-            </p>
-            <p class="text-sm text-gray-600">
-              {data.account.provider === "github"
-                ? "GitHub account"
-                : "Local development account"}, here since {longDate(
-                data.account.createdAt,
-              )}
-            </p>
-          </div>
-        </div>
-        <form
-          method="POST"
-          action="?/signout"
-          use:enhance={() => submitting("signout")}
-        >
-          <button
-            type="submit"
-            disabled={working === "signout"}
-            class="rounded-full border border-slate-200 bg-white px-5 py-2.5 text-sm font-medium text-gray-900 hover:bg-slate-100 focus-visible:ring-2 focus-visible:ring-[#3E7BFF] focus-visible:outline-none disabled:opacity-60"
-          >
-            {working === "signout" ? "Signing out..." : "Sign out"}
-          </button>
-        </form>
-      </div>
-      {#if carrying}
-        <p class="mt-4 text-sm text-gray-600" role="status">
-          Carrying up what this browser had marked done.
-        </p>
-      {/if}
-    </section>
-
-    <section aria-labelledby="completed" class="mt-12">
+    </div>
+  </section>
+{:else}
+  <section aria-labelledby="completed" class="border-b border-slate-200">
+    <div class="mx-auto max-w-4xl px-6 py-12">
       <h2 id="completed" class="text-2xl font-semibold text-gray-900">
-        What you have completed
+        What you have worked through
       </h2>
-      <p class="mt-3 max-w-2xl text-sm leading-6 text-gray-600">
+      <p class="mt-3 max-w-2xl leading-7 text-gray-600">
         Lessons you marked done. They are recorded against the account, so they
         follow you to another machine. The account does not watch you read; a
         lesson is here because you said it was.
@@ -350,28 +362,26 @@
       {:else}
         {@render completedList(tracks)}
       {/if}
-    </section>
 
-    <section aria-labelledby="badges" class="mt-12">
-      <h2 id="badges" class="text-2xl font-semibold text-gray-900">Badges</h2>
-      <p class="mt-3 max-w-2xl text-sm leading-6 text-gray-600">
+      <!-- Badges are read off the same completions, so they belong under them
+           rather than beside them. -->
+      <h3 class="mt-10 text-lg font-semibold text-gray-900">Badges</h3>
+      <p class="mt-2 max-w-2xl text-sm leading-6 text-gray-600">
         One per track you finish. A badge is a note to yourself and is worth
         exactly that: it is here because you marked every lesson in the track
         done, and nothing checked that you read them. So it lives on this page
         only. There is no public badge page, no address to send anyone and no
-        image to embed, because there is nothing here for a badge to attest. The
-        credential below is the part that attests something.
+        image to embed, because there is nothing here for a badge to attest. A
+        credential is the part that attests something.
       </p>
 
       {#if badges.length === 0}
-        <p
-          class="mt-6 rounded-2xl border border-slate-200 bg-white p-6 text-sm leading-6 text-gray-600"
-        >
+        <p class="mt-4 text-sm leading-6 text-gray-600">
           None yet. Finishing every lesson in a track puts its badge here.
         </p>
       {:else}
         {#if earned.length > 0}
-          <ul class="mt-6 grid gap-4 sm:grid-cols-2">
+          <ul class="mt-4 grid gap-4 sm:grid-cols-2">
             {#each earned as badge (badge.track)}
               <li
                 class="flex items-start gap-4 rounded-2xl border border-slate-200 bg-white p-5"
@@ -396,9 +406,9 @@
           </ul>
         {/if}
         {#if started.length > 0}
-          <h3 class="mt-8 text-sm font-semibold text-gray-900">
+          <h4 class="mt-6 text-sm font-semibold text-gray-900">
             Started, not finished
-          </h3>
+          </h4>
           <ul class="mt-3 space-y-2">
             {#each started as badge (badge.track)}
               <li class="text-sm text-gray-600">
@@ -408,13 +418,17 @@
           </ul>
         {/if}
       {/if}
-    </section>
+    </div>
+  </section>
 
-    <section aria-labelledby="hold" class="mt-12">
+  <!-- The only thing on this page anybody else can read, so it gets a room of
+       its own. -->
+  <section aria-labelledby="hold" class="border-b border-slate-200 bg-white">
+    <div class="mx-auto max-w-4xl px-6 py-12">
       <h2 id="hold" class="text-2xl font-semibold text-gray-900">
         What you hold
       </h2>
-      <p class="mt-3 max-w-2xl text-sm leading-6 text-gray-600">
+      <p class="mt-3 max-w-2xl leading-7 text-gray-600">
         A credential records an exam result under this account. Each one has a
         page anyone can read without signing in, and the account named is the
         only part of it that was authenticated.
@@ -422,7 +436,7 @@
 
       {#if data.credentials.length === 0}
         <p
-          class="mt-6 rounded-2xl border border-slate-200 bg-white p-6 text-sm leading-6 text-gray-600"
+          class="mt-6 rounded-2xl border border-slate-200 bg-slate-50 p-6 text-sm leading-6 text-gray-600"
         >
           None yet. Passing an exam while signed in writes one here.
         </p>
@@ -432,7 +446,7 @@
             <li>
               <a
                 href="/learn/account/credentials/{held.code}"
-                class="block rounded-2xl border border-slate-200 bg-white p-5 hover:bg-slate-50 focus-visible:ring-2 focus-visible:ring-[#3E7BFF] focus-visible:outline-none"
+                class="block rounded-2xl border border-slate-200 bg-slate-50 p-5 hover:bg-white focus-visible:ring-2 focus-visible:ring-[#3E7BFF] focus-visible:outline-none"
               >
                 <div class="flex flex-wrap items-start justify-between gap-3">
                   <div class="min-w-0">
@@ -481,9 +495,11 @@
           </button>
         </form>
       {/if}
-    </section>
+    </div>
+  </section>
 
-    <section aria-labelledby="data" class="mt-12">
+  <section aria-labelledby="data">
+    <div class="mx-auto max-w-4xl px-6 py-12">
       <h2 id="data" class="text-2xl font-semibold text-gray-900">Your data</h2>
       <div class="mt-6 rounded-2xl border border-slate-200 bg-white p-6">
         <p class="text-sm font-semibold text-gray-900">What is kept</p>
@@ -570,9 +586,9 @@
           </form>
         {/if}
       </div>
-    </section>
-  {/if}
-</div>
+    </div>
+  </section>
+{/if}
 
 {#snippet completedList(groups: ReturnType<typeof byTrack>)}
   <div class="mt-6 space-y-6">
