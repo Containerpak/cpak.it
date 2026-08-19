@@ -29,7 +29,7 @@ export type Module = {
 };
 
 export type Course = {
-  /** The track progress is recorded against. */
+  /** The course progress is recorded against. */
   slug: string;
   title: string;
   /** The overview. The rail links back to it from every lesson. */

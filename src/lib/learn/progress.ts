@@ -1,21 +1,21 @@
 // Marking a lesson done.
 //
-// It is always written to this browser first, so the tracks work with no
+// It is always written to this browser first, so the courses work with no
 // account at all. When there is a session the same entry is posted to the
 // account, and that copy is what a second machine sees. The browser copy is
 // kept as a mirror rather than thrown away, so signing out does not empty the
 // page you were reading.
 //
-// A lesson page calls markDone() with its own title and the size of its track.
+// A lesson page calls markDone() with its own title and the size of its course.
 // Those travel with the entry so the account page can still name a lesson
 // after the lesson has been renamed or removed.
 
 export type Done = {
   lesson: string;
   title: string;
-  track: string;
-  trackTitle: string;
-  trackTotal: number;
+  course: string;
+  courseTitle: string;
+  courseTotal: number;
   completedAt: string;
 };
 
@@ -38,7 +38,7 @@ export function readLocal(): Done[] {
       const candidate = entry as Partial<Done>;
       return (
         typeof candidate?.lesson === "string" &&
-        typeof candidate?.track === "string"
+        typeof candidate?.course === "string"
       );
     });
   } catch {
@@ -99,30 +99,30 @@ async function send(entries: Done[]) {
   }
 }
 
-export type Track = {
-  track: string;
+export type Course = {
+  course: string;
   title: string;
   total: number;
   entries: Done[];
 };
 
-export function byTrack(entries: Done[]): Track[] {
-  const groups = new Map<string, Track>();
+export function byTrack(entries: Done[]): Course[] {
+  const groups = new Map<string, Course>();
   for (const entry of entries) {
-    const group = groups.get(entry.track) ?? {
-      track: entry.track,
-      title: entry.trackTitle || entry.track,
+    const group = groups.get(entry.course) ?? {
+      course: entry.course,
+      title: entry.courseTitle || entry.course,
       total: 0,
       entries: [],
     };
-    group.title = entry.trackTitle || group.title;
+    group.title = entry.courseTitle || group.title;
     group.total = Math.max(
       group.total,
-      entry.trackTotal || 0,
+      entry.courseTotal || 0,
       group.entries.length + 1,
     );
     group.entries.push(entry);
-    groups.set(entry.track, group);
+    groups.set(entry.course, group);
   }
   for (const group of groups.values()) {
     group.entries.sort((a, b) => a.completedAt.localeCompare(b.completedAt));

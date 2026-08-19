@@ -35,7 +35,7 @@
   let erased = $derived(form && "erased" in form ? form.erased : null);
 
   let entries = $derived<Done[]>(data.account ? data.completed : (local ?? []));
-  let tracks = $derived(byTrack(entries));
+  let courses = $derived(byTrack(entries));
   let badges = $derived(badgesFrom(entries));
   let earned = $derived(badges.filter((badge) => badge.earned));
   let started = $derived(badges.filter((badge) => !badge.earned));
@@ -241,15 +241,15 @@
           <div class="mt-4 h-3 w-full rounded bg-slate-100"></div>
           <div class="mt-2 h-3 w-2/3 rounded bg-slate-100"></div>
         </div>
-      {:else if tracks.length === 0}
+      {:else if courses.length === 0}
         <p
           class="mt-6 rounded-2xl border border-slate-200 bg-white p-6 text-sm leading-6 text-gray-600"
         >
-          Nothing yet. Open a lesson or a workbench and mark it done, and it
+          Nothing yet. Open a lesson or a playground and mark it done, and it
           will be listed here.
         </p>
       {:else}
-        {@render completedList(tracks)}
+        {@render completedList(courses)}
       {/if}
     </div>
   </section>
@@ -260,7 +260,7 @@
         Signing in
       </h2>
       <p class="mt-3 max-w-2xl leading-7 text-gray-600">
-        Nothing here is needed to read a lesson or open a workbench. An account
+        Nothing here is needed to read a lesson or open a playground. An account
         exists so a credential has an account to name.
       </p>
 
@@ -347,7 +347,7 @@
         follow you to another machine. The account does not watch you read; a
         lesson is here because you said it was.
       </p>
-      {#if tracks.length === 0}
+      {#if courses.length === 0}
         <p
           class="mt-6 rounded-2xl border border-slate-200 bg-white p-6 text-sm leading-6 text-gray-600"
         >
@@ -359,15 +359,15 @@
           > and what you mark done appears here.
         </p>
       {:else}
-        {@render completedList(tracks)}
+        {@render completedList(courses)}
       {/if}
 
       <!-- Badges are read off the same completions, so they belong under them
            rather than beside them. -->
       <h3 class="mt-10 text-lg font-semibold text-gray-900">Badges</h3>
       <p class="mt-2 max-w-2xl text-sm leading-6 text-gray-600">
-        One per track you finish. A badge is a note to yourself and is worth
-        exactly that: it is here because you marked every lesson in the track
+        One per course you finish. A badge is a note to yourself and is worth
+        exactly that: it is here because you marked every lesson in the course
         done, and nothing checked that you read them. So it lives on this page
         only. There is no public badge page, no address to send anyone and no
         image to embed, because there is nothing here for a badge to attest. A
@@ -376,12 +376,12 @@
 
       {#if badges.length === 0}
         <p class="mt-4 text-sm leading-6 text-gray-600">
-          None yet. Finishing every lesson in a track puts its badge here.
+          None yet. Finishing every lesson in a course puts its badge here.
         </p>
       {:else}
         {#if earned.length > 0}
           <ul class="mt-4 grid gap-4 sm:grid-cols-2">
-            {#each earned as badge (badge.track)}
+            {#each earned as badge (badge.course)}
               <li
                 class="flex items-start gap-4 rounded-2xl border border-slate-200 bg-white p-5"
               >
@@ -409,7 +409,7 @@
             Started, not finished
           </h4>
           <ul class="mt-3 space-y-2">
-            {#each started as badge (badge.track)}
+            {#each started as badge (badge.course)}
               <li class="text-sm text-gray-600">
                 {badge.title}, {badge.done} of {badge.total}
               </li>
@@ -591,7 +591,7 @@
 
 {#snippet completedList(groups: ReturnType<typeof byTrack>)}
   <div class="mt-6 space-y-6">
-    {#each groups as group (group.track)}
+    {#each groups as group (group.course)}
       <div class="rounded-2xl border border-slate-200 bg-white p-6">
         <div class="flex flex-wrap items-baseline justify-between gap-2">
           <h3 class="text-lg font-semibold text-gray-900">{group.title}</h3>

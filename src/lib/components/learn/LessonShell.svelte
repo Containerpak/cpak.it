@@ -6,7 +6,7 @@
   // who does not pass has to be able to walk back into the lesson they missed
   // and come out again without leaving the course. The centre is the text and
   // it is a text column: one measure, one heading hierarchy, nothing else. The
-  // right is the workbench, and only when the lesson names one. A lesson that
+  // right is the playground, and only when the lesson names one. A lesson that
   // names none does not get an empty panel: the centre takes the width.
   //
   // A reader who wants none of the furniture collapses the rail, and that
@@ -27,22 +27,22 @@
   let {
     course,
     lesson,
-    workbench = null,
-    workbenchTitle = "",
-    workbenchLink = null,
-    workbenchStatus = null,
+    playground = null,
+    playgroundTitle = "",
+    playgroundLink = null,
+    playgroundStatus = null,
     children,
   }: {
     course: Course;
     /** The lesson being read. It has to be one of the course's own. */
     lesson: Lesson;
     /** The board, when this lesson has one. Absent is the common case. */
-    workbench?: Snippet | null;
-    workbenchTitle?: string;
+    playground?: Snippet | null;
+    playgroundTitle?: string;
     /** Where the same board lives on its own, for somebody who wants it alone. */
-    workbenchLink?: { href: string; label: string } | null;
+    playgroundLink?: { href: string; label: string } | null;
     /** What the board says about the decision module, said once, here. */
-    workbenchStatus?: PlaygroundStatus | null;
+    playgroundStatus?: PlaygroundStatus | null;
     children: Snippet;
   } = $props();
 
@@ -86,9 +86,9 @@
     void markDone({
       lesson: key,
       title: lesson.title,
-      track: course.slug,
-      trackTitle: course.title,
-      trackTotal: total,
+      course: course.slug,
+      courseTitle: course.title,
+      courseTotal: total,
     });
   }
 </script>
@@ -174,12 +174,12 @@
     </div>
 
     <div
-      class={workbench
+      class={playground
         ? "mt-5 grid items-start gap-6 xl:grid-cols-[minmax(0,34rem)_minmax(0,1fr)]"
         : "mt-5"}
     >
       <article
-        class={workbench
+        class={playground
           ? "min-w-0 rounded-2xl border border-slate-200 bg-white px-6 py-8 sm:px-8"
           : "mx-auto w-full max-w-3xl min-w-0 rounded-2xl border border-slate-200 bg-white px-6 py-8 sm:px-8"}
       >
@@ -198,47 +198,47 @@
         </div>
       </article>
 
-      {#if workbench}
+      {#if playground}
         <section
-          aria-labelledby="workbench-heading"
+          aria-labelledby="playground-heading"
           class="min-w-0 rounded-2xl border border-slate-200 bg-white p-4 sm:p-5"
         >
           <div
             class="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1"
           >
             <h2
-              id="workbench-heading"
+              id="playground-heading"
               class="text-sm font-semibold text-gray-900"
             >
-              {workbenchTitle || "Workbench"}
+              {playgroundTitle || "Playground"}
             </h2>
-            {#if workbenchLink}
+            {#if playgroundLink}
               <a
-                href={workbenchLink.href}
+                href={playgroundLink.href}
                 class="text-sm font-medium text-[#4670EC] hover:underline"
               >
-                {workbenchLink.label}
+                {playgroundLink.label}
               </a>
             {/if}
           </div>
 
-          {#if workbenchStatus}
+          {#if playgroundStatus}
             <p
               class="mt-1 text-xs leading-5 text-gray-500"
               role="status"
               aria-live="polite"
             >
-              {#if workbenchStatus.phase === "ready"}
-                Answered by cpak {workbenchStatus.version} running in this tab. Nothing
+              {#if playgroundStatus.phase === "ready"}
+                Answered by cpak {playgroundStatus.version} running in this tab. Nothing
                 you type is sent anywhere.
-              {:else if workbenchStatus.phase === "loading"}
+              {:else if playgroundStatus.phase === "loading"}
                 Loading cpak's decision module.
               {:else}
-                {workbenchStatus.error ||
+                {playgroundStatus.error ||
                   "The decision module could not be loaded."}
                 <button
                   type="button"
-                  onclick={() => workbenchStatus?.retry()}
+                  onclick={() => playgroundStatus?.retry()}
                   class="font-medium text-[#4670EC] hover:underline"
                 >
                   Try again
@@ -248,7 +248,7 @@
           {/if}
 
           <div class="mt-4">
-            {@render workbench()}
+            {@render playground()}
           </div>
         </section>
       {/if}

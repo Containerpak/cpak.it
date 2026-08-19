@@ -25,9 +25,9 @@ export type Account = {
 export type Completion = {
   lesson: string;
   title: string;
-  track: string;
-  trackTitle: string;
-  trackTotal: number;
+  course: string;
+  courseTitle: string;
+  courseTotal: number;
   completedAt: string;
 };
 
@@ -105,9 +105,9 @@ const SCHEMA = [
     account text not null,
     lesson text not null,
     title text not null,
-    track text not null,
-    track_title text not null,
-    track_total integer not null,
+    course text not null,
+    course_title text not null,
+    course_total integer not null,
     completed_at text not null,
     primary key (account, lesson)
   )`,
@@ -138,9 +138,9 @@ type AccountRow = {
 type CompletionRow = {
   lesson: string;
   title: string;
-  track: string;
-  track_title: string;
-  track_total: number;
+  course: string;
+  course_title: string;
+  course_total: number;
   completed_at: string;
 };
 
@@ -176,9 +176,9 @@ function toCompletion(row: CompletionRow): Completion {
   return {
     lesson: row.lesson,
     title: row.title,
-    track: row.track,
-    trackTitle: row.track_title,
-    trackTotal: row.track_total,
+    course: row.course,
+    courseTitle: row.course_title,
+    courseTotal: row.course_total,
     completedAt: row.completed_at,
   };
 }
@@ -273,19 +273,19 @@ function onD1(db: Database): Store {
       await db
         .prepare(
           `insert into completions
-             (account, lesson, title, track, track_title, track_total, completed_at)
+             (account, lesson, title, course, course_title, course_total, completed_at)
            values (?, ?, ?, ?, ?, ?, ?)
            on conflict (account, lesson) do update set title = excluded.title,
-             track = excluded.track, track_title = excluded.track_title,
-             track_total = excluded.track_total`,
+             course = excluded.course, course_title = excluded.course_title,
+             course_total = excluded.course_total`,
         )
         .bind(
           account,
           entry.lesson,
           entry.title,
-          entry.track,
-          entry.trackTitle,
-          entry.trackTotal,
+          entry.course,
+          entry.courseTitle,
+          entry.courseTotal,
           entry.completedAt,
         )
         .run();

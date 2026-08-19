@@ -99,7 +99,7 @@
 
           {#if index === 0}
             <p class="mt-4 max-w-xl leading-7 text-gray-600">
-              This track is for learning and nothing else. Nothing in it is
+              This course is for learning and nothing else. Nothing in it is
               examined and it carries no credential.
             </p>
           {/if}

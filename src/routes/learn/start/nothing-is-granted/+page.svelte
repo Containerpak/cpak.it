@@ -5,25 +5,25 @@
   import { PLAYGROUNDS, waiting, type PlaygroundStatus } from "$lib/learn/playgrounds";
   import { COURSE } from "../course";
 
-  const board = PLAYGROUNDS.permissions;
-  const lesson = COURSE.modules[0].lessons[0];
+  const meta = PLAYGROUNDS.permissions;
+  const lesson = COURSE.modules[1].lessons[0];
   let status = $state<PlaygroundStatus>(waiting());
 </script>
 
 <Seo
   title="Nothing is granted unless the manifest asks - cpak"
   description="The first lesson on cpak permissions: a package reaches the display, the bus, audio or the network only by naming each of them, and the board beside the text shows the paths each name binds."
-  path="/learn/example/nothing-is-granted"
+  path="/learn/start/nothing-is-granted"
 />
 
 <LessonShell
   course={COURSE}
   {lesson}
-  workbenchTitle={board.title}
-  workbenchLink={{ href: board.href, label: "Open on its own" }}
-  workbenchStatus={status}
+  playgroundTitle={meta.title}
+  playgroundLink={{ href: meta.href, label: "Open on its own" }}
+  playgroundStatus={status}
 >
-  {#snippet workbench()}
+  {#snippet playground()}
     <PermissionsPlayground onstatus={(next) => (status = next)} />
   {/snippet}
 

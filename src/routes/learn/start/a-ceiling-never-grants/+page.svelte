@@ -3,13 +3,13 @@
   import LessonShell from "$lib/components/learn/LessonShell.svelte";
   import { COURSE } from "../course";
 
-  const lesson = COURSE.modules[0].lessons[1];
+  const lesson = COURSE.modules[1].lessons[1];
 </script>
 
 <Seo
   title="A ceiling narrows, and never grants - cpak"
   description="The second lesson on cpak permissions: an administrator's ceiling is met by intersection, so writing a permission as true in it is not a grant, and a key it leaves out is left to the manifest and the owner."
-  path="/learn/example/a-ceiling-never-grants"
+  path="/learn/start/a-ceiling-never-grants"
 />
 
 <LessonShell course={COURSE} {lesson}>

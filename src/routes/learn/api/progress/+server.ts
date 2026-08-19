@@ -16,16 +16,16 @@ function clean(value: unknown, length: number) {
 function read(value: unknown): Completion | null {
   const given = value as Partial<Completion>;
   const lesson = clean(given?.lesson, 120);
-  const track = clean(given?.track, 120);
-  if (!lesson || !track) return null;
+  const course = clean(given?.course, 120);
+  if (!lesson || !course) return null;
   const at = clean(given?.completedAt, 40);
-  const total = Number(given?.trackTotal);
+  const total = Number(given?.courseTotal);
   return {
     lesson,
     title: clean(given?.title, 200) || lesson,
-    track,
-    trackTitle: clean(given?.trackTitle, 200) || track,
-    trackTotal:
+    course,
+    courseTitle: clean(given?.courseTitle, 200) || course,
+    courseTotal:
       Number.isFinite(total) && total > 0
         ? Math.min(Math.trunc(total), 500)
         : 0,

@@ -1,7 +1,7 @@
 <script lang="ts">
   // The frame a playground shares. A playground is a tool rather than a page
   // about a tool, so it gets its own ground, says what it is in one sentence,
-  // and the workbench starts directly under that.
+  // and the playground starts directly under that.
   //
   // The state of the decision module lives here because every board needs it
   // and none of them can answer anything without it.

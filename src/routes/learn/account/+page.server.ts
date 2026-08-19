@@ -38,9 +38,9 @@ export const load: PageServerLoad = async (event) => {
     completed: completed.map((entry) => ({
       lesson: entry.lesson,
       title: entry.title,
-      track: entry.track,
-      trackTitle: entry.trackTitle,
-      trackTotal: entry.trackTotal,
+      course: entry.course,
+      courseTitle: entry.courseTitle,
+      courseTotal: entry.courseTotal,
       completedAt: entry.completedAt,
     })),
     credentials: credentials.map((entry) => ({
