@@ -6,7 +6,6 @@
 
 <svelte:head>
   <title>Verification - cpak</title>
-  <meta name="robots" content="noindex, nofollow" />
 </svelte:head>
 
 <div class="mx-auto max-w-3xl px-6 py-16 sm:py-24">

@@ -87,7 +87,6 @@
 
 <svelte:head>
   <title>Your account - cpak Learn</title>
-  <meta name="robots" content="noindex, nofollow" />
 </svelte:head>
 
 <!-- Who you are here, and the one control that changes it. -->

@@ -6,7 +6,6 @@
 
 <svelte:head>
   <title>Verify a result - cpak</title>
-  <meta name="robots" content="noindex, nofollow" />
 </svelte:head>
 
 <section class="border-b border-slate-200 bg-white">
