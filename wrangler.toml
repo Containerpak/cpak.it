@@ -2,3 +2,17 @@ name = "cpak-it"
 compatibility_flags = [ "nodejs_compat", "nodejs_als" ]
 compatibility_date = "2026-08-11"
 pages_build_output_dir = ".svelte-kit/cloudflare"
+
+# The Learn account (/learn/account) reads and writes this database. It is
+# commented out because the deployment does not have one yet: uncomment it,
+# run `wrangler d1 create cpak-learn`, and paste the id it prints. The tables
+# are created on first use, so there is no migration to run.
+#
+# Without the binding the account still works and keeps its rows in memory,
+# which is fine for `vite dev` and wrong for anything else. The account page
+# says which of the two it is running on.
+#
+# [[d1_databases]]
+# binding = "LEARN_DB"
+# database_name = "cpak-learn"
+# database_id = ""
