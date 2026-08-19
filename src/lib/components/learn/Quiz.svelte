@@ -41,9 +41,10 @@
 
 <div class="not-prose">
   <p class="text-base leading-7 text-gray-600">
-    Five questions on what you have just read. Nothing is recorded and no
-    certificate comes out of it: it is here so you find out which of the four
-    lessons to read again, while you still have them open in the rail.
+    {questions.length} questions on what you have just read. Nothing is recorded
+    and nothing is issued for it: it is here so you find out which of the four
+    lessons to read again, while you still have them open in the rail. One of
+    them needs the playground beside this text.
   </p>
 
   <ol class="quiz-questions mt-8 space-y-10">

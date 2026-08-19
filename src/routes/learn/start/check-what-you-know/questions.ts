@@ -1,6 +1,7 @@
 import type { Question } from "$lib/components/learn/Quiz.svelte";
 
-// Five questions, one per thing the course exists to correct.
+// Six questions, one per thing the course exists to correct, and one that
+// cannot be answered without using the playground.
 //
 // Every wrong answer is something people actually believe about cpak before
 // they have read this, which is what makes answering worth anything: a wrong
@@ -58,6 +59,26 @@ export const QUESTIONS: Question[] = [
       {
         text: "Nothing on its own: it needs socketWayland too",
         why: "They are alternatives, not a pair. Asking for both is how a package works under either session.",
+      },
+    ],
+  },
+  {
+    // The one question that cannot be answered by recognising a sentence. The
+    // playground is beside it for exactly this.
+    asks: "Press \u201cA window and nothing else\u201d in the playground beside this question. How many host paths does that one permission bind?",
+    choices: [
+      {
+        text: "One, the socket the window is drawn through",
+        why: "The socket is there, and something else came with it. The playground lists both, with a line under each saying what it is.",
+      },
+      {
+        text: "Two: the compositor socket and the lock beside it",
+        correct: true,
+        why: "One permission, two paths. This is why the list under a permission is worth reading and its name is not.",
+      },
+      {
+        text: "Six, once the display is counted",
+        why: "Six is what socketX11 binds. Tick that one instead and compare the two lists.",
       },
     ],
   },

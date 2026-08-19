@@ -48,7 +48,7 @@ export const COURSE: Course = {
       lessons: [
         {
           slug: "check-what-you-know",
-          title: "Five questions",
+          title: "Six questions",
           href: "/learn/start/check-what-you-know",
           kind: "test",
         },

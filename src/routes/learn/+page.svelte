@@ -86,7 +86,7 @@
       </p>
       <h2 class="mt-2 text-2xl font-bold text-gray-900">Start here</h2>
       <p class="mt-3 leading-7 text-gray-600">
-        Four lessons and five questions, about twenty-five minutes, assuming
+        Four lessons and six questions, about twenty-five minutes, assuming
         nothing. What cpak is, what you are shown before you install something,
         and what an application is allowed to do afterwards.
       </p>
