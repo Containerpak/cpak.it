@@ -289,6 +289,19 @@
     return String(value);
   }
 
+  // What the ceiling actually cost. Asked seven and runs seven is the least
+  // interesting thing a ceiling can produce, so the difference is what the page
+  // draws rather than the two totals side by side.
+  //
+  // Two different costs, and counting only the first would call a real
+  // narrowing nothing: a ceiling can take a permission away entirely, and it
+  // can leave it in place holding less than it asked for. Read-only access to
+  // one directory instead of read-write access to the whole home is the second
+  // kind, and it is the case this page opens on.
+  let dropped = $derived(
+    board ? Math.max(0, board.asked.length - board.carries.length) : 0,
+  );
+  let narrowed = $derived(board ? board.changed.length : 0);
   let filesystem = $derived(board?.policy.effective.filesystem ?? []);
 
   let tone = $derived.by(() => {
@@ -372,36 +385,38 @@
     >
   </p>
 
-  <div class="mt-6 grid items-start gap-6 @3xl:grid-cols-12">
+  <div class="mt-6">
+    <p class="text-base font-medium text-gray-900">
+      Pick a case, then change anything below.
+    </p>
+    <div class="mt-3 flex flex-wrap gap-2">
+      {#each CASES as entry}
+        <button
+          type="button"
+          onclick={() => apply(entry)}
+          aria-pressed={worked?.id === entry.id}
+          class={`rounded-full border px-4 py-2 text-sm font-medium transition focus-visible:ring-2 focus-visible:ring-[#3E7BFF] focus-visible:outline-none ${
+            worked?.id === entry.id
+              ? "border-[#3E7BFF] bg-[#3E7BFF]/10 text-[#3158c7]"
+              : "border-slate-300 bg-white text-gray-700 hover:bg-slate-100"
+          }`}
+        >
+          {entry.label}
+        </button>
+      {/each}
+    </div>
+    <p class="mt-3 max-w-3xl text-sm leading-6 text-gray-600">
+      {worked
+        ? worked.lesson
+        : "Your own case. Change any of the three panes and read what runs."}
+    </p>
+  </div>
+
+  <div class="mt-8 grid items-start gap-6 @3xl:grid-cols-12">
     <section aria-labelledby="inputs" class="min-w-0 @3xl:col-span-5">
       <h2 id="inputs" class="sr-only">What the three parties say</h2>
 
-      <div class="rounded-2xl border border-slate-200 bg-white p-4">
-        <h3 class="text-sm font-semibold text-gray-900">Start from a case</h3>
-        <div class="mt-3 flex flex-wrap gap-2">
-          {#each CASES as entry}
-            <button
-              type="button"
-              onclick={() => apply(entry)}
-              aria-pressed={worked?.id === entry.id}
-              class={`rounded-full border px-3 py-1.5 text-sm font-medium transition focus-visible:ring-2 focus-visible:ring-[#3E7BFF] focus-visible:outline-none ${
-                worked?.id === entry.id
-                  ? "border-[#3E7BFF] bg-[#3E7BFF]/10 text-[#3158c7]"
-                  : "border-slate-200 bg-white text-gray-700 hover:bg-slate-100"
-              }`}
-            >
-              {entry.label}
-            </button>
-          {/each}
-        </div>
-        <p class="mt-3 text-sm leading-6 text-gray-600">
-          {worked
-            ? worked.lesson
-            : "Your own case. Change any of the three panes and read what runs."}
-        </p>
-      </div>
-
-      <div class="mt-4 flex flex-col gap-4">
+      <div class="flex flex-col gap-4">
         <JsonPane
           id="manifest"
           label="The manifest"
@@ -499,7 +514,7 @@
 
     <section
       aria-labelledby="answer"
-      class="flex min-w-0 flex-col gap-4 @3xl:col-span-7"
+      class="flex min-w-0 flex-col gap-4 rounded-2xl border border-slate-300 bg-slate-100 p-4 @3xl:col-span-7 @3xl:p-5"
     >
       <h2 id="answer" class="sr-only">What runs</h2>
 
@@ -561,31 +576,33 @@
             <p
               class="text-xs font-semibold tracking-wider text-gray-500 uppercase"
             >
-              Asked for
+              {board.policy.source === "user"
+                ? "The owner sets"
+                : "The package asks"}
             </p>
             <p class="mt-1 text-3xl font-bold text-gray-900">
               {board.asked.length}
             </p>
             <p class="mt-1 text-sm leading-6 text-gray-600">
               {board.policy.source === "user"
-                ? "permissions, by the owner. The manifest request was replaced."
-                : "permissions, by the manifest. No owner override was written."}
+                ? "permissions. The owner's override replaced what the package asked."
+                : "permissions. The owner set nothing, so this is what the package asked."}
             </p>
           </div>
           <div class="min-w-0 rounded-2xl border border-slate-200 bg-white p-4">
             <p
               class="text-xs font-semibold tracking-wider text-gray-500 uppercase"
             >
-              Ceiling
+              The administrator allows
             </p>
             <p class="mt-1 text-3xl font-bold text-gray-900">
               {board.named.length === 0
-                ? "none"
+                ? "everything"
                 : `${board.named.length} named`}
             </p>
             <p class="mt-1 text-sm leading-6 text-gray-600">
               {board.named.length === 0
-                ? "This host is unmanaged, so the request above stands."
+                ? "No ceiling is written on this machine, so nothing above is held."
                 : `${count(board.held.length, "key", "keys")} held once the names that reach the same thing are counted.`}
             </p>
           </div>
@@ -593,18 +610,30 @@
             <p
               class="text-xs font-semibold tracking-wider text-gray-500 uppercase"
             >
-              Runs with
+              What runs
             </p>
-            <p class="mt-1 text-3xl font-bold text-gray-900">
-              {board.carries.length}
+            <p class="mt-1 flex items-baseline gap-2">
+              <span class="text-3xl font-bold text-gray-900"
+                >{board.carries.length}</span
+              >
+              {#if dropped > 0 || narrowed > 0}
+                <span
+                  class="rounded-full bg-[#3E7BFF]/10 px-2 py-0.5 text-sm font-semibold text-[#3158c7]"
+                >
+                  {dropped > 0 ? `${dropped} fewer` : `${narrowed} narrowed`}
+                </span>
+              {/if}
             </p>
             <p class="mt-1 text-sm leading-6 text-gray-600">
-              permissions, {count(
-                board.policy.mounts.length,
-                "mount",
-                "mounts",
-              )}
-              and {count(board.policy.shims.length, "shim", "shims")}.
+              {#if dropped > 0}
+                permissions. {count(dropped, "permission", "permissions")} the package
+                asked for did not survive.
+              {:else if narrowed > 0}
+                permissions, and {narrowed === 1 ? "one of them holds" : "some of them hold"}
+                less than it asked for. The table below says which.
+              {:else}
+                permissions. Nothing the package asked for was taken away.
+              {/if}
             </p>
           </div>
         </div>

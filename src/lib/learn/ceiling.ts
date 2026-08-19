@@ -78,6 +78,16 @@ export const CASES: Case[] = [
     ceiling: format({ filesystem: [{ path: "home", access: "read-only" }] }),
   },
   {
+    id: "unmanaged",
+    label: "No ceiling",
+    lesson:
+      "Nothing stands above the manifest, so the application runs with what it asked for and the mounts follow from that.",
+    machine: "wayland",
+    manifest: manifest(asks),
+    user: "",
+    ceiling: "",
+  },
+  {
     id: "same-door",
     label: "One door, two names",
     lesson:
@@ -111,15 +121,5 @@ export const CASES: Case[] = [
       filesystem: [{ path: "/mnt/work", access: "read-only" }],
     }),
     ceiling: format({ network: false }),
-  },
-  {
-    id: "unmanaged",
-    label: "No ceiling",
-    lesson:
-      "Nothing stands above the manifest, so the application runs with what it asked for and the mounts follow from that.",
-    machine: "wayland",
-    manifest: manifest(asks),
-    user: "",
-    ceiling: "",
   },
 ];
