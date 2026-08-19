@@ -1,13 +1,13 @@
 <script lang="ts">
   import Seo from "$lib/components/Seo.svelte";
   import LessonShell from "$lib/components/learn/LessonShell.svelte";
-  import PermissionsBoard from "$lib/components/learn/boards/PermissionsBoard.svelte";
-  import { BOARDS, waiting, type BoardStatus } from "$lib/learn/boards";
+  import PermissionsPlayground from "$lib/components/learn/playgrounds/PermissionsPlayground.svelte";
+  import { PLAYGROUNDS, waiting, type PlaygroundStatus } from "$lib/learn/playgrounds";
   import { COURSE } from "../course";
 
-  const board = BOARDS.permissions;
-  const lesson = COURSE.chapters[0].lessons[0];
-  let status = $state<BoardStatus>(waiting());
+  const board = PLAYGROUNDS.permissions;
+  const lesson = COURSE.modules[0].lessons[0];
+  let status = $state<PlaygroundStatus>(waiting());
 </script>
 
 <Seo
@@ -24,7 +24,7 @@
   workbenchStatus={status}
 >
   {#snippet workbench()}
-    <PermissionsBoard onstatus={(next) => (status = next)} />
+    <PermissionsPlayground onstatus={(next) => (status = next)} />
   {/snippet}
 
   <p>

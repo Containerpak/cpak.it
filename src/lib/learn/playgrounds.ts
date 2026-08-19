@@ -11,22 +11,22 @@
 // it and never fetches the decision module.
 
 /** How the decision module is doing, as the board inside a frame reports it. */
-export type BoardStatus = {
+export type PlaygroundStatus = {
   phase: "loading" | "ready" | "failed";
   version: string;
   error: string;
   retry: () => void;
 };
 
-export type BoardId =
+export type PlaygroundId =
   | "permissions"
   | "filesystem"
   | "ceiling"
   | "migration"
   | "desktop-entry";
 
-export type BoardMeta = {
-  id: BoardId;
+export type PlaygroundMeta = {
+  id: PlaygroundId;
   /** What it is called wherever it appears. */
   title: string;
   /** One sentence. Not a paragraph, and never two. */
@@ -37,7 +37,7 @@ export type BoardMeta = {
   reference: { href: string; label: string };
 };
 
-export const BOARDS: Record<BoardId, BoardMeta> = {
+export const PLAYGROUNDS: Record<PlaygroundId, PlaygroundMeta> = {
   permissions: {
     id: "permissions",
     title: "Permission board",
@@ -87,6 +87,6 @@ export const BOARDS: Record<BoardId, BoardMeta> = {
 };
 
 /** The state a board starts in, before it has said anything. */
-export function waiting(): BoardStatus {
+export function waiting(): PlaygroundStatus {
   return { phase: "loading", version: "", error: "", retry: () => {} };
 }

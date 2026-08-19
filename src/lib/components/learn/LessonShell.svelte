@@ -22,7 +22,7 @@
     type Lesson,
   } from "$lib/learn/course";
   import { markDone } from "$lib/learn/progress";
-  import type { BoardStatus } from "$lib/learn/boards";
+  import type { PlaygroundStatus } from "$lib/learn/playgrounds";
 
   let {
     course,
@@ -42,7 +42,7 @@
     /** Where the same board lives on its own, for somebody who wants it alone. */
     workbenchLink?: { href: string; label: string } | null;
     /** What the board says about the decision module, said once, here. */
-    workbenchStatus?: BoardStatus | null;
+    workbenchStatus?: PlaygroundStatus | null;
     children: Snippet;
   } = $props();
 
@@ -53,8 +53,8 @@
   let done = $state(new Set<string>());
 
   let place = $derived(positionOf(course, lesson.slug));
-  let chapter = $derived(
-    course.chapters.find((group) =>
+  let module = $derived(
+    course.modules.find((group) =>
       group.lessons.some((entry) => entry.slug === lesson.slug),
     ),
   );
@@ -183,9 +183,9 @@
           ? "min-w-0 rounded-2xl border border-slate-200 bg-white px-6 py-8 sm:px-8"
           : "mx-auto w-full max-w-3xl min-w-0 rounded-2xl border border-slate-200 bg-white px-6 py-8 sm:px-8"}
       >
-        {#if chapter}
+        {#if module}
           <p class="text-xs font-bold tracking-wide text-slate-500 uppercase">
-            {chapter.title}
+            {module.title}
           </p>
         {/if}
         <h1

@@ -10,7 +10,7 @@ export const COURSE: Course = {
   slug: "example",
   title: "Two lessons on cpak permissions",
   href: "/learn/example",
-  chapters: [
+  modules: [
     {
       title: "What a permission is",
       lessons: [

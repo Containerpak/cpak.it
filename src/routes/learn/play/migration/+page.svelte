@@ -1,11 +1,11 @@
 <script lang="ts">
   import Seo from "$lib/components/Seo.svelte";
-  import Board from "$lib/components/learn/play/Board.svelte";
-  import MigrationBoard from "$lib/components/learn/boards/MigrationBoard.svelte";
-  import { BOARDS, waiting, type BoardStatus } from "$lib/learn/boards";
+  import PlaygroundPage from "$lib/components/learn/play/PlaygroundPage.svelte";
+  import MigrationPlayground from "$lib/components/learn/playgrounds/MigrationPlayground.svelte";
+  import { PLAYGROUNDS, waiting, type PlaygroundStatus } from "$lib/learn/playgrounds";
 
-  const board = BOARDS.migration;
-  let status = $state<BoardStatus>(waiting());
+  const board = PLAYGROUNDS.migration;
+  let status = $state<PlaygroundStatus>(waiting());
 </script>
 
 <Seo
@@ -14,7 +14,7 @@
   path="/learn/play/migration"
 />
 
-<Board
+<PlaygroundPage
   title={board.title}
   sentence={board.sentence}
   reference={board.reference}
@@ -23,5 +23,5 @@
   error={status.error}
   onretry={() => status.retry()}
 >
-  <MigrationBoard onstatus={(next) => (status = next)} />
-</Board>
+  <MigrationPlayground onstatus={(next) => (status = next)} />
+</PlaygroundPage>

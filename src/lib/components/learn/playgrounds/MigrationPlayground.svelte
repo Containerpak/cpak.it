@@ -1,5 +1,5 @@
 <script lang="ts">
-  import type { BoardStatus } from "$lib/learn/boards";
+  import type { PlaygroundStatus } from "$lib/learn/playgrounds";
   import { onMount, untrack } from "svelte";
   import JsonPane from "$lib/components/learn/JsonPane.svelte";
   import { loadCore, type Core } from "$lib/learn/core";
@@ -34,7 +34,7 @@
   // The board is the same component standalone and inside a lesson, so the
   // frame around it is not its business. It only says how the decision
   // module is doing, and whoever placed it says that in its own words.
-  let { onstatus = () => {} }: { onstatus?: (state: BoardStatus) => void } =
+  let { onstatus = () => {} }: { onstatus?: (state: PlaygroundStatus) => void } =
     $props();
 
   let core = $state<Core | null>(null);
@@ -204,7 +204,7 @@
   });
 
   $effect(() => {
-    const state: BoardStatus = {
+    const state: PlaygroundStatus = {
       phase: coreState,
       version: core?.version ?? "",
       error: coreError,

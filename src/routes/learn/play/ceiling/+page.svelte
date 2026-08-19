@@ -1,11 +1,11 @@
 <script lang="ts">
   import Seo from "$lib/components/Seo.svelte";
-  import Board from "$lib/components/learn/play/Board.svelte";
-  import CeilingBoard from "$lib/components/learn/boards/CeilingBoard.svelte";
-  import { BOARDS, waiting, type BoardStatus } from "$lib/learn/boards";
+  import PlaygroundPage from "$lib/components/learn/play/PlaygroundPage.svelte";
+  import CeilingPlayground from "$lib/components/learn/playgrounds/CeilingPlayground.svelte";
+  import { PLAYGROUNDS, waiting, type PlaygroundStatus } from "$lib/learn/playgrounds";
 
-  const board = BOARDS.ceiling;
-  let status = $state<BoardStatus>(waiting());
+  const board = PLAYGROUNDS.ceiling;
+  let status = $state<PlaygroundStatus>(waiting());
 </script>
 
 <Seo
@@ -14,7 +14,7 @@
   path="/learn/play/ceiling"
 />
 
-<Board
+<PlaygroundPage
   title={board.title}
   sentence={board.sentence}
   reference={board.reference}
@@ -23,5 +23,5 @@
   error={status.error}
   onretry={() => status.retry()}
 >
-  <CeilingBoard onstatus={(next) => (status = next)} />
-</Board>
+  <CeilingPlayground onstatus={(next) => (status = next)} />
+</PlaygroundPage>

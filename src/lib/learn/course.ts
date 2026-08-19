@@ -1,11 +1,11 @@
 // The shape of a course, and the arithmetic every course page needs.
 //
-// A course is two levels deep and never one: named chapters, and lessons under
-// them. The chapter names are what a reader scans to decide whether the course
+// A course is two levels deep and never one: named modules, and lessons under
+// them. The module names are what a reader scans to decide whether the course
 // is about the thing they came for, so a flat list of ten titles is not a
 // shorter version of this, it is a worse one.
 //
-// The last chapter of a course that ends in an exam holds the test. A test is
+// The last module of a course that ends in an exam holds the test. A test is
 // a lesson as far as this file is concerned: it has a place in the order, it
 // has a state, and the rail carries it like any other, because somebody who
 // does not pass has to walk back into a lesson and come out again without
@@ -23,7 +23,7 @@ export type Lesson = {
   kind?: LessonKind;
 };
 
-export type Chapter = {
+export type Module = {
   title: string;
   lessons: Lesson[];
 };
@@ -34,12 +34,12 @@ export type Course = {
   title: string;
   /** The overview. The rail links back to it from every lesson. */
   href: string;
-  chapters: Chapter[];
+  modules: Module[];
 };
 
-/** Every lesson of the course in reading order, chapters flattened away. */
+/** Every lesson of the course in reading order, modules flattened away. */
 export function lessonsOf(course: Course): Lesson[] {
-  return course.chapters.flatMap((chapter) => chapter.lessons);
+  return course.modules.flatMap((module) => module.lessons);
 }
 
 /** What progress calls this lesson. Scoped by course, so two courses may use

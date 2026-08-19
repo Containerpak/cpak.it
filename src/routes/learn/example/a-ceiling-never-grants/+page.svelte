@@ -3,7 +3,7 @@
   import LessonShell from "$lib/components/learn/LessonShell.svelte";
   import { COURSE } from "../course";
 
-  const lesson = COURSE.chapters[0].lessons[1];
+  const lesson = COURSE.modules[0].lessons[1];
 </script>
 
 <Seo

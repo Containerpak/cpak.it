@@ -1,5 +1,5 @@
 <script lang="ts">
-  import type { BoardStatus } from "$lib/learn/boards";
+  import type { PlaygroundStatus } from "$lib/learn/playgrounds";
   import { onMount, untrack } from "svelte";
   import { CoreError, loadCore, type Core } from "$lib/learn/core";
   import type {
@@ -32,7 +32,7 @@
   type Shim = { name: string; by: string[]; reach: string };
   type Swallowed = { key: string; inside: string };
 
-  type Board = {
+  type Answer = {
     /** The manifest cpak will not accept, and the stage it stopped at. */
     refusal: { stage: string; error: string } | null;
     /** The module could not answer at all. */
@@ -73,10 +73,10 @@
     { name: "Nothing at all", keys: [] },
   ];
 
-  // The board is the same component standalone and inside a lesson, so the
+  // The answer is the same component standalone and inside a lesson, so the
   // frame around it is not its business. It only says how the decision
   // module is doing, and whoever placed it says that in its own words.
-  let { onstatus = () => {} }: { onstatus?: (state: BoardStatus) => void } =
+  let { onstatus = () => {} }: { onstatus?: (state: PlaygroundStatus) => void } =
     $props();
 
   let core = $state<Core | null>(null);
@@ -111,7 +111,7 @@
       permissions = answer.result.permissions.filter(
         (permission) => permission.stated,
       );
-      // Every permission is asked what it binds on its own before the board
+      // Every permission is asked what it binds on its own before the answer
       // draws a row for it, so the weight of a row is the module's answer and
       // not a judgement this page made about the name.
       for (const permission of permissions) contribution(loaded, permission.key);
@@ -126,7 +126,7 @@
 
   /**
    * Sets or clears one permission in the manifest as it stands. Every other
-   * field survives, including override keys this board has no checkbox for,
+   * field survives, including override keys this answer has no checkbox for,
    * because the reader may have written them by hand.
    */
   function toggle(key: string, on: boolean) {
@@ -184,13 +184,13 @@
    * manifest, what it binds on the fixture, and which permissions the manifest
    * never mentions.
    */
-  function decide(loaded: Core, manifest: Manifest, chosen: string[]): Board {
+  function decide(loaded: Core, manifest: Manifest, chosen: string[]): Answer {
     const checked = loaded.ask<Validation>("validateManifest", { manifest });
     const missing = loaded.ask<{ permissions: string[] }>(
       "ungrantedPermissions",
       { manifest },
     );
-    const board: Board = {
+    const answer: Answer = {
       refusal:
         checked.ok && !checked.result.valid
           ? {
@@ -206,15 +206,15 @@
       ungranted: missing.ok ? missing.result.permissions : [],
       ungrantedFailure: missing.ok ? null : missing.error,
     };
-    if (board.refusal || board.failure) return board;
+    if (answer.refusal || answer.failure) return answer;
 
     const policy = loaded.ask<Policy>("effectivePolicy", {
       manifest,
       host: FIXTURE.host,
     });
     if (!policy.ok) {
-      board.failure = policy.error;
-      return board;
+      answer.failure = policy.error;
+      return answer;
     }
     const bound = policy.result.mounts;
 
@@ -226,7 +226,7 @@
       for (const shim of own.shims) credit(shimmedBy, shim, key);
 
       if (own.mounts.length === 0 && own.shims.length === 0) {
-        board.quiet.push({ key, reach: reachOfQuiet(key) });
+        answer.quiet.push({ key, reach: reachOfQuiet(key) });
         continue;
       }
       // A permission whose own paths are all inside a wider mount adds nothing
@@ -234,21 +234,21 @@
       const outside = own.mounts.filter((path) => !bound.includes(path));
       if (own.shims.length === 0 && outside.length === own.mounts.length) {
         const inside = covering(own.mounts[0], bound);
-        if (inside) board.swallowed.push({ key, inside });
+        if (inside) answer.swallowed.push({ key, inside });
       }
     }
 
-    board.mounts = bound.map((path) => ({
+    answer.mounts = bound.map((path) => ({
       path,
       by: mountedBy.get(path) ?? [],
       reach: reachOf(path),
     }));
-    board.shims = policy.result.shims.map((name) => ({
+    answer.shims = policy.result.shims.map((name) => ({
       name,
       by: shimmedBy.get(name) ?? [],
       reach: reachOfShim(name),
     }));
-    return board;
+    return answer;
   }
 
   function count(value: number, one: string, many: string) {
@@ -341,7 +341,7 @@
     ].filter((group) => group.items.length > 0);
   });
 
-  const board = $derived(
+  const answer = $derived(
     core && status === "ready" && read ? decide(core, read, chosen) : null,
   );
   const summary = $derived.by(() => {
@@ -350,22 +350,22 @@
       return "The module could not be loaded, so nothing here can be answered.";
     if (!read)
       return "The manifest below is not JSON, so there is nothing to ask about yet.";
-    if (!board) return "";
-    if (board.failure) return `The module could not answer: ${board.failure}`;
-    if (board.refusal)
-      return `cpak refuses this manifest: ${board.refusal.error}`;
+    if (!answer) return "";
+    if (answer.failure) return `The module could not answer: ${answer.failure}`;
+    if (answer.refusal)
+      return `cpak refuses this manifest: ${answer.refusal.error}`;
     const line = `${count(chosen.length, "permission", "permissions")} ticked, ${count(
-      board.mounts.length,
+      answer.mounts.length,
       "host path",
       "host paths",
-    )} bound, ${count(board.shims.length, "broker command", "broker commands")}.`;
+    )} bound, ${count(answer.shims.length, "broker command", "broker commands")}.`;
     if (widened.length === 0) return line;
     return `${line} Wider than the name says: ${widened.join(", ")}.`;
   });
 
 
   $effect(() => {
-    const state: BoardStatus = {
+    const state: PlaygroundStatus = {
       phase: status,
       version: core?.version ?? "",
       error: failure,
@@ -588,30 +588,30 @@
               the buttons there writes a whole manifest again.
             </p>
           </div>
-        {:else if board}
-          {#if board.failure}
+        {:else if answer}
+          {#if answer.failure}
             <div class="rounded-xl border border-red-200 bg-red-100 p-4">
               <p class="font-medium text-gray-900">
                 The module could not answer
               </p>
               <p class="mt-1 text-sm leading-6 text-gray-600">
-                {board.failure}
+                {answer.failure}
               </p>
             </div>
-          {:else if board.refusal}
+          {:else if answer.refusal}
             <div class="rounded-xl border border-red-200 bg-red-100 p-4">
               <p class="font-medium text-gray-900">
                 cpak refuses this manifest
               </p>
               <p class="mt-1 font-mono text-sm break-words text-gray-900">
-                {board.refusal.error}
+                {answer.refusal.error}
               </p>
               <p class="mt-2 text-sm leading-6 text-gray-600">
-                It fails at the {board.refusal.stage} stage, so there is no policy
+                It fails at the {answer.refusal.stage} stage, so there is no policy
                 to compute and nothing is bound. A manifest cpak refuses never runs.
               </p>
             </div>
-          {:else if board.mounts.length === 0 && board.shims.length === 0}
+          {:else if answer.mounts.length === 0 && answer.shims.length === 0}
             <div class="rounded-xl bg-slate-50 p-4">
               <p class="font-medium text-gray-900">No host path is bound</p>
               <p class="mt-1 text-sm leading-6 text-gray-600">
@@ -622,7 +622,7 @@
             </div>
           {:else}
             <ul class="divide-y divide-slate-200 border-t border-slate-200">
-              {#each board.mounts as mount (mount.path)}
+              {#each answer.mounts as mount (mount.path)}
                 <li class="py-4">
                   <code class="block font-mono text-sm break-all text-gray-900"
                     >{mount.path}</code
@@ -645,7 +645,7 @@
             </ul>
           {/if}
 
-          {#if board.shims.length > 0}
+          {#if answer.shims.length > 0}
             <h3 class="mt-8 text-base font-semibold text-gray-900">
               Commands, not mounts
             </h3>
@@ -656,7 +656,7 @@
             <ul
               class="mt-3 divide-y divide-slate-200 border-t border-slate-200"
             >
-              {#each board.shims as shim (shim.name)}
+              {#each answer.shims as shim (shim.name)}
                 <li class="py-4">
                   <code class="font-mono text-sm text-gray-900"
                     >{shim.name}</code
@@ -676,14 +676,14 @@
             </ul>
           {/if}
 
-          {#if board.swallowed.length > 0}
+          {#if answer.swallowed.length > 0}
             <h3 class="mt-8 text-base font-semibold text-gray-900">
               Ticked, and already inside
             </h3>
             <ul
               class="mt-3 divide-y divide-slate-200 border-t border-slate-200"
             >
-              {#each board.swallowed as absorbed (absorbed.key)}
+              {#each answer.swallowed as absorbed (absorbed.key)}
                 <li class="py-4">
                   <code class="font-mono text-sm text-gray-900"
                     >{absorbed.key}</code
@@ -699,7 +699,7 @@
             </ul>
           {/if}
 
-          {#if board.quiet.length > 0}
+          {#if answer.quiet.length > 0}
             <h3 class="mt-8 text-base font-semibold text-gray-900">
               Ticked, and nothing appears
             </h3>
@@ -710,7 +710,7 @@
             <ul
               class="mt-3 divide-y divide-slate-200 border-t border-slate-200"
             >
-              {#each board.quiet as quiet (quiet.key)}
+              {#each answer.quiet as quiet (quiet.key)}
                 <li class="py-4">
                   <code class="font-mono text-sm text-gray-900"
                     >{quiet.key}</code
@@ -724,27 +724,27 @@
           {/if}
 
           <h3 class="mt-8 text-base font-semibold text-gray-900">
-            {#if board.ungrantedFailure}
+            {#if answer.ungrantedFailure}
               What the manifest never mentions
-            {:else if board.ungranted.length > 0}
-              {count(board.ungranted.length, "permission", "permissions")} this manifest
+            {:else if answer.ungranted.length > 0}
+              {count(answer.ungranted.length, "permission", "permissions")} this manifest
               never mentions
             {:else}
               This manifest mentions every permission
             {/if}
           </h3>
-          {#if board.ungrantedFailure}
+          {#if answer.ungrantedFailure}
             <p class="mt-1 text-sm leading-6 text-gray-600">
-              {board.ungrantedFailure}
+              {answer.ungrantedFailure}
             </p>
-          {:else if board.ungranted.length > 0}
+          {:else if answer.ungranted.length > 0}
             <p class="mt-1 text-sm leading-6 text-gray-600">
               None of them is granted. A permission written as false and one
               nobody wrote arrive the same way: the application does not have
               it.
             </p>
             <div class="mt-3 flex flex-wrap gap-2">
-              {#each board.ungranted as key (key)}
+              {#each answer.ungranted as key (key)}
                 <code
                   class="rounded-full bg-slate-100 px-3 py-1 font-mono text-xs text-gray-600"
                 >
@@ -804,7 +804,7 @@
     {/if}
   </section>
 
-  <!-- Everything that is explanation rather than answer sits after the board. -->
+  <!-- Everything that is explanation rather than answer sits after the answer. -->
   <div class="mt-6 grid gap-6 @3xl:grid-cols-2">
     <section
       class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6"
@@ -869,7 +869,7 @@
           href="/learn/play/filesystem"
           class="font-medium text-[#4670EC] hover:underline"
         >
-          filesystem board
+          filesystem answer
         </a>
         resolves it the same way this one resolves a socket.
       </p>

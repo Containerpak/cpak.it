@@ -4,14 +4,14 @@
   // and a tool belongs in the room that uses it, so each room carries its own
   // and somebody who already knows cpak reaches one in a single click.
   import Seo from "$lib/components/Seo.svelte";
-  import { BOARDS, type BoardId } from "$lib/learn/boards";
+  import { PLAYGROUNDS, type PlaygroundId } from "$lib/learn/playgrounds";
 
   type Room = {
     audience: string;
     heading: string;
     sentence: string;
     way: { href: string; label: string };
-    tools: BoardId[];
+    tools: PlaygroundId[];
   };
 
   const ROOMS: Room[] = [
@@ -133,7 +133,7 @@
             {#each room.tools as id (id)}
               <li>
                 <a
-                  href={BOARDS[id].href}
+                  href={PLAYGROUNDS[id].href}
                   class={`group flex gap-3 py-4 ${
                     index === 2 ? "text-slate-300" : "text-gray-600"
                   }`}
@@ -154,14 +154,14 @@
                           : "text-gray-900 group-hover:text-[#3E7BFF]"
                       }`}
                     >
-                      {BOARDS[id].title}
+                      {PLAYGROUNDS[id].title}
                       <span
                         class="material-symbols-outlined text-base"
                         aria-hidden="true">arrow_outward</span
                       >
                     </span>
                     <span class="mt-1 block text-sm leading-6">
-                      {BOARDS[id].sentence}
+                      {PLAYGROUNDS[id].sentence}
                     </span>
                   </span>
                 </a>

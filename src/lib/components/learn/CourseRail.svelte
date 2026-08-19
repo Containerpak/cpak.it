@@ -75,15 +75,15 @@
   </div>
 
   <div class="mt-7 space-y-7">
-    {#each course.chapters as chapter (chapter.title)}
+    {#each course.modules as module (module.title)}
       <div>
         <p
           class="mb-2 text-xs font-bold tracking-wide text-slate-500 uppercase"
         >
-          {chapter.title}
+          {module.title}
         </p>
         <ul class="space-y-0.5">
-          {#each chapter.lessons as lesson (lesson.slug)}
+          {#each module.lessons as lesson (lesson.slug)}
             {@const state = stateOf(lesson)}
             <li>
               <a

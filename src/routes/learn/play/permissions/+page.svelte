@@ -1,11 +1,11 @@
 <script lang="ts">
   import Seo from "$lib/components/Seo.svelte";
-  import Board from "$lib/components/learn/play/Board.svelte";
-  import PermissionsBoard from "$lib/components/learn/boards/PermissionsBoard.svelte";
-  import { BOARDS, waiting, type BoardStatus } from "$lib/learn/boards";
+  import PlaygroundPage from "$lib/components/learn/play/PlaygroundPage.svelte";
+  import PermissionsPlayground from "$lib/components/learn/playgrounds/PermissionsPlayground.svelte";
+  import { PLAYGROUNDS, waiting, type PlaygroundStatus } from "$lib/learn/playgrounds";
 
-  const board = BOARDS.permissions;
-  let status = $state<BoardStatus>(waiting());
+  const board = PLAYGROUNDS.permissions;
+  let status = $state<PlaygroundStatus>(waiting());
 </script>
 
 <Seo
@@ -14,7 +14,7 @@
   path="/learn/play/permissions"
 />
 
-<Board
+<PlaygroundPage
   title={board.title}
   sentence={board.sentence}
   reference={board.reference}
@@ -23,5 +23,5 @@
   error={status.error}
   onretry={() => status.retry()}
 >
-  <PermissionsBoard onstatus={(next) => (status = next)} />
-</Board>
+  <PermissionsPlayground onstatus={(next) => (status = next)} />
+</PlaygroundPage>

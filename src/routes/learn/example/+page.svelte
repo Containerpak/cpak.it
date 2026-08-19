@@ -80,13 +80,13 @@
 
   <h2 class="mt-14 text-sm font-semibold text-gray-900">Curriculum</h2>
   <div class="mt-4 space-y-8">
-    {#each COURSE.chapters as chapter (chapter.title)}
+    {#each COURSE.modules as module (module.title)}
       <section>
         <p class="text-xs font-bold tracking-wide text-slate-500 uppercase">
-          {chapter.title}
+          {module.title}
         </p>
         <ul class="mt-3 divide-y divide-slate-200 rounded-2xl bg-white">
-          {#each chapter.lessons as lesson (lesson.slug)}
+          {#each module.lessons as lesson (lesson.slug)}
             {@const finished = done.has(lessonKey(COURSE, lesson))}
             <li>
               <a
