@@ -6,7 +6,6 @@ import {
   fetchStore,
   jsonLd,
   packageSlug,
-  repositoryUrl,
   storeAssetBase,
 } from "$lib/store";
 
@@ -21,50 +20,19 @@ export const load: PageLoad = async ({ fetch, params, setHeaders }) => {
     color: "#64748b",
   };
 
-  const packages = await Promise.all(
-    Object.entries(categoryMap).map(async ([origin, entry]) => {
-      const mfRes = await fetch(entry.manifest);
-      if (!mfRes.ok) throw new Error(`Cannot fetch manifest for ${origin}`);
-      const manifest = (await mfRes.json()) as {
-        branch?: string;
-        commit?: string;
-        release?: string;
-        description?: string;
-      };
+  const packages = Object.entries(categoryMap).map(([origin, entry]) => {
+    const storeBase = storeAssetBase(entry.manifest);
+    const icon = `${storeBase}/icon.svg`;
 
-      const ref = manifest.branch ?? manifest.commit ?? manifest.release;
-      if (!ref) throw new Error(`No ref in manifest for ${origin}`);
-
-      const repoUrl = repositoryUrl(origin);
-      if (!repoUrl) error(502, `Invalid origin for ${origin}`);
-      const upstreamBase = `${repoUrl.replace("https://github.com/", "https://raw.githubusercontent.com/")}/${ref}`;
-      const cpakUrl = `${upstreamBase}/cpak.json`;
-      const cpakRes = await fetch(cpakUrl);
-      if (!cpakRes.ok) throw new Error(`Missing cpak.json for ${origin}`);
-      const cpak = (await cpakRes.json()) as {
-        version: string;
-        description?: string;
-      };
-
-      const storeBase = storeAssetBase(entry.manifest);
-      const icon = `${storeBase}/icon.svg`;
-
-      const description =
-        manifest.description?.trim() ||
-        entry.description?.trim() ||
-        cpak.description?.trim() ||
-        "";
-
-      return {
-        origin,
-        slug: packageSlug(origin),
-        name: entry.name,
-        description,
-        version: cpak.version,
-        icon,
-      };
-    }),
-  );
+    return {
+      origin,
+      slug: packageSlug(origin),
+      name: entry.name,
+      description: entry.description?.trim() ?? "",
+      version: entry.version ?? "",
+      icon,
+    };
+  });
 
   const description =
     CATEGORY_DESCRIPTIONS[params.category] ??

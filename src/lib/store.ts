@@ -43,6 +43,8 @@ export type StoreEntry = {
   name: string;
   description?: string;
   branch?: string;
+  ref?: string;
+  version?: string;
   commit?: string;
   release?: string;
   manifest: string;
@@ -82,12 +84,22 @@ export function storeAssetBase(manifest: string) {
   return manifest.replace(/\/[^/]+$/, "");
 }
 
+async function fetchStoreFile(fetcher: typeof fetch, url: string) {
+  for (let attempt = 0; attempt < 2; attempt += 1) {
+    try {
+      const response = await fetcher(url);
+      if (response.ok) return response;
+    } catch {}
+  }
+  return null;
+}
+
 export async function fetchStore(fetcher: typeof fetch) {
   const [indexResponse, categoriesResponse] = await Promise.all([
-    fetcher(RAW_STORE_INDEX),
-    fetcher(RAW_CATEGORIES_META),
+    fetchStoreFile(fetcher, RAW_STORE_INDEX),
+    fetchStoreFile(fetcher, RAW_CATEGORIES_META),
   ]);
-  if (!indexResponse.ok || !categoriesResponse.ok) return null;
+  if (!indexResponse || !categoriesResponse) return null;
   return {
     index: (await indexResponse.json()) as StoreIndex,
     categories: (await categoriesResponse.json()) as CategoriesMeta,

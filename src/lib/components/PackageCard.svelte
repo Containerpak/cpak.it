@@ -4,7 +4,7 @@
 		slug: string;
 		name: string;
 		description: string;
-		version: string;
+		version?: string;
 		icon: string;
 	};
 	export let color: string;
@@ -31,9 +31,11 @@
 		/>
 
 		<div class="mt-auto pt-8">
-			<p class="mb-2 text-sm font-semibold" style="color: {color}">
-				v{pkg.version}
-			</p>
+			{#if pkg.version}
+				<p class="mb-2 text-sm font-semibold" style="color: {color}">
+					v{pkg.version}
+				</p>
+			{/if}
 			<h2 class="text-2xl font-semibold text-gray-900">{pkg.name}</h2>
 			<p class="package-description mt-2 leading-6 text-gray-600">
 				{pkg.description}
