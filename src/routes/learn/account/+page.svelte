@@ -386,19 +386,24 @@
                 <!-- The badge itself, drawn from the real mark by
                      scripts/make-badges.py. Two files, the way the logo in the
                      header is two files, so it reads on either ground. -->
-                <img
-                  src="/learn/badges/{badge.course}.png"
-                  alt="Badge: {badge.title}"
-                  class="theme-logo-light h-14 w-auto"
-                />
-                <img
-                  src="/learn/badges/{badge.course}-dark.png"
-                  alt="Badge: {badge.title}"
-                  class="theme-logo-dark h-14 w-auto"
-                />
-                <p class="mt-4 text-sm text-gray-600">
-                  All {badge.total} marked done, last on {longDate(badge.at)}.
-                </p>
+                <div class="flex items-center gap-4">
+                  <!-- Drawn by scripts/make-badges.py from the real mark. It
+                       carries its own ground, so there is one file and not a
+                       pair. -->
+                  <img
+                    src="/learn/badges/{badge.course}.png"
+                    alt="Badge: cpak {badge.title}"
+                    width="96"
+                    height="96"
+                    class="h-24 w-24 shrink-0"
+                  />
+                  <div class="min-w-0">
+                    <p class="font-semibold text-gray-900">{badge.title}</p>
+                    <p class="mt-1 text-sm text-gray-600">
+                      All {badge.total} marked done, last on {longDate(badge.at)}.
+                    </p>
+                  </div>
+                </div>
               </li>
             {/each}
           </ul>

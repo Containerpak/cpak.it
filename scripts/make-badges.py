@@ -1,19 +1,29 @@
 #!/usr/bin/env python3
-"""Draw the badge for each course.
+"""Draw the badge for each cpak course.
 
-One rule decides everything here: the mark is the real one. The icon is read
-from the press kit and placed as it is, never redrawn and never traced, so a
-badge and the logo in the header are the same artwork. To the right of it goes
-the name of the badge, in the face the brand uses, and nothing else.
+Certification badges have a settled anatomy, and it is worth following rather
+than inventing: a contained shape, the product's own mark inside it, two or
+three tiers of small stacked capitals, flat colour, square canvas. CKA is a
+Kubernetes helm turned into a frame with CERTIFIED / kubernetes / ADMINISTRATOR
+stacked inside it; the HashiCorp ones are a shield with the same three tiers.
+They are square because that is what a profile page renders, and flat because
+they have to survive 64 pixels and a printer.
 
-Two files per badge, light and dark, because the site already carries its logo
-that way and a badge that only reads on one ground is half a badge.
+Two things here are cpak's rather than borrowed.
+
+The shape is a hexagon, because the cube in the cpak mark seen from above is a
+hexagon. The frame is not a shape chosen for a badge, it is the mark's own
+silhouette, so the badge and the logo are the same geometry at two sizes.
+
+The bottom tier says COURSE and never says certified. A badge here is awarded
+for marking the lessons done and nothing checked that they were read, so it may
+carry the look of the convention but not its claim. The word the convention
+uses is the one word this badge has not earned.
 
     python3 scripts/make-badges.py
 
-Needs rsvg-convert and ImageMagick, and the Outfit face installed. It writes
-the SVG it drew beside the PNG, so the source of a badge is readable and can be
-regenerated rather than being a picture somebody made once.
+Needs rsvg-convert and the Outfit face. Writes the SVG beside the PNG so the
+badge stays a drawing that can be redrawn, not a picture somebody made once.
 """
 
 import pathlib
@@ -25,92 +35,92 @@ ROOT = pathlib.Path(__file__).resolve().parent.parent
 ICON = ROOT / "static/presskit/icon/cpak-icon.svg"
 OUT = ROOT / "static/learn/badges"
 
-# Keyed by course slug, so the account page can find a badge from progress
-# alone. The name is the course's own title: a badge for finishing a course is
-# not a different thing with a different name.
+# The role a badge names, not the title of the course that leads to it. Every
+# certification badge worth the name says what you can do, and a course title
+# says what you sat through.
 BADGES = {
-    "start": "Start here",
-    "packaging": "Packaging an application",
-    "administration": "Running cpak on machines you look after",
+    "start": "Foundations",
+    "packaging": "Packager",
+    "administration": "Administrator",
 }
 
-INK = {"light": "#0F172A", "dark": "#F8FAFC"}
+# From the project binding: the cpak palette.
+DEEP = "#1E3A9A"
+MID = "#4670EC"
+LIGHT = "#99B5FA"
+PAPER = "#FFFFFF"
 
-# Wide enough for the longest name; the render is trimmed afterwards, so the
-# number only has to be generous rather than right.
-CANVAS = (1800, 320)
-ICON_HEIGHT = 132
-GAP = 40
-TYPE_SIZE = 60
-LINE = 74
-WRAP_AT = 26
+SIZE = 512
+CENTRE = SIZE / 2
+RADIUS = 236  # a pointy-top hexagon, the cube's own silhouette
 
 
-def icon() -> str:
+def hexagon(radius: float) -> str:
+    from math import cos, pi, sin
+
+    points = [
+        (
+            CENTRE + radius * cos(pi / 2 + i * pi / 3),
+            CENTRE - radius * sin(pi / 2 + i * pi / 3),
+        )
+        for i in range(6)
+    ]
+    return " ".join(f"{x:.2f},{y:.2f}" for x, y in points)
+
+
+def mark(height: float, x: float, y: float) -> str:
     svg = ICON.read_text()
     head = re.match(r"<svg[^>]*>", svg).group(0)
     box = re.search(r'viewBox="([^"]+)"', head).group(1)
-    width, height = (float(n) for n in box.split()[2:4])
-    scale = ICON_HEIGHT / height
+    width, tall = (float(n) for n in box.split()[2:4])
+    scale = height / tall
     inner = svg[len(head) : svg.rindex("</svg>")]
     return (
-        f'<g transform="translate(0 0) scale({scale:.6f})">{inner}</g>',
-        width * scale,
+        f'<g transform="translate({x - width * scale / 2:.2f} {y:.2f}) '
+        f'scale({scale:.6f})">{inner}</g>'
     )
 
 
-def lines(name: str) -> list[str]:
-    out, row = [], ""
-    for word in name.split():
-        candidate = f"{row} {word}".strip()
-        if len(candidate) > WRAP_AT and row:
-            out.append(row)
-            row = word
-        else:
-            row = candidate
-    if row:
-        out.append(row)
-    return out
-
-
-def draw(name: str, ground: str) -> str:
-    art, art_width = icon()
-    rows = lines(name)
-    top = (CANVAS[1] - len(rows) * LINE) / 2 + TYPE_SIZE
-    text = "".join(
-        f'<text x="{art_width + GAP:.1f}" y="{top + i * LINE:.1f}" '
-        f'font-family="Outfit" font-size="{TYPE_SIZE}" font-weight="700" '
-        f'fill="{INK[ground]}">{row}</text>'
-        for i, row in enumerate(rows)
+def draw(role: str) -> str:
+    tiers = "".join(
+        [
+            f'<text x="{CENTRE}" y="322" text-anchor="middle" font-family="Outfit" '
+            f'font-size="52" font-weight="700" fill="{PAPER}">cpak</text>',
+            f'<text x="{CENTRE}" y="374" text-anchor="middle" font-family="Outfit" '
+            f'font-size="34" font-weight="700" letter-spacing="2.5" '
+            f'fill="{LIGHT}">{role.upper()}</text>',
+            f'<text x="{CENTRE}" y="424" text-anchor="middle" font-family="Outfit" '
+            # Same tint as the tier above it: at 2.25 to 1 the mid blue was
+            # unreadable on this ground, and the hierarchy is carried by size
+            # and tracking rather than by a colour that cannot be seen.
+            f'font-size="20" font-weight="600" letter-spacing="6" '
+            f'fill="{LIGHT}" fill-opacity="0.85">COURSE</text>',
+        ]
     )
     return (
-        f'<svg xmlns="http://www.w3.org/2000/svg" width="{CANVAS[0]}" '
-        f'height="{CANVAS[1]}" viewBox="0 0 {CANVAS[0]} {CANVAS[1]}" fill="none">'
-        f'<g transform="translate(0 {(CANVAS[1] - ICON_HEIGHT) / 2:.1f})">{art}</g>'
-        f"{text}</svg>"
+        f'<svg xmlns="http://www.w3.org/2000/svg" width="{SIZE}" height="{SIZE}" '
+        f'viewBox="0 0 {SIZE} {SIZE}" fill="none">'
+        f'<polygon points="{hexagon(RADIUS)}" fill="{DEEP}"/>'
+        f'<polygon points="{hexagon(RADIUS - 14)}" fill="none" stroke="{MID}" '
+        f'stroke-width="3"/>'
+        f"{mark(150, CENTRE, 112)}"
+        f"{tiers}</svg>"
     )
 
 
 def main() -> int:
     OUT.mkdir(parents=True, exist_ok=True)
-    for slug, name in BADGES.items():
-        for ground in ("light", "dark"):
-            stem = slug if ground == "light" else f"{slug}-dark"
-            svg = OUT / f"{stem}.svg"
-            png = OUT / f"{stem}.png"
-            svg.write_text(draw(name, ground))
-            subprocess.run(
-                ["rsvg-convert", "-w", str(CANVAS[0] * 2), str(svg), "-o", str(png)],
-                check=True,
-            )
-            # Trim to the artwork, then give it back an even margin, so every
-            # badge is tight to its own name rather than to the widest one.
-            subprocess.run(
-                ["magick", str(png), "-trim", "+repage", "-bordercolor", "none",
-                 "-border", "48", str(png)],
-                check=True,
-            )
-            print(f"  {png.relative_to(ROOT)}")
+    for old in OUT.glob("*-dark.*"):
+        old.unlink()
+    for slug, role in BADGES.items():
+        svg = OUT / f"{slug}.svg"
+        png = OUT / f"{slug}.png"
+        svg.write_text(draw(role))
+        subprocess.run(
+            ["rsvg-convert", "-w", "1024", "-h", "1024", str(svg), "-o", str(png)],
+            check=True,
+        )
+        print(f"  {png.relative_to(ROOT)}")
     return 0
 
 
