@@ -63,10 +63,8 @@
 />
 
 <section class="border-b border-slate-200 bg-slate-50">
-  <div
-    class="mx-auto grid max-w-6xl gap-x-12 gap-y-10 px-6 py-16 lg:grid-cols-[minmax(0,1fr)_minmax(0,26rem)] lg:items-start lg:py-20"
-  >
-    <div class="min-w-0">
+  <div class="mx-auto max-w-6xl px-6 py-16 lg:py-20">
+    <div class="max-w-3xl">
       <h1
         class="text-5xl font-extrabold tracking-tight text-gray-900 lg:text-6xl"
       >
@@ -99,54 +97,9 @@
           >arrow_forward</span
         >
       </a>
-      <p class="mt-4 text-sm text-slate-500">
-        No account needed, and nothing you type is uploaded.
-      </p>
     </div>
     </div>
 
-    <!-- Not a picture of the idea, the thing itself: what cpak prints before it
-         installs anything. Somebody who reads this and nothing else has already
-         understood the argument the course spends twenty-five minutes on. -->
-    <figure class="min-w-0 lg:sticky lg:top-8">
-      <div
-        class="overflow-hidden rounded-2xl border border-slate-800 bg-slate-950 shadow-sm"
-      >
-        <div
-          class="flex items-center gap-2 border-b border-slate-800 px-4 py-2.5"
-        >
-          <span class="h-2.5 w-2.5 rounded-full bg-slate-700" aria-hidden="true"
-          ></span>
-          <span class="h-2.5 w-2.5 rounded-full bg-slate-700" aria-hidden="true"
-          ></span>
-          <span class="h-2.5 w-2.5 rounded-full bg-slate-700" aria-hidden="true"
-          ></span>
-          <span class="ml-2 font-mono text-xs text-slate-500">cpak install</span
-          >
-        </div>
-        <pre
-          class="overflow-x-auto p-4 font-mono text-xs leading-6 text-slate-200"><code>$ cpak install github.com/containerpak/vlc
-
-The following cpak(s) will be installed:
-  - VLC: Play video, audio and network streams.
-
-The following permissions will be granted:
-  - socket-wayland: <span class="text-emerald-400">true</span>
-  - socket-pulse-audio: <span class="text-emerald-400">true</span>
-  - socket-session-bus: <span class="text-emerald-400">true</span>
-  - socket-ssh-agent: <span class="text-slate-500">false</span>
-  - device-dri: <span class="text-emerald-400">true</span>
-  - device-video: <span class="text-slate-500">false</span>
-  - network: <span class="text-emerald-400">true</span>
-  <span class="text-slate-500">... twenty-two more, each one true or false</span>
-
-Do you want to continue? [y/N]</code></pre>
-      </div>
-      <figcaption class="mt-3 text-sm leading-6 text-slate-600">
-        This is the whole of what you are asked to agree to. Nothing is granted
-        that is not on this list, and the false ones are printed too.
-      </figcaption>
-    </figure>
   </div>
 </section>
 
