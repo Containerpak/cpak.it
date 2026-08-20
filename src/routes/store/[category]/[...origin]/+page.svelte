@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { onMount, tick } from 'svelte';
 	import Seo from '$lib/components/Seo.svelte';
+	import { renderMarkdown } from '$lib/markdown';
 	export let data: any;
 
 	type PermissionObject = Record<string, boolean | string | string[]>;
@@ -267,6 +268,7 @@
 	}
 
 	let showDisabled = false;
+	$: storeReadme = data.pkg.storeReadme ? renderMarkdown(data.pkg.storeReadme) : '';
 </script>
 
 <Seo
@@ -444,6 +446,12 @@
 					/>
 				{/each}
 			</div>
+		</section>
+	{/if}
+
+	{#if storeReadme}
+		<section class="doc-body store-readme">
+			{@html storeReadme}
 		</section>
 	{/if}
 
@@ -631,6 +639,16 @@
 					rel="noopener">cpak.json</a
 				>
 			</li>
+			{#if data.pkg.storeReadmeUrl}
+				<li>
+					<a
+						href={data.pkg.storeReadmeUrl}
+						class="underline hover:text-[#3E7BFF]"
+						target="_blank"
+						rel="noopener">STORE-README.md</a
+					>
+				</li>
+			{/if}
 		</ul>
 	</section>
 

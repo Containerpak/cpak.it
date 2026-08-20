@@ -56,6 +56,20 @@ export const load: PageLoad = async ({ fetch, params, setHeaders }) => {
   cpak.addons ??= [];
   cpak.override ??= {};
 
+  const storeReadmeUrl = manifest.release
+    ? `${repoUrl.replace("https://github.com/", "https://raw.githubusercontent.com/")}/${manifest.release}/STORE-README.md`
+    : null;
+  let storeReadme: string | null = null;
+  if (storeReadmeUrl) {
+    try {
+      const storeReadmeResponse = await fetch(storeReadmeUrl);
+      if (storeReadmeResponse.ok)
+        storeReadme = (await storeReadmeResponse.text()).slice(0, 100_000);
+    } catch {
+      storeReadme = null;
+    }
+  }
+
   const assetBase = storeAssetBase(match.entry.manifest);
   const media = await Promise.all([
     fetch(`${assetBase}/showcase.webm`, { method: "HEAD" }),
@@ -176,6 +190,8 @@ export const load: PageLoad = async ({ fetch, params, setHeaders }) => {
       showcase,
       repository: repoUrl,
       rawCpakJson: cpakUrl,
+      storeReadme,
+      storeReadmeUrl: storeReadme ? storeReadmeUrl : null,
     },
   };
 };

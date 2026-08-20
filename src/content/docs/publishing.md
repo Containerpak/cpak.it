@@ -22,6 +22,8 @@ Before catalog submission, the package repository should contain:
 
 Run the package validation flow against the public repository reference before submission.
 
+The repository `README.md` belongs to maintainers and contributors. Add an optional `STORE-README.md` when users need package-specific instructions such as account setup, registry access, licensing terms, a large first download, or first-run behavior. The Store renders this file on the application page only when its catalog entry is pinned with `release`, and reads it from that exact release tag. It never reads `STORE-README.md` from `main`.
+
 ## Prepare catalog media
 
 The official Store keeps discovery metadata in [Containerpak/store](https://github.com/Containerpak/store). Each application directory includes a catalog `manifest.json` and an original application icon named `icon.svg`. Screenshots use numbered WebP files, and an optional `showcase.webm` can demonstrate the application.
