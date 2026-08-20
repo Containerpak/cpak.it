@@ -368,10 +368,10 @@
       <p class="mt-2 max-w-2xl text-sm leading-6 text-gray-600">
         One per course you finish. A badge is a note to yourself and is worth
         exactly that: it is here because you marked every lesson in the course
-        done, and nothing checked that you read them. So it lives on this page
-        only. There is no public badge page, no address to send anyone and no
-        image to embed, because there is nothing here for a badge to attest. A
-        credential is the part that attests something.
+        done, and nothing checked that you read them. It has an image and it
+        stays here, with no public page and no address to send anyone, because
+        there is nothing for it to attest. A credential is the part that
+        attests something.
       </p>
 
       {#if badges.length === 0}
@@ -382,24 +382,23 @@
         {#if earned.length > 0}
           <ul class="mt-4 grid gap-4 sm:grid-cols-2">
             {#each earned as badge (badge.course)}
-              <li
-                class="flex items-start gap-4 rounded-2xl border border-slate-200 bg-white p-5"
-              >
-                <span
-                  class="flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-[#3E7BFF] bg-[#3E7BFF]/10"
-                  aria-hidden="true"
-                >
-                  <span
-                    class="material-symbols-outlined text-[20px] text-[#3158c7]"
-                    >check</span
-                  >
-                </span>
-                <div class="min-w-0">
-                  <p class="font-semibold text-gray-900">{badge.title}</p>
-                  <p class="mt-1 text-sm text-gray-600">
-                    All {badge.total} marked done, last on {longDate(badge.at)}.
-                  </p>
-                </div>
+              <li class="rounded-2xl border border-slate-200 bg-white p-5">
+                <!-- The badge itself, drawn from the real mark by
+                     scripts/make-badges.py. Two files, the way the logo in the
+                     header is two files, so it reads on either ground. -->
+                <img
+                  src="/learn/badges/{badge.course}.png"
+                  alt="Badge: {badge.title}"
+                  class="theme-logo-light h-14 w-auto"
+                />
+                <img
+                  src="/learn/badges/{badge.course}-dark.png"
+                  alt="Badge: {badge.title}"
+                  class="theme-logo-dark h-14 w-auto"
+                />
+                <p class="mt-4 text-sm text-gray-600">
+                  All {badge.total} marked done, last on {longDate(badge.at)}.
+                </p>
               </li>
             {/each}
           </ul>
