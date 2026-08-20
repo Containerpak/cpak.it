@@ -82,27 +82,27 @@
         they asked for in writing. Here you change that writing and read what
         cpak decides, in the page.
       </p>
-    </div>
-
-    <div class="rounded-2xl border border-slate-200 bg-white p-7 shadow-sm">
-      <p class="text-xs font-bold tracking-wide text-slate-500 uppercase">
+      <p class="mt-8 text-xs font-bold tracking-wide text-slate-500 uppercase">
         New to cpak
       </p>
       <h2 class="mt-2 text-2xl font-bold text-gray-900">{START.title}</h2>
-      <p class="mt-2 text-sm text-slate-600">{saying(START)}</p>
-      <p class="mt-3 leading-7 text-gray-600">
+      <p class="mt-2 max-w-xl leading-7 text-gray-600">
         Assuming nothing. What cpak is, what you are shown before you install
         something, and what an application is allowed to do afterwards.
       </p>
+    </div>
+
+    <div class="lg:text-right">
       <a
         href={START.href}
-        class="mt-6 inline-flex items-center gap-2 rounded-full bg-[#4670EC] px-6 py-3 text-sm font-semibold text-white transition hover:bg-[#3158c7] focus-visible:ring-2 focus-visible:ring-[#3E7BFF] focus-visible:ring-offset-2 focus-visible:outline-none"
+        class="inline-flex items-center gap-2 rounded-full bg-[#4670EC] px-6 py-3 text-sm font-semibold text-white transition hover:bg-[#3158c7] focus-visible:ring-2 focus-visible:ring-[#3E7BFF] focus-visible:ring-offset-2 focus-visible:outline-none"
       >
         Start the course
         <span class="material-symbols-outlined text-lg" aria-hidden="true"
           >arrow_forward</span
         >
       </a>
+      <p class="mt-3 text-sm text-slate-600">{saying(START)}</p>
     </div>
   </div>
 </section>
@@ -117,23 +117,23 @@
           {audience.heading}
         </h2>
         <p class="mt-3 text-lg leading-8 text-gray-700">{audience.sentence}</p>
+        <p class="mt-3 text-sm leading-6 text-gray-600">{audience.note}</p>
       </div>
 
-      <div class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
-        <p class="text-sm text-slate-600">{saying(audience.course)}</p>
-        <p class="mt-2 text-sm leading-6 text-gray-600">{audience.note}</p>
+      <div class="lg:text-right">
         <a
           href={audience.course.href}
-          class="audience-action mt-5 inline-flex items-center gap-2 rounded-full border px-5 py-2.5 text-sm font-semibold transition focus-visible:ring-2 focus-visible:ring-[#3E7BFF] focus-visible:ring-offset-2 focus-visible:outline-none"
+          class="audience-action inline-flex items-center gap-2 rounded-full border px-5 py-2.5 text-sm font-semibold transition focus-visible:ring-2 focus-visible:ring-[#3E7BFF] focus-visible:ring-offset-2 focus-visible:outline-none"
         >
           {audience.action}
           <span class="material-symbols-outlined text-base" aria-hidden="true"
             >arrow_forward</span
           >
         </a>
+        <p class="mt-3 text-sm text-slate-600">{saying(audience.course)}</p>
         <a
           href={audience.reference.href}
-          class="audience-reference mt-4 block text-sm font-medium underline underline-offset-4 focus-visible:ring-2 focus-visible:ring-[#3E7BFF] focus-visible:outline-none"
+          class="audience-reference mt-3 inline-block text-sm font-medium underline underline-offset-4 focus-visible:ring-2 focus-visible:ring-[#3E7BFF] focus-visible:outline-none"
         >
           {audience.reference.label}
         </a>
