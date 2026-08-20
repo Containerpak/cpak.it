@@ -7,13 +7,70 @@
   // the exams and the playgrounds are listed here rather than linked to.
   import Seo from "$lib/components/Seo.svelte";
   import { PLAYGROUNDS, type PlaygroundId } from "$lib/learn/playgrounds";
-  import { shapeOf } from "$lib/learn/course";
+  import {
+    completedIn,
+    lessonKey,
+    lessonsOf,
+    shapeOf,
+    type Course,
+  } from "$lib/learn/course";
   import { COURSE as START } from "./start/course";
   import { COURSE as PACKAGING } from "./packaging/course";
   import { COURSE as ADMINISTRATION } from "./administration/course";
   import type { PageData } from "./$types";
 
   let { data }: { data: PageData } = $props();
+
+  // What this browser has been through. Read after mount, because it lives in
+  // localStorage: the page renders for somebody who has never been here and
+  // then tells the truth to somebody who has.
+  let done = $state(new Map<string, Set<string>>());
+  $effect(() => {
+    const seen = new Map<string, Set<string>>();
+    for (const course of [START, PACKAGING, ADMINISTRATION]) {
+      seen.set(course.slug, completedIn(course));
+    }
+    done = seen;
+  });
+
+  type Standing = { label: string; note: string; next: string };
+
+  /** The way in, and what it says, for somebody who may be part way through. */
+  function standing(course: Course, first: string): Standing {
+    const shape = shapeOf(course);
+    const order = lessonsOf(course);
+    const marked = done.get(course.slug) ?? new Set<string>();
+    const next = order.find((lesson) => !marked.has(lessonKey(course, lesson)));
+
+    const lessons = `${shape.lessons} ${shape.lessons === 1 ? "lesson" : "lessons"}`;
+    const quizzes = shape.quizzes === 1 ? "a quiz" : `${shape.quizzes} quizzes`;
+    const size =
+      shape.quizzes === 0
+        ? `${lessons}, about ${shape.minutes} minutes`
+        : `${lessons} and ${quizzes}, about ${shape.minutes} minutes`;
+
+    if (marked.size === 0) return { label: first, note: size, next: "" };
+    if (!next)
+      return { label: "Read it again", note: `Finished. ${size}`, next: "" };
+    return {
+      label: "Resume",
+      note: `${marked.size} of ${order.length} done`,
+      next: next.title,
+    };
+  }
+
+  let beginning = $derived(standing(START, "Start the course"));
+
+  /** Where Resume goes: the first thing not marked through. */
+  function into(course: Course): string {
+    const order = lessonsOf(course);
+    const marked = done.get(course.slug) ?? new Set<string>();
+    if (marked.size === 0) return course.href;
+    return (
+      order.find((lesson) => !marked.has(lessonKey(course, lesson)))?.href ??
+      course.href
+    );
+  }
 
   const ORDER: PlaygroundId[] = [
     "permissions",
@@ -22,17 +79,6 @@
     "migration",
     "desktop-entry",
   ];
-
-  // Read off the courses themselves, so a count here cannot drift from the
-  // count on the course page.
-  function saying(course: typeof START) {
-    const shape = shapeOf(course);
-    const lessons = `${shape.lessons} ${shape.lessons === 1 ? "lesson" : "lessons"}`;
-    const quizzes = shape.quizzes === 1 ? "a quiz" : `${shape.quizzes} quizzes`;
-    return shape.quizzes === 0
-      ? `${lessons}, about ${shape.minutes} minutes`
-      : `${lessons} and ${quizzes}, about ${shape.minutes} minutes`;
-  }
 
   const AUDIENCES = [
     {
@@ -106,20 +152,26 @@
 
     <div class="lg:text-right">
       <a
-        href={START.href}
+        href={into(START)}
         class="inline-flex items-center gap-2 rounded-full bg-[#4670EC] px-6 py-3 text-sm font-semibold text-white transition hover:bg-[#3158c7] focus-visible:ring-2 focus-visible:ring-[#3E7BFF] focus-visible:ring-offset-2 focus-visible:outline-none"
       >
-        Start the course
+        {beginning.label}
         <span class="material-symbols-outlined text-lg" aria-hidden="true"
           >arrow_forward</span
         >
       </a>
-      <p class="mt-3 text-sm text-slate-600">{saying(START)}</p>
+      <p class="mt-3 text-sm text-slate-600">{beginning.note}</p>
+      {#if beginning.next}
+        <p class="mt-1 ml-auto max-w-[17rem] text-sm text-slate-500 lg:text-left">
+          Next: {beginning.next}
+        </p>
+      {/if}
     </div>
   </div>
 </section>
 
 {#each AUDIENCES as audience (audience.heading)}
+  {@const here = standing(audience.course, audience.action)}
   <section class="{audience.ground} border-b border-slate-200">
     <div
       class="mx-auto grid max-w-6xl gap-x-12 gap-y-8 px-6 py-14 lg:grid-cols-[minmax(0,1fr)_minmax(0,24rem)] lg:items-center"
@@ -137,15 +189,20 @@
 
       <div class="lg:text-right">
         <a
-          href={audience.course.href}
+          href={into(audience.course)}
           class="audience-action inline-flex items-center gap-2 rounded-full border px-5 py-2.5 text-sm font-semibold transition focus-visible:ring-2 focus-visible:ring-[#3E7BFF] focus-visible:ring-offset-2 focus-visible:outline-none"
         >
-          {audience.action}
+          {here.label}
           <span class="material-symbols-outlined text-base" aria-hidden="true"
             >arrow_forward</span
           >
         </a>
-        <p class="mt-3 text-sm text-slate-600">{saying(audience.course)}</p>
+        <p class="mt-3 text-sm text-slate-600">{here.note}</p>
+      {#if here.next}
+        <p class="mt-1 ml-auto max-w-[17rem] text-sm text-slate-500 lg:text-left">
+          Next: {here.next}
+        </p>
+      {/if}
         <a
           href={audience.reference.href}
           class="audience-reference mt-3 inline-block text-sm font-medium underline underline-offset-4 focus-visible:ring-2 focus-visible:ring-[#3E7BFF] focus-visible:outline-none"
