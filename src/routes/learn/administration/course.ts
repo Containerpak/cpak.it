@@ -11,6 +11,7 @@ import type { Course } from "$lib/learn/course";
 export const COURSE: Course = {
   slug: "administration",
   title: "Running cpak on machines you look after",
+  minutes: 20,
   href: "/learn/administration",
   modules: [
     {

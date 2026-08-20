@@ -32,6 +32,8 @@ export type Course = {
   /** The course progress is recorded against. */
   slug: string;
   title: string;
+  /** Honest, and rounded to something a person would say. */
+  minutes: number;
   /** The overview. The rail links back to it from every lesson. */
   href: string;
   modules: Module[];
@@ -85,4 +87,11 @@ export function completedIn(course: Course): Set<string> {
 export function progressLine(done: number, total: number): string {
   const share = total === 0 ? 0 : Math.round((done / total) * 100);
   return `${done} of ${total} ${total === 1 ? "lesson" : "lessons"} completed (${share}%)`;
+}
+
+/** What a course is made of, said the way a page says it. */
+export function shapeOf(course: Course) {
+  const all = lessonsOf(course);
+  const quizzes = all.filter((entry) => entry.kind === "test").length;
+  return { lessons: all.length - quizzes, quizzes, minutes: course.minutes };
 }

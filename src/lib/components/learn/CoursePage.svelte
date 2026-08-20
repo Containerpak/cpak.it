@@ -15,14 +15,11 @@
 
   let {
     course,
-    minutes,
     summary,
     audience,
     exam = null,
   }: {
     course: Course;
-    /** Honest, and rounded to something a person would say. */
-    minutes: number;
     /** Two sentences at most. What somebody gets out of it. */
     summary: string;
     /** Who it is for, and what it assumes. */
@@ -89,7 +86,7 @@
 
       <div class="mt-8 w-full shrink-0 lg:mt-1 lg:w-72">
         <p class="text-sm text-slate-600">
-          {shape}, about {minutes} minutes
+          {shape}, about {course.minutes} minutes
         </p>
         <p class="mt-3 text-sm text-slate-500">
           {progressLine(finished, order.length)}

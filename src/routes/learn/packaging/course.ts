@@ -14,6 +14,7 @@ import type { Course } from "$lib/learn/course";
 export const COURSE: Course = {
   slug: "packaging",
   title: "Packaging an application",
+  minutes: 30,
   href: "/learn/packaging",
   modules: [
     {
