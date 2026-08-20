@@ -48,6 +48,7 @@ Manifest v2 is a strict JSON contract. Add the schema URL to receive editor comp
 | `sessions`         | No       | Desktop or kiosk sessions offered to a display manager.          |
 | `dependencies`     | No       | Required cpak package origins.                                   |
 | `addons`           | No       | Optional addon origins supported by this package.                |
+| `addon_provider`   | No       | Capability and runtime exports supplied when used as an addon.   |
 | `idle_time`        | Yes      | Minutes before an idle container stops. Zero disables the timer. |
 | `override`         | Yes      | Default host permissions and resource limits.                    |
 | `runtime_sources`  | No       | Verified HTTPS artifacts installed into a managed layer.         |
@@ -71,7 +72,7 @@ Use only one source selector per dependency. The lock file records the resolved 
 
 ## Addons
 
-The `addons` array lists package origins that the user may mount into this application. Enabled addons use the parent's effective host permissions.
+The `addons` array lists package origins that can join this application. Enabled addons use the parent's effective host permissions.
 
 ```json
 "addons": [
@@ -80,9 +81,27 @@ The `addons` array lists package origins that the user may mount into this appli
 ]
 ```
 
+An addon can declare a named provider slot and the paths it adds to its parent:
+
+```json
+"addon_provider": {
+  "id": "go",
+  "slot": "sdk.go",
+  "mode": "exclusive",
+  "exports": {
+    "path": ["/usr/local/go/bin"],
+    "environment": ["GOROOT=/usr/local/go"]
+  }
+}
+```
+
+`exclusive` permits one active provider in a slot. `multiple` composes every
+available provider. See [Dependencies and addons](/docs/dependencies-addons) for
+provider selection and every supported export.
+
 ## Runtime sources
 
-A runtime source downloads an external HTTPS artifact at installation time and installs it into a managed layer. The current v2 installer supports Debian packages through `dpkg`.
+A runtime source downloads an external HTTPS artifact at installation time and installs it into a managed layer.
 
 ```json
 "runtime_sources": [
@@ -97,6 +116,10 @@ A runtime source downloads an external HTTPS artifact at installation time and i
 ```
 
 The URL must use HTTPS. cpak verifies the declared byte size and SHA-256 before running the installer. A mismatch aborts installation.
+
+Set `installer` to `dpkg`, `rpm`, or `tar`. The tar installer accepts plain and
+gzip-compressed tar archives. Read [Runtime sources](/docs/runtime-sources) for
+the package requirements, archive layout, and CI checks.
 
 ## Permissions
 

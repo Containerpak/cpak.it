@@ -45,6 +45,14 @@ An SDK is a manifest v2 package. Its image contains the toolchain while editor s
   "desktop_entries": [],
   "dependencies": [],
   "addons": [],
+  "addon_provider": {
+    "id": "example",
+    "slot": "sdk.example",
+    "mode": "exclusive",
+    "exports": {
+      "path": ["/usr/local/bin"]
+    }
+  },
   "idle_time": 0,
   "override": {
     "filesystem": [{ "path": "home", "access": "read-write" }],
@@ -52,6 +60,12 @@ An SDK is a manifest v2 package. Its image contains the toolchain while editor s
   }
 }
 ```
+
+The provider slot lets an editor discover an installed SDK without hard-coding
+its filesystem layout. Use `exclusive` for alternative versions of one
+toolchain and `multiple` when the providers are meant to coexist. Export
+non-standard binary, library, include, pkg-config, and CMake paths instead of
+copying compatibility links into the parent.
 
 The parent's permission set remains authoritative after the SDK is mounted. The SDK manifest describes its standalone behavior and validation surface.
 

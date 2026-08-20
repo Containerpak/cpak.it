@@ -48,8 +48,8 @@ permission contract shared with Bottles.
 
 ## Optional addons
 
-An addon contributes layers only when the user enables it for a supported
-parent. The parent remains usable without it.
+An addon contributes layers to a supported parent. The parent remains usable
+without it.
 
 ```json
 "addons": [
@@ -58,13 +58,46 @@ parent. The parent remains usable without it.
 ]
 ```
 
-cpak installs an addon on first use, records the selection for that parent and
-stops its current environment. The next launch composes required layer
-dependencies, the parent and each enabled addon in manifest order.
+An addon without provider metadata uses an explicit enable or disable choice.
+A provider addon is available as soon as it is installed and the parent lists
+its origin. The next launch composes required layer dependencies, the parent,
+and the active providers in manifest order.
 
 Disabling an addon removes its layers from the next runtime view. It does not
 rewrite the parent image or copy files into the application data directory.
 One installed addon can serve several parents while each keeps its own selection.
+
+## Provider slots
+
+A provider tells cpak which capability an addon supplies. The slot groups
+packages that can fill the same role, while the mode controls how many may be
+active.
+
+```json
+"addon_provider": {
+  "id": "jdk25",
+  "slot": "sdk.java",
+  "mode": "exclusive",
+  "exports": {
+    "path": ["/opt/jdk/bin"],
+    "library_path": ["/opt/jdk/lib"],
+    "include_path": ["/opt/jdk/include"],
+    "pkg_config_path": ["/opt/jdk/lib/pkgconfig"],
+    "cmake_prefix_path": ["/opt/jdk"],
+    "environment": ["JAVA_HOME=/opt/jdk"]
+  }
+}
+```
+
+An `exclusive` slot activates one provider. The first available provider is the
+default until the user selects another one. A `multiple` slot activates every
+installed provider, which fits collections such as Steam compatibility tools.
+Providers in one slot must use the same mode.
+
+Export paths are absolute paths inside the composed package. cpak prepends them
+to `PATH`, `LD_LIBRARY_PATH`, `LIBRARY_PATH`, `CPATH`, `PKG_CONFIG_PATH`, and
+`CMAKE_PREFIX_PATH` as appropriate. Entries under `environment` set explicit
+`NAME=value` pairs after path composition.
 
 ## Managing addons
 
@@ -75,11 +108,33 @@ cpak addon list github.com/containerpak/vscode
 cpak addon list --json github.com/containerpak/vscode
 ```
 
+Inspect slots and their installed providers:
+
+```bash
+cpak addon slots github.com/containerpak/vscode
+cpak addon providers github.com/containerpak/vscode
+cpak addon providers github.com/containerpak/vscode sdk.go
+```
+
+Choose one provider for an exclusive slot by provider ID or origin:
+
+```bash
+cpak addon use github.com/containerpak/vscode sdk.go tinygo
+```
+
 Enable or disable one addon for that package:
 
 ```bash
 cpak addon enable github.com/containerpak/vscode github.com/containerpak/sdk-go
 cpak addon disable github.com/containerpak/vscode github.com/containerpak/sdk-go
+```
+
+The package manifest records the combinations its publisher supports. A user
+can still add another package deliberately, with responsibility for that local
+combination:
+
+```bash
+cpak addon enable --anyway github.com/example/editor github.com/example/sdk
 ```
 
 `addon list` reports whether each option is installed and enabled. Enabling an
@@ -147,14 +202,15 @@ that hides the paths supplied by its addons.
 
 An addon is a normal cpak package with its own Git origin, manifest, image and
 release history. The parent lists supported addon origins in `cpak.json`; the
-addon owns every file it contributes.
+addon owns every file it contributes. Add `addon_provider` when cpak should
+discover the package automatically or expose non-standard runtime paths.
 
 Place files where the parent already expects to discover them. Commands can use
 `/usr/bin`, libraries can use the platform library directories and plugins can
 use a parent-specific path. If discovery needs an environment variable, define
 it in the parent package so it resolves against `CPAK_ROOTFS` when necessary.
 
-Keep addon paths separate where possible. Enabled addons follow the order in the
+Keep addon paths separate where possible. Active addons follow the order in the
 parent manifest, and a later layer wins when two packages provide the same path.
 
 Use the same maintained platform family as the parent when it fits the package.

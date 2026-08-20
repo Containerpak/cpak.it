@@ -157,7 +157,7 @@ For registries and CDNs that preserve byte-range responses, `zstd:chunked` lets 
 
 ## External artifacts
 
-Prefer downloading build inputs in CI and checking their vendor-provided checksum before use. If an artifact must be installed on the user's machine, declare it through `runtime_sources` with its HTTPS URL, exact size, SHA-256, and supported installer.
+Prefer downloading build inputs in CI and checking their vendor-provided checksum before use. If an artifact must be installed on the user's machine, declare it through `runtime_sources` with its HTTPS URL, exact size, SHA-256, and a `tar`, `dpkg`, or `rpm` installer. See [Runtime sources](/docs/runtime-sources) for the archive contract and CI checks.
 
 ## Verify the result
 

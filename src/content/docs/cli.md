@@ -54,15 +54,20 @@ Use `--instance` on supported commands to select a named instance of the same pa
 
 ## Composition and policy
 
-| Command    | Purpose                                               |
-| ---------- | ----------------------------------------------------- |
-| `addon`    | List, enable, or disable an addon for an application. |
-| `override` | Replace one local permission value.                   |
-| `grant`    | List, manage, or revoke persistent file grants.       |
-| `doctor`   | Report host runtime capabilities.                     |
-| `audit`    | Check local store integrity and optionally repair it. |
+| Command    | Purpose                                                           |
+| ---------- | ----------------------------------------------------------------- |
+| `addon`    | Inspect addons and slots, select providers, or change activation. |
+| `override` | Replace one local permission value.                               |
+| `grant`    | List, manage, or revoke persistent file grants.                   |
+| `doctor`   | Report host runtime capabilities.                                 |
+| `audit`    | Check local store integrity and optionally repair it.             |
 
-`cpak update --non-interactive` rejects updates that request additional permissions. JSON output is available for update, list, addon list, doctor, alias list, and garbage collection where shown by command help.
+Use `cpak addon slots` and `cpak addon providers` to inspect provider state,
+then `cpak addon use` to select an exclusive provider. `enable` and `disable`
+remain available for explicit addon choices. JSON output is available for
+`list`, `slots`, and `providers`.
+
+`cpak update --non-interactive` rejects updates that request additional permissions. JSON output is available for update, list, doctor, alias list, and garbage collection where shown by command help.
 
 ## Storage
 
