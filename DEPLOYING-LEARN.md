@@ -15,8 +15,18 @@ wrangler d1 migrations apply cpak-learn --remote
 ```
 
 `wrangler.toml` already carries the binding with an empty `database_id`. It is
-empty rather than absent on purpose: an empty id fails the deploy and names
-itself, while a missing binding fails nowhere and quietly loses every account.
+empty rather than absent on purpose: a missing binding fails nowhere and quietly
+puts every account in the memory of one isolate, while an empty id stops
+wrangler before it starts.
+
+It stops it with a poor message, and this is the one to recognise:
+
+```
+✘ [ERROR] The expression evaluated to a falsy value:
+    (databaseId)
+```
+
+That is the id above, still empty. Paste the one `wrangler d1 create` printed.
 
 Without it: accounts, progress and credentials live in one isolate's memory and
 are gone on the next cold start. The account page says so in those words.
