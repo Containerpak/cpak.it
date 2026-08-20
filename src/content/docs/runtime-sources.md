@@ -38,15 +38,21 @@ download.
 
 ## Installers
 
-| Installer | Accepted artifact                | Requirement in the package environment |
-| --------- | -------------------------------- | -------------------------------------- |
-| `tar`     | Uncompressed or gzip tar archive | None                                   |
-| `dpkg`    | Debian package                   | `/usr/bin/dpkg`                        |
-| `rpm`     | RPM package                      | `/usr/bin/rpm`                         |
+| Installer     | Accepted artifact                | Requirement in the package environment |
+| ------------- | -------------------------------- | -------------------------------------- |
+| `tar`         | Uncompressed or gzip tar archive | None                                   |
+| `dpkg`        | Debian package                   | `/usr/bin/dpkg`                        |
+| `deb-extract` | Debian package                   | `/usr/bin/dpkg-deb`                    |
+| `rpm`         | RPM package                      | `/usr/bin/rpm`                         |
 
 The native installers run inside the package root, so their dependencies and
 scripts see the same filesystem that will become the managed layer. Choose an
 installer that exists in the selected platform image.
+
+`dpkg` checks package dependencies and runs maintainer scripts. `deb-extract`
+only unpacks the Debian data archive. It is intended for packages whose declared
+dependency names no longer match the platform even though the required ABI is
+present. It does not run `preinst`, `postinst`, `prerm`, or `postrm`.
 
 The `tar` installer writes archive paths relative to `/` in the package. A file
 stored as `usr/share/applications/example.desktop` becomes
@@ -59,6 +65,12 @@ Keep normal application files in the OCI build. This gives registries and cpak
 stable layers to cache and deduplicate. Use a runtime source when the separate
 artifact is part of the package contract and cannot sensibly be copied into the
 published image.
+
+This also covers software whose license does not allow a third party to publish
+the application payload. The OCI image can contain the redistributable runtime,
+wrapper, and desktop integration while `runtime_sources` points to the official
+vendor download. The user's cpak installation downloads the pinned artifact
+from that origin and builds the managed layer locally.
 
 Do not use runtime sources as an unchecked download step. Pin the exact size and
 SHA-256 in `cpak.json`, publish immutable artifact URLs, and regenerate the lock
