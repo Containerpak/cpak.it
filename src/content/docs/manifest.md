@@ -117,11 +117,12 @@ A runtime source downloads an external HTTPS artifact at installation time and i
 
 The URL must use HTTPS. cpak verifies the declared byte size and SHA-256 before running the installer. A mismatch aborts installation.
 
-Set `installer` to `dpkg`, `deb-extract`, `rpm`, or `tar`. `dpkg` checks package
+Set `installer` to `dpkg`, `deb-extract`, `rpm`, `tar`, or `file`. `dpkg` checks package
 dependencies and runs maintainer scripts, while `deb-extract` only unpacks the
 Debian data archive. The tar installer accepts plain and gzip-compressed tar
-archives. Read [Runtime sources](/docs/runtime-sources) for the package
-requirements, archive layout, and CI checks.
+archives. A file source also declares a `destination` below `/opt`. Read
+[Runtime sources](/docs/runtime-sources) for the package requirements, archive
+layout, and CI checks.
 
 ## Permissions
 

@@ -1,6 +1,6 @@
 ---
 title: Runtime sources
-description: Add verified tar, Debian, or RPM artifacts to a package at installation time.
+description: Add verified archives, native packages, or vendor files at installation time.
 tags: [manifest, packages, runtime]
 section: packages
 order: 45
@@ -44,6 +44,7 @@ download.
 | `dpkg`        | Debian package                   | `/usr/bin/dpkg`                        |
 | `deb-extract` | Debian package                   | `/usr/bin/dpkg-deb`                    |
 | `rpm`         | RPM package                      | `/usr/bin/rpm`                         |
+| `file`        | Single file                      | None                                   |
 
 The native installers run inside the package root, so their dependencies and
 scripts see the same filesystem that will become the managed layer. Choose an
@@ -58,6 +59,21 @@ The `tar` installer writes archive paths relative to `/` in the package. A file
 stored as `usr/share/applications/example.desktop` becomes
 `/usr/share/applications/example.desktop`. Absolute paths, parent traversal,
 links outside the package root, and device entries are rejected.
+
+The `file` installer copies one verified artifact to the declared `destination`.
+The destination must be an absolute path below `/opt`, may not contain parent
+traversal, and may not replace a symbolic link:
+
+```json
+{
+  "name": "application.jar",
+  "url": "https://downloads.example.org/application.jar",
+  "sha256": "0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef",
+  "size": 4096,
+  "installer": "file",
+  "destination": "/opt/application/application.jar"
+}
+```
 
 ## When to use one
 
