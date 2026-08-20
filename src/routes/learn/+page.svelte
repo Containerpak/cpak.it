@@ -37,6 +37,7 @@
   const AUDIENCES = [
     {
       course: PACKAGING,
+      who: "For package authors",
       heading: "Packaging an application",
       sentence:
         "Write a manifest cpak accepts, ask for the access your program needs, and ship a desktop entry that survives being exported.",
@@ -47,6 +48,7 @@
     },
     {
       course: ADMINISTRATION,
+      who: "For administrators",
       heading: "Running cpak on machines you look after",
       sentence:
         "Set one policy for other people's installations, and be able to say exactly what it closes and what it leaves open.",
@@ -67,26 +69,36 @@
   path="/learn"
 />
 
+<!-- The page says what it is, on its own. What follows are the ways in, and
+     each one carries its own button so nothing reads as the button for the
+     title above it. -->
+<section class="bg-slate-50">
+  <div class="mx-auto max-w-6xl px-6 pt-16 pb-10 lg:pt-20">
+    <h1
+      class="max-w-3xl text-5xl font-extrabold tracking-tight text-gray-900 lg:text-6xl"
+    >
+      Learn cpak
+    </h1>
+    <p class="mt-6 max-w-3xl text-xl leading-9 text-gray-600">
+      cpak installs applications that start with nothing and get only what they
+      asked for in writing. Here you change that writing and read what cpak
+      decides, in the page.
+    </p>
+  </div>
+</section>
+
 <section class="border-b border-slate-200 bg-slate-50">
   <div
-    class="mx-auto grid max-w-6xl gap-x-12 gap-y-10 px-6 py-16 lg:grid-cols-[minmax(0,1fr)_minmax(0,24rem)] lg:items-center lg:py-20"
+    class="mx-auto grid max-w-6xl gap-x-12 gap-y-6 px-6 pt-6 pb-16 lg:grid-cols-[minmax(0,1fr)_minmax(0,24rem)] lg:items-center"
   >
     <div class="min-w-0">
-      <h1
-        class="text-5xl font-extrabold tracking-tight text-gray-900 lg:text-6xl"
-      >
-        Learn cpak
-      </h1>
-      <p class="mt-6 text-xl leading-9 text-gray-600">
-        cpak installs applications that start with nothing and get only what
-        they asked for in writing. Here you change that writing and read what
-        cpak decides, in the page.
-      </p>
-      <p class="mt-8 text-xs font-bold tracking-wide text-slate-500 uppercase">
+      <p class="text-xs font-bold tracking-wide text-slate-500 uppercase">
         New to cpak
       </p>
-      <h2 class="mt-2 text-2xl font-bold text-gray-900">{START.title}</h2>
-      <p class="mt-2 max-w-xl leading-7 text-gray-600">
+      <h2 class="mt-2 text-3xl font-bold tracking-tight text-gray-900">
+        {START.title}
+      </h2>
+      <p class="mt-3 max-w-xl text-lg leading-8 text-gray-700">
         Assuming nothing. What cpak is, what you are shown before you install
         something, and what an application is allowed to do afterwards.
       </p>
@@ -113,7 +125,10 @@
       class="mx-auto grid max-w-6xl gap-x-12 gap-y-8 px-6 py-14 lg:grid-cols-[minmax(0,1fr)_minmax(0,24rem)] lg:items-center"
     >
       <div class="min-w-0">
-        <h2 class="text-3xl font-bold tracking-tight text-gray-900">
+        <p class="text-xs font-bold tracking-wide text-slate-500 uppercase">
+          {audience.who}
+        </p>
+        <h2 class="mt-2 text-3xl font-bold tracking-tight text-gray-900">
           {audience.heading}
         </h2>
         <p class="mt-3 text-lg leading-8 text-gray-700">{audience.sentence}</p>
