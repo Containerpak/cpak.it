@@ -150,7 +150,8 @@
       </p>
     </div>
 
-    <div class="lg:text-right">
+    <div class="lg:flex lg:justify-end">
+      <div class="lg:w-[19rem]">
       <a
         href={into(START)}
         class="inline-flex items-center gap-2 rounded-full bg-[#4670EC] px-6 py-3 text-sm font-semibold text-white transition hover:bg-[#3158c7] focus-visible:ring-2 focus-visible:ring-[#3E7BFF] focus-visible:ring-offset-2 focus-visible:outline-none"
@@ -162,10 +163,9 @@
       </a>
       <p class="mt-3 text-sm text-slate-600">{beginning.note}</p>
       {#if beginning.next}
-        <p class="mt-1 ml-auto max-w-[17rem] text-sm text-slate-500 lg:text-left">
-          Next: {beginning.next}
-        </p>
+        <p class="mt-1 text-sm text-slate-500">Next: {beginning.next}</p>
       {/if}
+      </div>
     </div>
   </div>
 </section>
@@ -187,7 +187,8 @@
         <p class="mt-3 text-sm leading-6 text-gray-600">{audience.note}</p>
       </div>
 
-      <div class="lg:text-right">
+      <div class="lg:flex lg:justify-end">
+        <div class="lg:w-[19rem]">
         <a
           href={into(audience.course)}
           class="audience-action inline-flex items-center gap-2 rounded-full border px-5 py-2.5 text-sm font-semibold transition focus-visible:ring-2 focus-visible:ring-[#3E7BFF] focus-visible:ring-offset-2 focus-visible:outline-none"
@@ -209,6 +210,7 @@
         >
           {audience.reference.label}
         </a>
+        </div>
       </div>
     </div>
   </section>

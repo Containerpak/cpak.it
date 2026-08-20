@@ -13,6 +13,8 @@
  * issued, below it nothing is, and either way the page says the score.
  */
 
+import { orderOf, placements, shuffled } from "$lib/learn/shuffle";
+
 export type ExamQuestion = {
   asks: string;
   /** The choices, in the order they are shown. */
@@ -268,6 +270,22 @@ export const EXAMS: Record<string, Exam> = {
   },
 };
 
+// Where the right answer sits, question by question, for this whole paper.
+// Even by construction: no column can carry more right answers than another,
+// whatever habit the questions were written with.
+const columns = new Map<string, number[]>();
+
+function columnFor(exam: Exam, index: number): number {
+  let paper = columns.get(exam.id);
+  if (!paper) {
+    const widest = Math.max(...exam.questions.map((q) => q.choices.length));
+    paper = placements(exam.id, exam.questions.length, widest);
+    columns.set(exam.id, paper);
+  }
+  const choices = exam.questions[index].choices.length;
+  return paper[index] % choices;
+}
+
 /** What the client is allowed to see: everything except which one is right. */
 export function asked(exam: Exam) {
   return {
@@ -276,9 +294,17 @@ export function asked(exam: Exam) {
     credential: exam.credential,
     course: exam.course,
     pass: exam.pass,
-    questions: exam.questions.map((question) => ({
+    questions: exam.questions.map((question, index) => ({
       asks: question.asks,
-      choices: question.choices,
+      // Shown in an order the paper decides, so the position of the right
+      // answer carries no information. The server derives the same order when
+      // it marks, so nothing about it has to travel.
+      choices: shuffled(
+        question.asks,
+        question.choices,
+        question.correct,
+        columnFor(exam, index),
+      ),
     })),
   };
 }
@@ -290,13 +316,22 @@ export type Marked = {
   passed: boolean;
 };
 
-/** Mark one sitting. `given` is one answer index per question, or null. */
+/** Mark one sitting. `given` is one answer index per question, or null.
+ *
+ * The indexes are positions in the shuffled list the candidate was shown, so
+ * each one is read back through the same order before it is compared. */
 export function mark(exam: Exam, given: (number | null)[]): Marked {
-  const right = exam.questions.reduce(
-    (count, question, index) =>
-      count + (given[index] === question.correct ? 1 : 0),
-    0,
-  );
+  const right = exam.questions.reduce((count, question, index) => {
+    const shown = orderOf(
+      question.asks,
+      question.choices.length,
+      question.correct,
+      columnFor(exam, index),
+    );
+    const chosen = given[index];
+    if (chosen === null || chosen < 0 || chosen >= shown.length) return count;
+    return count + (shown[chosen] === question.correct ? 1 : 0);
+  }, 0);
   const total = exam.questions.length;
   const share = total === 0 ? 0 : right / total;
   return { right, total, share, passed: share >= exam.pass };

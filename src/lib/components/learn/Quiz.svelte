@@ -1,4 +1,6 @@
 <script lang="ts">
+  import { placements, shuffled } from "$lib/learn/shuffle";
+
   // A quiz at the end of a course.
   //
   // It exists to make somebody answer, not to grade them. Every question is
@@ -52,6 +54,17 @@
     answers[question] = choice;
   }
 
+  // Where the right answer sits in each question, even across the whole quiz
+  // rather than wherever the author happened to put it. Every question here
+  // had it second before this existed.
+  let columns = $derived(
+    placements(
+      questions.map((q) => q.asks).join("|"),
+      questions.length,
+      Math.max(...questions.map((q) => q.choices.length)),
+    ),
+  );
+
   // Small numbers are written out in prose, the way the heading above writes
   // them. A digit in the middle of a sentence reads like a form field.
   const WORDS = ["no", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "ten"];
@@ -75,6 +88,12 @@
   <ol class="quiz-questions mt-8 space-y-10">
     {#each questions as question, index (question.asks)}
       {@const given = answers[index]}
+      {@const choices = shuffled(
+        question.asks,
+        question.choices,
+        question.choices.findIndex((c) => c.correct),
+        columns[index] % question.choices.length,
+      )}
       <li>
         <fieldset>
           <legend class="text-lg font-semibold text-gray-900">
@@ -82,7 +101,7 @@
             {question.asks}
           </legend>
           <div class="mt-4 space-y-2">
-            {#each question.choices as choice, at (choice.text)}
+            {#each choices as choice, at (choice.text)}
               {@const chosen = given === at}
               {@const reveal = given !== null}
               <button
