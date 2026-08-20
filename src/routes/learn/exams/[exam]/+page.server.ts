@@ -17,9 +17,6 @@ export const load: PageServerLoad = async (event) => {
 };
 
 export const actions: Actions = {
-  // One action, and it does the whole sitting: mark it, and issue only on a
-  // pass. The answers are never sent to the browser, so this is the only place
-  // that can decide, which is the point.
   sit: async (event) => {
     const exam = EXAMS[event.params.exam];
     if (!exam) error(404, "There is no exam by that name.");
@@ -47,9 +44,6 @@ export const actions: Actions = {
 
     const result = mark(exam, given);
     if (!result.passed) {
-      // Nothing is recorded for a sitting that did not pass. A record of every
-      // attempt would be a history nobody agreed to keep, and the page already
-      // tells the candidate what they need to know.
       return fail(200, {
         marked: result,
         problem: "",

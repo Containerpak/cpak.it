@@ -1,7 +1,3 @@
-// The worked cases the migration board opens with, and the reason each legacy
-// field becomes what it becomes. The module answers what changed; the notes
-// below answer why that is the honest reading of the old field.
-
 import { format } from "$lib/learn/policy";
 
 export type Case = {
@@ -104,7 +100,6 @@ const COMMANDS: Record<string, string> = {
     "cpak-launch-app was how one package started another. The permission carries that, and the broker decides whether the application it names may be started.",
 };
 
-/** Why a field became what it became, said once per field. */
 export function reasonFor(field: string, became: string): string {
   if (field === "allowedHostCommands") return COMMANDS[became] ?? "";
   return FIELDS[field] ?? "";

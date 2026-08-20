@@ -1,6 +1,3 @@
-// The public page for one credential. No session is read here, so what a
-// stranger sees does not depend on who they are.
-
 import { error } from "@sveltejs/kit";
 import type { PageServerLoad } from "./$types";
 import { openStore } from "$lib/server/learn/store";

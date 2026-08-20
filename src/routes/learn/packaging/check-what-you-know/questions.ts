@@ -1,8 +1,5 @@
 import type { Question } from "$lib/components/learn/Quiz.svelte";
 
-// Five questions on the decisions a packager actually makes. The wrong answers
-// are the ones packagers reach for by habit, which is the only reason getting
-// one wrong here is worth anything.
 export const QUESTIONS: Question[] = [
   {
     asks: "Your photo editor opens files a person picks, and saves settings of its own. What does the manifest ask for?",
@@ -91,6 +88,60 @@ export const QUESTIONS: Question[] = [
       {
         text: "Ask for home instead, so the question stops coming up",
         why: "That is the same decision made once, badly, for every directory at the same time.",
+      },
+    ],
+  },
+  {
+    asks: "A vendor lets users download its editor but does not allow you to redistribute the binary. Where does the payload belong?",
+    choices: [
+      {
+        text: "In the OCI image, because cpak does not publish a traditional package",
+        why: "An OCI registry still redistributes the vendor binary.",
+      },
+      {
+        text: "In a runtime source pinned by HTTPS URL, size and SHA-256",
+        correct: true,
+        why: "The user's machine downloads the original vendor artifact and cpak verifies its exact identity before installation.",
+      },
+      {
+        text: "In the repository release as an untracked attachment",
+        why: "That changes the host but not the redistribution problem, and it removes the manifest contract.",
+      },
+    ],
+  },
+  {
+    asks: "An editor works without Go, but can discover a Go SDK when the user enables one. Which relationship fits?",
+    choices: [
+      {
+        text: "A required nested dependency",
+        why: "That installs Go for every editor user even when the editor works without it.",
+      },
+      {
+        text: "An optional addon provider",
+        correct: true,
+        why: "The user selects it for the parent, and the provider exports its tool and compiler paths.",
+      },
+      {
+        text: "A runtime source in the editor manifest",
+        why: "A runtime source installs vendor payload for one package; it does not model an optional shared SDK package.",
+      },
+    ],
+  },
+  {
+    asks: "Why run cpak-clean-junk in the same image layer as apt-get install?",
+    choices: [
+      {
+        text: "A later cleanup layer cannot remove bytes already stored in an earlier OCI layer",
+        correct: true,
+        why: "The final view looks clean either way, but registries and local storage still carry bytes from every layer.",
+      },
+      {
+        text: "cpak refuses images with more than one RUN instruction",
+        why: "Layer count alone is not a manifest validation rule.",
+      },
+      {
+        text: "It compiles the application translation catalogs",
+        why: "Application catalogs stay in the package; junk cleanup removes package manager and documentation residue.",
       },
     ],
   },

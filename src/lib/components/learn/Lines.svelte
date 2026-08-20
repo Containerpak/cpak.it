@@ -1,6 +1,4 @@
 <script lang="ts">
-  // A list of paths or commands. It scrolls inside itself, in both directions,
-  // because a mount list is wide and a page that scrolls sideways is broken.
   let {
     label,
     items,

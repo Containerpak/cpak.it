@@ -1,6 +1,3 @@
-// What a credential is, in the words the project is willing to stand behind,
-// and the small amount of logic both the private and the public page need.
-
 export type Standing = "valid" | "superseded" | "expired";
 
 export type Held = {
@@ -13,12 +10,9 @@ export type Held = {
   issuedAt: string;
   expiresAt: string;
   supersededBy: string | null;
-  /** Whether a signed form of this record can be fetched and checked. */
   signed?: boolean;
 };
 
-// Read on both pages, so the private view and the public view cannot drift
-// into describing the same record differently.
 export const CLAIM =
   "This records the result of an online exam taken on the candidate's own machine. The exam is open book and nobody watched it being taken. The account named here is the only part of it that was authenticated, and an account is a sign-in, not a person.";
 
@@ -30,7 +24,6 @@ export function standing(entry: Held, now = new Date()): Standing {
   return Date.parse(entry.expiresAt) <= now.getTime() ? "expired" : "valid";
 }
 
-// One word for a chip, a sentence for the line under it.
 export const STANDING_WORD: Record<Standing, string> = {
   valid: "Current",
   superseded: "Superseded",
@@ -54,10 +47,6 @@ export function standingLine(entry: Held, now = new Date()) {
   }
 }
 
-// Deliberately short, and deliberately outside /learn: whoever follows this
-// link is checking a record, not taking a course, and the address has to
-// outlive whatever the learning area is called next year.
-/** Where the signed form of a credential is served. */
 export function tokenPath(code: string) {
   return `/verify/${code}/token`;
 }

@@ -1,13 +1,3 @@
-// The machine every answer on this page is about, and the manifest the ticks
-// are written into.
-//
-// cpak resolves a mount against the host it is running on: the user id, the
-// home directory, a few environment variables and what is actually present on
-// disk. A page cannot use the reader's machine for that, and should not want
-// to: the point of a board is that two people comparing notes see the same
-// paths. So the host is written down here, sent with every question, and shown
-// on the page.
-
 export type FixtureHost = {
   uid: number;
   home: string;
@@ -51,7 +41,6 @@ export const FIXTURE: Fixture = {
   ],
 };
 
-/** A manifest, as far as this board writes one. */
 export type Manifest = {
   override?: Record<string, unknown>;
   [field: string]: unknown;
@@ -59,23 +48,14 @@ export type Manifest = {
 
 export type Ticks = Record<string, boolean>;
 
-/** The package the board asks about. Everything but the override stays put. */
 const PACKAGE: Manifest = {
   manifest_version: "2.0",
   name: "notes",
-  description: "An example package, so the board has a manifest to judge.",
+  description: "An example package for permission inspection.",
   image: "ghcr.io/example/notes:2",
   binaries: ["/usr/bin/notes"],
 };
 
-/**
- * The manifest a set of ticks describes, written from scratch.
- *
- * The default is the way a package author writes one: the permissions asked
- * for are in the override, and the ones nobody asked for are simply not there.
- * Written out in full is the other habit, the one cpak init produces, where
- * every permission is on the page and most of them are false.
- */
 export function manifestFor(
   keys: string[],
   ticks: Ticks,
@@ -89,11 +69,6 @@ export function manifestFor(
   return { ...PACKAGE, override };
 }
 
-/**
- * One permission set or cleared in a manifest somebody may have edited. Every
- * other field is left exactly as it was found, including override keys this
- * board has no checkbox for.
- */
 export function toggled(
   manifest: Manifest,
   key: string,
@@ -107,7 +82,6 @@ export function toggled(
   return { ...manifest, override };
 }
 
-/** Which checkboxes a manifest ticks. Anything but true is not a grant. */
 export function ticksOf(manifest: Manifest, keys: string[]): Ticks {
   const override = asObject(manifest.override) ?? {};
   const ticks: Ticks = {};

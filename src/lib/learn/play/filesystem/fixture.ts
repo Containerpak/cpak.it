@@ -1,14 +1,3 @@
-// The machine this board's answers are about.
-//
-// A filesystem permission does not name a path on its own. home and the XDG
-// user directories name a place on a machine, and what they name is read off
-// that machine's home directory and its session configuration. A page cannot
-// use the reader's machine for that, so the host is written down here, sent
-// with every question, and shown on the page.
-//
-// It carries only what a filesystem answer depends on: the user, the home
-// directory, and the file the session keeps its user directories in.
-
 export const USER_DIRS_PATH = "/home/ada/.config/user-dirs.dirs";
 
 export const USER_DIRS = [

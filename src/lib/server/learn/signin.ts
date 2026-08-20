@@ -1,19 +1,7 @@
-// How a person proves which account they are.
-//
-// GitHub is the provider because the audience is packagers and the credential
-// names an account handle: a GitHub handle is a public, already-checkable
-// name, and the people who would earn one already have it. It authenticates
-// the handle and nothing else, which is exactly the claim the credential makes.
-//
-// The provider needs two secrets. Until they are set the site runs a local
-// sign-in instead, and only when the dev server is running. Local sign-in
-// creates a real account row and a real session; what it does not do is check
-// anything about who you say you are, so credentials issued under it are
-// labelled with their provider everywhere they appear.
-
 import { env } from "$env/dynamic/private";
 import { dev } from "$app/environment";
 import type { Cookies } from "@sveltejs/kit";
+import { SITE_URL } from "$lib/store";
 import type { Account, Provider } from "./store";
 import { randomToken } from "./session";
 
@@ -34,10 +22,12 @@ export function githubReady() {
   return secrets() !== null;
 }
 
-// The escape hatch is deliberately narrow: it exists only where the real
-// provider cannot be configured, and it disappears the moment it is.
 export function localSigninOffered() {
   return dev && !githubReady();
+}
+
+function callbackOrigin(requestOrigin: string) {
+  return dev ? requestOrigin : SITE_URL;
 }
 
 export function beginGithub(cookies: Cookies, origin: string) {
@@ -57,7 +47,7 @@ export function beginGithub(cookies: Cookies, origin: string) {
   url.searchParams.set("client_id", keys.id);
   url.searchParams.set(
     "redirect_uri",
-    `${origin}/learn/account/auth/github/callback`,
+    `${callbackOrigin(origin)}/learn/account/auth/github/callback`,
   );
   url.searchParams.set("scope", "read:user");
   url.searchParams.set("state", state);
@@ -86,7 +76,7 @@ export async function finishGithub(
       client_id: keys.id,
       client_secret: keys.secret,
       code,
-      redirect_uri: `${origin}/learn/account/auth/github/callback`,
+      redirect_uri: `${callbackOrigin(origin)}/learn/account/auth/github/callback`,
     }),
   });
   if (!exchange.ok) throw new Error("GitHub did not answer the token request.");
@@ -128,8 +118,6 @@ export async function finishGithub(
   };
 }
 
-// A local account is keyed by the handle that was typed, so restarting the dev
-// server and typing the same handle lands back on the same account.
 export function localAccount(handle: string): Account {
   const trimmed = handle
     .trim()

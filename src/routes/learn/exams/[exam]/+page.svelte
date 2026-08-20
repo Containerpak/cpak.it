@@ -22,7 +22,7 @@
   <nav aria-label="Breadcrumb" class="text-sm text-slate-500">
     <a href="/learn" class="hover:underline">Learn</a>
     <span aria-hidden="true" class="px-1.5">/</span>
-    <a href="/learn/exams" class="hover:underline">Exams</a>
+    <a href="/learn#credentials" class="hover:underline">Credentials</a>
     <span aria-hidden="true" class="px-1.5">/</span>
     <span aria-current="page">{exam.title}</span>
   </nav>
@@ -32,8 +32,6 @@
   </h1>
 
   {#if code}
-    <!-- Passed. The credential exists, and the only thing worth showing is the
-         way to it. -->
     <div class="mt-8 rounded-2xl border border-emerald-300 bg-emerald-50 p-6">
       <p class="text-lg font-semibold text-emerald-900">
         {marked?.right} of {marked?.total} right. Passed.

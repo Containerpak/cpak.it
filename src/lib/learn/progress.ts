@@ -1,15 +1,3 @@
-// Marking a lesson done.
-//
-// It is always written to this browser first, so the courses work with no
-// account at all. When there is a session the same entry is posted to the
-// account, and that copy is what a second machine sees. The browser copy is
-// kept as a mirror rather than thrown away, so signing out does not empty the
-// page you were reading.
-//
-// A lesson page calls markDone() with its own title and the size of its course.
-// Those travel with the entry so the account page can still name a lesson
-// after the lesson has been renamed or removed.
-
 export type Done = {
   lesson: string;
   title: string;
@@ -50,9 +38,7 @@ function writeLocal(entries: Done[]) {
   if (!browser()) return;
   try {
     localStorage.setItem(KEY, JSON.stringify(entries));
-  } catch {
-    // A browser with no room for it is not a reason to fail the lesson page.
-  }
+  } catch {}
 }
 
 export function isDone(lesson: string) {
@@ -78,8 +64,6 @@ export function forgetLocal() {
   localStorage.removeItem(KEY);
 }
 
-// Called once after signing in, so work done before the account existed is
-// not stranded on one machine.
 export async function pushLocal() {
   const held = readLocal();
   if (held.length === 0) return;
@@ -94,9 +78,7 @@ async function send(entries: Done[]) {
       headers: { "content-type": "application/json" },
       body: JSON.stringify({ entries }),
     });
-  } catch {
-    // Signed out, or offline. The browser copy already holds it.
-  }
+  } catch {}
 }
 
 export type Course = {

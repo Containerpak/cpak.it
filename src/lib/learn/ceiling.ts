@@ -1,7 +1,3 @@
-// The worked cases the ceiling board opens with, and the machines they are
-// computed for. Each case is a manifest that means something and the least
-// policy around it that makes one point.
-
 import { format, type Host } from "$lib/learn/policy";
 
 export type Machine = {

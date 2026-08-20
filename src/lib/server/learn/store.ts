@@ -1,16 +1,3 @@
-// Everything the Learn account keeps lives here, behind one narrow interface.
-//
-// On Cloudflare the rows are in D1, bound as LEARN_DB. D1 was chosen over KV
-// because two of this feature's promises are consistency promises: deleting an
-// account has to be observable on the next request, and a verification page
-// must never serve a credential that was just superseded. KV is eventually
-// consistent and would make both of those "usually true".
-//
-// When the binding is missing the store falls back to process memory so the
-// dev server works with no Cloudflare account. That store is real, but it is
-// not durable: it is emptied every time the server restarts, and the account
-// page says so.
-
 export type Provider = "github" | "local";
 
 export type Account = {
@@ -42,16 +29,7 @@ export type Credential = {
   issuedAt: string;
   expiresAt: string;
   supersededBy: string | null;
-  /**
-   * Where this credential sits in the published status list. Allocated once,
-   * never reused, so a position that has been revoked stays revoked.
-   */
   statusIndex: number;
-  /**
-   * The signed form, when a signing key was configured at the moment it was
-   * issued. Empty means the code is the only proof there is, and every page
-   * that shows the credential says which of the two it is.
-   */
   token: string;
 };
 
@@ -61,8 +39,6 @@ export type Erased = {
   completions: number;
 };
 
-// The slice of D1 this code uses. Typed here rather than pulled in from
-// @cloudflare/workers-types so the project keeps its current dependencies.
 type Statement = {
   bind: (...values: unknown[]) => Statement;
   first: <T>() => Promise<T | null>;
@@ -72,7 +48,6 @@ type Statement = {
 
 export type Database = {
   prepare: (query: string) => Statement;
-  batch: (statements: Statement[]) => Promise<unknown>;
 };
 
 export type Store = {
@@ -100,55 +75,6 @@ export type Store = {
   revokedStatusIndexes: () => Promise<number[]>;
   erase: (account: string) => Promise<Erased>;
 };
-
-const SCHEMA = [
-  `create table if not exists accounts (
-    key text primary key,
-    provider text not null,
-    handle text not null,
-    avatar text not null default '',
-    created_at text not null,
-    seen_at text not null
-  )`,
-  `create table if not exists sessions (
-    token text primary key,
-    account text not null,
-    expires_at text not null
-  )`,
-  `create index if not exists sessions_account on sessions (account)`,
-  `create table if not exists completions (
-    account text not null,
-    lesson text not null,
-    title text not null,
-    course text not null,
-    course_title text not null,
-    course_total integer not null,
-    completed_at text not null,
-    primary key (account, lesson)
-  )`,
-  `create table if not exists credentials (
-    code text primary key,
-    account text not null,
-    provider text not null,
-    handle text not null,
-    exam text not null,
-    title text not null,
-    result text not null,
-    issued_at text not null,
-    expires_at text not null,
-    superseded_by text,
-    status_index integer not null default 0,
-    token text not null default ''
-  )`,
-  `create index if not exists credentials_account on credentials (account)`,
-  `create unique index if not exists credentials_status on credentials (status_index)`,
-  // One row per counter. A status list position may never be handed out
-  // twice: reusing one would un-revoke a credential somebody else is holding.
-  `create table if not exists counters (
-    name text primary key,
-    value integer not null
-  )`,
-];
 
 type AccountRow = {
   key: string;
@@ -226,22 +152,11 @@ function toCredential(row: CredentialRow): Credential {
   };
 }
 
-// The tables are created on demand, once per isolate, so a fresh D1 database
-// needs no migration step before the first request works.
-const prepared = new WeakSet<Database>();
-
-async function ready(db: Database) {
-  if (prepared.has(db)) return;
-  await db.batch(SCHEMA.map((statement) => db.prepare(statement)));
-  prepared.add(db);
-}
-
 function onD1(db: Database): Store {
   return {
     durable: true,
 
     async saveAccount(account) {
-      await ready(db);
       await db
         .prepare(
           `insert into accounts (key, provider, handle, avatar, created_at, seen_at)
@@ -261,7 +176,6 @@ function onD1(db: Database): Store {
     },
 
     async readAccount(key) {
-      await ready(db);
       const row = await db
         .prepare(`select * from accounts where key = ?`)
         .bind(key)
@@ -270,7 +184,6 @@ function onD1(db: Database): Store {
     },
 
     async openSession(token, account, expiresAt) {
-      await ready(db);
       await db
         .prepare(
           `insert into sessions (token, account, expires_at) values (?, ?, ?)`,
@@ -280,7 +193,6 @@ function onD1(db: Database): Store {
     },
 
     async readSession(token) {
-      await ready(db);
       const row = await db
         .prepare(`select account, expires_at from sessions where token = ?`)
         .bind(token)
@@ -289,7 +201,6 @@ function onD1(db: Database): Store {
     },
 
     async closeSession(token) {
-      await ready(db);
       await db
         .prepare(`delete from sessions where token = ?`)
         .bind(token)
@@ -297,7 +208,6 @@ function onD1(db: Database): Store {
     },
 
     async recordCompletion(account, entry) {
-      await ready(db);
       await db
         .prepare(
           `insert into completions
@@ -320,7 +230,6 @@ function onD1(db: Database): Store {
     },
 
     async readCompletions(account) {
-      await ready(db);
       const rows = await db
         .prepare(
           `select * from completions where account = ? order by completed_at`,
@@ -331,7 +240,6 @@ function onD1(db: Database): Store {
     },
 
     async writeCredential(entry) {
-      await ready(db);
       await db
         .prepare(
           `insert into credentials
@@ -356,7 +264,6 @@ function onD1(db: Database): Store {
     },
 
     async nextStatusIndex() {
-      await ready(db);
       // One statement, so two credentials issued at the same moment cannot be
       // given the same position.
       const row = await db
@@ -370,7 +277,6 @@ function onD1(db: Database): Store {
     },
 
     async revokedStatusIndexes() {
-      await ready(db);
       const rows = await db
         .prepare(
           `select status_index from credentials where superseded_by is not null`,
@@ -381,7 +287,6 @@ function onD1(db: Database): Store {
 
     // The only write a credential row ever takes after it is inserted.
     async supersede(code, by) {
-      await ready(db);
       await db
         .prepare(
           `update credentials set superseded_by = ? where code = ? and superseded_by is null`,
@@ -391,7 +296,6 @@ function onD1(db: Database): Store {
     },
 
     async readCredential(code) {
-      await ready(db);
       const row = await db
         .prepare(`select * from credentials where code = ?`)
         .bind(code)
@@ -400,7 +304,6 @@ function onD1(db: Database): Store {
     },
 
     async readCredentials(account) {
-      await ready(db);
       const rows = await db
         .prepare(
           `select * from credentials where account = ? order by issued_at desc`,
@@ -411,7 +314,6 @@ function onD1(db: Database): Store {
     },
 
     async erase(account) {
-      await ready(db);
       const sessions = await db
         .prepare(`delete from sessions where account = ?`)
         .bind(account)

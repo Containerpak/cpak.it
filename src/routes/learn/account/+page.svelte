@@ -22,8 +22,6 @@
 
   let { data, form }: { data: PageData; form: ActionData } = $props();
 
-  // Progress kept in this browser. It is what the signed-out page has to show,
-  // and it is also what gets carried up the first time someone signs in.
   let local = $state<Done[] | null>(null);
   let carrying = $state(false);
 
@@ -43,8 +41,6 @@
   let confirming = $state(false);
   let working = $state("");
 
-  // The button that opens the confirmation is removed when it opens, so
-  // without this a keyboard is left at the top of the document.
   let confirmButton = $state<HTMLButtonElement | null>(null);
 
   async function askFirst() {
@@ -57,8 +53,6 @@
     local = readLocal();
   });
 
-  // Signing in lands back here rather than on a new page, so this cannot hang
-  // off onMount: the component is already mounted when the session appears.
   let carried = false;
 
   $effect(() => {
@@ -89,7 +83,6 @@
   <title>Your account - cpak Learn</title>
 </svelte:head>
 
-<!-- Who you are here, and the one control that changes it. -->
 <section class="border-b border-slate-200 bg-white">
   <div class="mx-auto max-w-4xl px-6 py-12 sm:py-14">
     <a
@@ -106,7 +99,7 @@
           Your account
         </h1>
         <p class="mt-3 max-w-2xl text-lg leading-8 text-gray-600">
-          What you have worked through, and what you hold.
+          Course progress and credentials.
         </p>
       </div>
 
@@ -159,7 +152,7 @@
     </div>
     {#if carrying}
       <p class="mt-6 text-sm text-gray-600" role="status">
-        Carrying up what this browser had marked done.
+        Saving progress from this browser...
       </p>
     {/if}
   </div>
@@ -187,25 +180,21 @@
       </p>
       {#if erased.credentials > 0}
         <p class="mt-3 text-sm leading-6 text-gray-600">
-          What could not be deleted: {erased.credentials}
+          {erased.credentials}
           {erased.credentials === 1 ? "credential" : "credentials"}. Each one is
-          a public record at its own address and someone may be holding the
-          link, so it stays. Sign in with the same account and it will be listed
-          here again.
+          a public record and remains available at its verification URL. Sign in
+          with the same account to list it here again.
         </p>
       {/if}
       {#if !erased.durable}
         <p class="mt-3 text-sm leading-6 text-gray-600">
-          This server keeps accounts in memory, so nothing was written to a
-          database in the first place.
+          This development server stores accounts in memory.
         </p>
       {/if}
     </div>
   </div>
 {/if}
 
-<!-- A condition of the whole deployment, so it is a strip across the page and
-     not a note on one card. -->
 {#if !data.durable}
   <div class="border-b border-yellow-200 bg-yellow-100">
     <div class="mx-auto max-w-4xl px-6 py-4">
@@ -219,18 +208,14 @@
 {/if}
 
 {#if !data.account}
-  <!-- Signed out. What this browser has is the content and comes first; the
-       sign-in is how you keep it and comes after. -->
   <section aria-labelledby="here" class="border-b border-slate-200">
     <div class="mx-auto max-w-4xl px-6 py-12">
       <h2 id="here" class="text-2xl font-semibold text-gray-900">
         What this browser remembers
       </h2>
       <p class="mt-3 max-w-2xl leading-7 text-gray-600">
-        Marking a lesson done works signed out. It is written here, in this
-        browser, and it goes no further: another machine knows nothing about it,
-        and clearing site data ends it. Signing in carries it up once, and after
-        that the account is what a second machine reads.
+        Lessons marked complete are saved in this browser. Sign in to sync them
+        across machines.
       </p>
 
       {#if local === null}
@@ -245,8 +230,7 @@
         <p
           class="mt-6 rounded-2xl border border-slate-200 bg-white p-6 text-sm leading-6 text-gray-600"
         >
-          Nothing yet. Open a lesson or a playground and mark it done, and it
-          will be listed here.
+          Nothing yet. Complete a lesson to see it here.
         </p>
       {:else}
         {@render completedList(courses)}
@@ -260,16 +244,13 @@
         Signing in
       </h2>
       <p class="mt-3 max-w-2xl leading-7 text-gray-600">
-        Nothing here is needed to read a lesson or open a playground. An account
-        exists so a credential has an account to name.
+        Lessons and playgrounds work without an account. Sign in to sync progress
+        and sit an exam that issues a credential.
       </p>
 
       {#if data.github}
         <p class="mt-4 max-w-2xl text-sm leading-6 text-gray-600">
-          GitHub is what cpak asks for: the people who take these exams already
-          have a handle there, and it is a name a reader can look up. It proves
-          the handle and nothing else, which is exactly as much as a credential
-          from here claims.
+          GitHub provides the public handle recorded on a credential.
         </p>
         <a
           href="/learn/account/auth/github"
@@ -280,8 +261,8 @@
           Continue with GitHub
         </a>
         <p class="mt-3 text-xs leading-5 text-gray-500">
-          cpak asks GitHub for your handle, your numeric id and your avatar.
-          Nothing else, and it can write nothing.
+          cpak reads your handle, numeric id and avatar. It cannot modify your
+          GitHub account.
         </p>
       {:else if data.local}
         <form
@@ -293,12 +274,8 @@
           <p
             class="rounded-xl border border-yellow-200 bg-yellow-100 p-4 text-sm leading-6 text-yellow-800"
           >
-            This is a development sign-in, and it checks nothing. It stands in
-            for GitHub while this copy of the site is running on somebody's own
-            machine: type any handle and you get a real account under it.
-            Anything issued to that account is labelled with where it came from,
-            everywhere it appears. On cpak.it you sign in with GitHub and this
-            form is not there.
+            Local sign-in is available only during development and does not
+            verify the handle. Credentials issued here are marked as local.
           </p>
           <label
             for="handle"
@@ -329,9 +306,8 @@
         <p
           class="mt-6 max-w-2xl rounded-xl border border-slate-200 bg-slate-50 p-4 text-sm leading-6 text-gray-600"
         >
-          Sign-in is not configured on this deployment yet, so there is no way
-          to open an account here at the moment. Everything else in cpak Learn
-          works without one.
+          Sign-in is not configured on this deployment. Courses and playgrounds
+          remain available.
         </p>
       {/if}
     </div>
@@ -343,9 +319,7 @@
         What you have worked through
       </h2>
       <p class="mt-3 max-w-2xl leading-7 text-gray-600">
-        Lessons you marked done. They are recorded against the account, so they
-        follow you to another machine. The account does not watch you read; a
-        lesson is here because you said it was.
+        Lessons you marked complete, synced with this account.
       </p>
       {#if courses.length === 0}
         <p
@@ -362,16 +336,10 @@
         {@render completedList(courses)}
       {/if}
 
-      <!-- Badges are read off the same completions, so they belong under them
-           rather than beside them. -->
       <h3 class="mt-10 text-lg font-semibold text-gray-900">Badges</h3>
       <p class="mt-2 max-w-2xl text-sm leading-6 text-gray-600">
-        One per course you finish. A badge is a note to yourself and is worth
-        exactly that: it is here because you marked every lesson in the course
-        done, and nothing checked that you read them. It has an image and it
-        stays here, with no public page and no address to send anyone, because
-        there is nothing for it to attest. A credential is the part that
-        attests something.
+        Finishing every lesson earns a private course badge. Public credentials
+        come from the role exams below.
       </p>
 
       {#if badges.length === 0}
@@ -383,13 +351,7 @@
           <ul class="mt-4 grid gap-4 sm:grid-cols-2">
             {#each earned as badge (badge.course)}
               <li class="rounded-2xl border border-slate-200 bg-white p-5">
-                <!-- The badge itself, drawn from the real mark by
-                     scripts/make-badges.py. Two files, the way the logo in the
-                     header is two files, so it reads on either ground. -->
                 <div class="flex items-center gap-4">
-                  <!-- Drawn by scripts/make-badges.py from the real mark. It
-                       carries its own ground, so there is one file and not a
-                       pair. -->
                   <img
                     src="/learn/badges/{badge.course}.png"
                     alt="Badge: cpak {badge.title}"
@@ -424,17 +386,14 @@
     </div>
   </section>
 
-  <!-- The only thing on this page anybody else can read, so it gets a room of
-       its own. -->
   <section aria-labelledby="hold" class="border-b border-slate-200 bg-white">
     <div class="mx-auto max-w-4xl px-6 py-12">
       <h2 id="hold" class="text-2xl font-semibold text-gray-900">
         What you hold
       </h2>
       <p class="mt-3 max-w-2xl leading-7 text-gray-600">
-        A credential records an exam result under this account. Each one has a
-        page anyone can read without signing in, and the account named is the
-        only part of it that was authenticated.
+        Credentials record an exam result under this account and have a public
+        verification page.
       </p>
 
       {#if data.credentials.length === 0}
@@ -477,10 +436,10 @@
       {/if}
 
       <p class="mt-6 text-sm leading-6 text-gray-600">
-        A credential comes from an exam. <a
-          href="/learn/exams"
-          class="font-medium text-[#4670EC] hover:underline">The exams</a
-        > are open book and you can sit one as many times as you like.
+        <a
+          href="/learn#credentials"
+          class="font-medium text-[#4670EC] hover:underline">View the available exams</a
+        >. They are open book and can be repeated.
       </p>
     </div>
   </section>
@@ -510,8 +469,8 @@
           </li>
         </ul>
         <p class="mt-4 text-sm leading-6 text-gray-600">
-          Nothing here is shared with anyone, and the pages you read are not
-          recorded.
+          Course progress and sessions are private. Credentials are public at
+          their verification URL. The pages you read are not recorded.
         </p>
       </div>
 

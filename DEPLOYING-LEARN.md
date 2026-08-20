@@ -1,93 +1,71 @@
 # Deploying Learn
 
-Learn works with none of this configured: the site builds, every lesson reads,
-every playground runs, and the account keeps its rows in the memory of one
-isolate. That is right for `npm run dev` and wrong for anything else, so each
-step below turns one part of it real. Each one is independent, and the pages
-say which of the two they are running on.
+Learn needs a D1 database for accounts, progress and credentials. GitHub OAuth
+provides sign-in, while an Ed25519 key enables signed credentials. Lessons and
+browser workspaces remain available when these services are not configured.
 
-## 1. The database
+## Database
+
+Create the database, add its identifier to `wrangler.toml`, then apply the
+migrations:
 
 ```sh
-wrangler d1 create cpak-learn                      # prints a database id
-# paste it into wrangler.toml, then
+wrangler d1 create cpak-learn
 wrangler d1 migrations apply cpak-learn --remote
 ```
 
-`wrangler.toml` already carries the binding with an empty `database_id`. It is
-empty rather than absent on purpose: a missing binding fails nowhere and quietly
-puts every account in the memory of one isolate, while an empty id stops
-wrangler before it starts.
+The `LEARN_DB` binding must exist in production. Without it, the development
+server uses an in-memory store that is cleared when the process stops.
 
-It stops it with a poor message, and this is the one to recognise:
+## GitHub sign-in
 
+Create a GitHub OAuth application with this callback URL:
+
+```text
+https://cpak.it/learn/account/auth/github/callback
 ```
-✘ [ERROR] The expression evaluated to a falsy value:
-    (databaseId)
-```
 
-That is the id above, still empty. Paste the one `wrangler d1 create` printed.
-
-Without it: accounts, progress and credentials live in one isolate's memory and
-are gone on the next cold start. The account page says so in those words.
-
-## 2. Signing in
+Store its credentials as Worker secrets:
 
 ```sh
 wrangler secret put GITHUB_CLIENT_ID
 wrangler secret put GITHUB_CLIENT_SECRET
 ```
 
-From a GitHub OAuth app whose callback is
-`https://cpak.it/learn/account/auth/github/callback`.
+Local sign-in is offered only by the development server when GitHub OAuth is
+not configured.
 
-Without them: GitHub sign-in is not offered. A local sign-in stands in, and
-only while the dev server is running, so a deployment with no provider has no
-way in rather than a weak one.
+## Credential signing
 
-## 3. Signed credentials
+Generate an Ed25519 key pair:
 
 ```sh
 openssl genpkey -algorithm ed25519 -out learn-signing.pem
 openssl pkcs8 -topk8 -nocrypt -in learn-signing.pem -outform DER | base64 -w0
-#   put that in: wrangler secret put LEARN_SIGNING_KEY
 openssl pkey -in learn-signing.pem -pubout -outform DER | tail -c 32 | base64 -w0
-#   put that in: wrangler secret put LEARN_SIGNING_PUBLIC
+```
+
+Store the first output in `LEARN_SIGNING_KEY` and the second in
+`LEARN_SIGNING_PUBLIC`:
+
+```sh
+wrangler secret put LEARN_SIGNING_KEY
+wrangler secret put LEARN_SIGNING_PUBLIC
 rm learn-signing.pem
 ```
 
-The public half is given separately because the private key is imported
-non-extractable, and a signing key that can be exported is a signing key that
-can leave.
+Signed credentials use these endpoints:
 
-Without them: credentials are issued with a code and no signature. They still
-verify at `/verify`, which is how most people check one. What is missing is the
-offline check.
+- `/.well-known/jwks.json` publishes the verification key.
+- `/verify/status-list` publishes the credential revocation list.
+- `/verify/<code>/token` returns the signed token for one credential.
 
-With them, two endpoints start answering:
+Keep the old public key available until every credential signed by it has
+expired when rotating the key.
 
-- `/.well-known/jwks.json`, the public key, named by its RFC 8037 thumbprint.
-  Serves `{"keys": []}` when nothing is configured, which is the honest answer
-  in the shape a verifier already understands.
-- `/verify/status-list`, a W3C Bitstring Status List saying which credentials
-  no longer stand. Fetching the whole list is how somebody checks one
-  credential without telling cpak.it which one they are asking about.
-
-Rotating the key: put the new one in, and leave the old public key in the key
-set until the last credential signed with it has expired. Every token names the
-key that signed it, so both check.
-
-## 4. Deploy
+## Deploy
 
 ```sh
-npm run build && wrangler pages deploy
+pnpm build
+wrangler pages deploy
 ```
-
-## What is checked where
-
-| Thing | Endpoint | With nothing configured |
-| --- | --- | --- |
-| A credential by its code | `/verify/CODE` | works |
-| The signing keys | `/.well-known/jwks.json` | `{"keys":[]}` |
-| Whether a credential still stands | `/verify/status-list` | an empty list |
-| Accounts and progress | `/learn/account` | kept in memory, says so |

@@ -1,9 +1,3 @@
-// What a mounted path actually reaches.
-//
-// The paths themselves come from the module: this file only says, in plain
-// words, what is on the other end of each one. A permission is worth reading
-// as the thing it opens, not as the flag that opens it.
-
 type Note = { match: RegExp; reach: string };
 
 const MOUNTS: Note[] = [
@@ -165,14 +159,6 @@ const QUIET: Record<string, string> = {
   asRoot: "No path is bound. The process runs as uid 0 inside the container.",
 };
 
-/**
- * The five that decide whether there is a sandbox at all.
- *
- * The other twenty-four open one thing each, and a package holding several of
- * them is still a package inside a container. These five are different: each
- * one is a way out, and a manifest carrying one of them should be read
- * differently from a manifest carrying ten of the others.
- */
 export const DECIDING: Record<string, string> = {
   socketSessionBus:
     "One name along the bus is org.freedesktop.systemd1, which starts a process for you outside the sandbox.",
@@ -186,7 +172,6 @@ export const DECIDING: Record<string, string> = {
     "uid 0 inside the container, so nothing the image itself sets up stands in the way of the package.",
 };
 
-/** What is on the other end of a mounted path. */
 export function reachOf(path: string): string {
   for (const note of MOUNTS) {
     if (note.match.test(path)) return note.reach;
@@ -194,7 +179,6 @@ export function reachOf(path: string): string {
   return "This host path is bound into the container as it is on the host.";
 }
 
-/** What a broker shim does, given that it mounts nothing. */
 export function reachOfShim(name: string): string {
   return (
     SHIMS[name] ??
@@ -202,7 +186,6 @@ export function reachOfShim(name: string): string {
   );
 }
 
-/** What a permission that binds no path and adds no command still changes. */
 export function reachOfQuiet(key: string): string {
   return (
     QUIET[key] ?? "No host path is bound for this permission on this fixture."

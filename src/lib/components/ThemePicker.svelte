@@ -52,7 +52,7 @@
 
 <details bind:this={menu} class="theme-picker relative">
   <summary
-    class="flex h-10 w-10 cursor-pointer list-none items-center justify-center rounded-full text-gray-700 transition hover:bg-white hover:shadow-sm"
+    class="theme-trigger flex h-10 w-10 cursor-pointer list-none items-center justify-center rounded-full transition hover:shadow-sm"
     aria-label={`Theme: ${current.label}`}
     title={`Theme: ${current.label}`}
   >
@@ -60,17 +60,15 @@
   </summary>
 
   <div
-    class="absolute top-12 right-0 z-50 w-44 overflow-hidden rounded-2xl border border-slate-200 bg-white p-1.5 shadow-xl"
+    class="theme-popover absolute top-12 right-0 z-50 w-44 overflow-hidden rounded-2xl border border-slate-200 bg-white p-1.5 shadow-xl"
   >
     {#each options as option}
       <button
         type="button"
         on:click={() => select(option.value)}
-        class={`flex w-full items-center gap-3 rounded-xl px-3 py-2 text-left text-sm transition hover:bg-slate-100 ${
-          preference === option.value
-            ? "font-semibold text-[#3568d1]"
-            : "text-gray-700"
-        }`}
+        aria-current={preference === option.value ? "true" : undefined}
+        class:theme-option-selected={preference === option.value}
+        class="theme-option flex w-full items-center gap-3 rounded-xl px-3 py-2 text-left text-sm transition"
       >
         <span class="material-symbols-outlined text-[20px]">{option.icon}</span>
         <span class="flex-1">{option.label}</span>
@@ -81,3 +79,32 @@
     {/each}
   </div>
 </details>
+
+<style>
+  .theme-trigger,
+  .theme-option {
+    color: #374151;
+  }
+
+  .theme-option:hover {
+    background: #f1f5f9;
+  }
+
+  .theme-option-selected {
+    color: #3568d1;
+    font-weight: 600;
+  }
+
+  :global(html[data-theme="dark"]) .theme-trigger,
+  :global(html[data-theme="dark"]) .theme-option {
+    color: #e2e8f0;
+  }
+
+  :global(html[data-theme="dark"]) .theme-option:hover {
+    background: #1e293b;
+  }
+
+  :global(html[data-theme="dark"]) .theme-option-selected {
+    color: #8aa8ff;
+  }
+</style>

@@ -1,15 +1,9 @@
-// Sessions for the Learn account. A session is a random token in a cookie and
-// a row in the store; the row holds the SHA-256 of the token rather than the
-// token itself, so a copy of the database is not a set of live logins.
-
 import type { Cookies, RequestEvent } from "@sveltejs/kit";
 import { dev } from "$app/environment";
 import { openStore, type Account, type Store } from "./store";
 
 export const COOKIE = "cpak_learn_session";
 
-// Long enough that a packager is not signed out between two evenings of work,
-// short enough that an abandoned laptop stops being an account.
 const LIFETIME_DAYS = 30;
 
 function random(bytes: number) {
@@ -50,8 +44,6 @@ export async function startSession(
   });
 }
 
-// Ends the session on the server first, then drops the cookie. Presenting the
-// old token again finds nothing.
 export async function endSession(store: Store, cookies: Cookies) {
   const token = cookies.get(COOKIE);
   if (token) await store.closeSession(await fingerprint(token));
@@ -80,7 +72,6 @@ export async function whoIsHere(event: Here): Promise<Signed> {
 
   const account = await store.readAccount(session.account);
   if (!account) {
-    // The account was deleted while this cookie was still in a browser.
     await store.closeSession(held);
     event.cookies.delete(COOKIE, { path: "/" });
     return { store, account: null };

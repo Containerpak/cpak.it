@@ -1,11 +1,3 @@
-// The first course. It assumes nothing: somebody arriving here may never have
-// heard of cpak, and the first two lessons are written for them.
-//
-// The last two are the ones that were already written, moved in behind the
-// orientation they were missing. They teach by pointing at a playground, which
-// is why they sit after the lessons that explain what a manifest and a
-// permission are.
-
 import type { Course } from "$lib/learn/course";
 
 export const COURSE: Course = {

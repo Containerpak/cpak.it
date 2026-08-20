@@ -1,12 +1,5 @@
 import type { Question } from "$lib/components/learn/Quiz.svelte";
 
-// Six questions, one per thing the course exists to correct, and one that
-// cannot be answered without using the playground.
-//
-// Every wrong answer is something people actually believe about cpak before
-// they have read this, which is what makes answering worth anything: a wrong
-// answer nobody would pick teaches nobody. The explanations name where the
-// answer came from, so a reader who got it wrong knows which lesson to reopen.
 export const QUESTIONS: Question[] = [
   {
     asks: "You install a program the ordinary way, and it turns out to be malicious. What can it read?",
@@ -63,9 +56,7 @@ export const QUESTIONS: Question[] = [
     ],
   },
   {
-    // The one question that cannot be answered by recognising a sentence. The
-    // playground is beside it for exactly this.
-    asks: "Press \u201cA window and nothing else\u201d in the permissions playground. How many host paths does that one permission bind?",
+    asks: 'Keep only "socketWayland": true in the permissions playground. How many host paths does that one permission bind?',
     choices: [
       {
         text: "One, the socket the window is drawn through",
@@ -78,12 +69,12 @@ export const QUESTIONS: Question[] = [
       },
       {
         text: "Six, once the display is counted",
-        why: "Six is what socketX11 binds. Tick that one instead and compare the two lists.",
+        why: "Six is what socketX11 binds. Replace the key and compare the two answers.",
       },
     ],
   },
   {
-    asks: "An administrator's ceiling contains \"deviceDri\": true. What does that give a package?",
+    asks: 'An administrator\'s ceiling contains "deviceDri": true. What does that give a package?',
     choices: [
       {
         text: "The graphics device, on every installation on that host",

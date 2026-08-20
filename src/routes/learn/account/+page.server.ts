@@ -82,8 +82,6 @@ export const actions: Actions = {
     redirect(303, "/learn/account");
   },
 
-  // Everything the account holds, except the credentials, which are public
-  // records at their own addresses and are not the account's to unwrite.
   erase: async (event) => {
     const { store, account } = await whoIsHere(event);
     if (!account)
@@ -103,7 +101,4 @@ export const actions: Actions = {
       },
     };
   },
-
-  // Development only. The exam pages are not built yet, and without a real
-  // credential row there is no way to look at the pages that show one.
 };

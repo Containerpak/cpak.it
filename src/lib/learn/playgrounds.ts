@@ -1,16 +1,3 @@
-// The boards, named once.
-//
-// A board is one component. It stands on its own under /learn/play, where it is
-// a tool somebody reaches for, and it sits in the right column of a lesson,
-// where it is the thing the lesson is about. Neither placement owns it, so the
-// words that introduce it live here and both read them from the same place.
-//
-// The components themselves are not listed here on purpose. A page that names
-// one imports that one, so a lesson about permissions does not carry the code
-// of four boards it never shows, and a page that is only text carries none of
-// it and never fetches the decision module.
-
-/** How the decision module is doing, as the board inside a frame reports it. */
 export type PlaygroundStatus = {
   phase: "loading" | "ready" | "failed";
   version: string;
@@ -27,13 +14,9 @@ export type PlaygroundId =
 
 export type PlaygroundMeta = {
   id: PlaygroundId;
-  /** What it is called wherever it appears. */
   title: string;
-  /** One sentence. Not a paragraph, and never two. */
   sentence: string;
-  /** Its own address, for a lesson that wants to send somebody to the tool. */
   href: string;
-  /** The documentation the board is a demonstration of. */
   reference: { href: string; label: string };
 };
 
@@ -42,7 +25,7 @@ export const PLAYGROUNDS: Record<PlaygroundId, PlaygroundMeta> = {
     id: "permissions",
     title: "Permissions",
     sentence:
-      "Tick a permission and read the exact host paths cpak binds into the container, and what each one reaches.",
+      "Edit a cpak.json and inspect the exact host paths and broker operations each permission opens.",
     href: "/learn/play/permissions",
     reference: { href: "/docs/permissions", label: "Permissions" },
   },
@@ -50,7 +33,7 @@ export const PLAYGROUNDS: Record<PlaygroundId, PlaygroundMeta> = {
     id: "filesystem",
     title: "Filesystem access",
     sentence:
-      "Write the filesystem list a manifest would carry and read where every entry lands: the directory it comes from on the host, and the path the application finds it at.",
+      "Resolve filesystem grants against a host and inspect every source and sandbox path.",
     href: "/learn/play/filesystem",
     reference: { href: "/docs/file-access", label: "File access" },
   },
@@ -58,7 +41,7 @@ export const PLAYGROUNDS: Record<PlaygroundId, PlaygroundMeta> = {
     id: "ceiling",
     title: "Ceiling",
     sentence:
-      "Three parties decide what an application may do: the manifest asks, the owner of the installation may replace that request, and the administrator's ceiling narrows what survived. Change any of them and read what runs.",
+      "Compare the manifest, user override and administrator ceiling to inspect the policy that reaches the application.",
     href: "/learn/play/ceiling",
     reference: {
       href: "/docs/managed-deployment",
@@ -69,7 +52,7 @@ export const PLAYGROUNDS: Record<PlaygroundId, PlaygroundMeta> = {
     id: "migration",
     title: "Manifest migration",
     sentence:
-      "A version 1 manifest reached the host through flags and named the commands it could run; version 2 has neither. Paste one and read the manifest cpak writes for it, field by field.",
+      "Convert a version 1 manifest and inspect the complete version 2 output and every rewritten field.",
     href: "/learn/play/migration",
     reference: { href: "/docs/manifest", label: "The manifest reference" },
   },
@@ -77,7 +60,7 @@ export const PLAYGROUNDS: Record<PlaygroundId, PlaygroundMeta> = {
     id: "desktop-entry",
     title: "Desktop entries",
     sentence:
-      "Paste the .desktop file your image ships and read the two files cpak exports for it, line by line.",
+      "Edit a desktop entry and inspect the exported launcher and compatibility alias cpak writes.",
     href: "/learn/play/desktop-entry",
     reference: {
       href: "/docs/system-integration",
@@ -86,7 +69,6 @@ export const PLAYGROUNDS: Record<PlaygroundId, PlaygroundMeta> = {
   },
 };
 
-/** The state a board starts in, before it has said anything. */
 export function waiting(): PlaygroundStatus {
   return { phase: "loading", version: "", error: "", retry: () => {} };
 }

@@ -28,22 +28,22 @@
   {/snippet}
 
   <p>
-    Press <em>Nothing at all</em> in the playground. Every path disappears and twenty-nine
-    permissions are listed underneath, none of them granted. That is where a package
-    starts: no directory, no socket, no device, no route off the machine.
+    Open <code>cpak.json</code> in the playground and replace the whole
+    <code>override</code> object with an empty one. Every path disappears. That is where a
+    package starts: no directory, no socket, no device, no route off the machine.
   </p>
 
   <p>
-    Press <em>A window and nothing else</em>. One permission comes back,
-    <code>socketWayland</code>, and two paths with it: the compositor socket and
-    the lock beside it. Read the line under the first. That socket is the
-    window, and without it the application draws nowhere.
+    Add <code>"socketWayland": true</code>. Two paths appear: the compositor socket
+    and the lock beside it. The socket is the window, and without it the application
+    draws nowhere. Run <code>cpak validate</code> in the terminal below the file to
+    check the manifest through the same core used by the page.
   </p>
 
   <h2>Read a permission as the paths it opens</h2>
 
   <p>
-    Tick <code>socketX11</code> as well. Two paths become eight. Four of the new
+    Add <code>"socketX11": true</code> as well. Two paths become eight. Four of the new
     ones are X11's own socket directories, the fifth is the authority file a client
     needs to connect, and the sixth is there only because both permissions are on
     at once: the cookie Xwayland writes.
@@ -64,7 +64,8 @@
 
   <p>
     Most permissions open one socket or one directory. Eight open more than the
-    thing they name, and the playground keeps them at the top of the list.
+    thing they name. The reference under the workspace gives you every key accepted
+    by this build, while the answer beside the manifest shows what each change opens.
   </p>
 
   <p>

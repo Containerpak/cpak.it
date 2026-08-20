@@ -15,7 +15,7 @@
 		<div class="mx-auto max-w-4xl px-6 py-20">
 			<p class="text-sm font-semibold tracking-[0.16em] text-[#4670EC] uppercase">Legal</p>
 			<h1 class="mt-4 text-5xl font-extrabold tracking-tight text-gray-950">Terms of use</h1>
-			<p class="mt-5 text-lg text-gray-600">Effective August 11, 2026.</p>
+			<p class="mt-5 text-lg text-gray-600">Effective August 20, 2026.</p>
 		</div>
 	</section>
 
@@ -37,6 +37,15 @@
 				Store entries, package recipes, and linked applications remain governed by the licenses shown in
 				their respective repositories or distributions. A Store listing does not transfer ownership of an
 				application or replace its license.
+			</p>
+		</section>
+
+		<section>
+			<h2 class="text-3xl font-bold tracking-tight text-gray-950">Learn accounts and credentials</h2>
+			<p class="mt-4">
+				Learn exams are open book and completed without supervision. A credential records the GitHub
+				account, exam, result and issue date. It does not verify who was at the keyboard. Credentials expire
+				and a later result for the same exam supersedes the earlier one.
 			</p>
 		</section>
 

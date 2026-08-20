@@ -1,32 +1,14 @@
 <script lang="ts">
   import { placements, shuffled } from "$lib/learn/shuffle";
 
-  // A quiz at the end of a course.
-  //
-  // It exists to make somebody answer, not to grade them. Every question is
-  // one a reader who understood the course can answer and a reader who skimmed
-  // it cannot, which is why the wrong answers are the things people actually
-  // believe about cpak rather than nonsense nobody would pick. Answering shows
-  // why, straight away: being told a week later is being told nothing.
-  //
-  // Nothing is recorded anywhere and no credential comes out of it. That is
-  // what separates a quiz from an exam here, and the page says so rather than
-  // leaving somebody to wonder what they have just signed up for.
-
   export type Choice = { text: string; correct?: boolean; why: string };
   export type Question = { asks: string; choices: Choice[] };
 
   let {
     questions,
-    /** The playground a question needs, shown inline where there is no second
-     *  column to put it in. */
     tool = null,
-    /** Which question it belongs under, counting from one. */
     toolAfter = 0,
-    /** How many lessons this course has, so the page can say it rather than
-     *  guess. */
     lessons,
-    /** Whether one of the questions needs the playground beside the text. */
     usesPlayground = false,
   }: {
     questions: Question[];
@@ -36,9 +18,6 @@
     toolAfter?: number;
   } = $props();
 
-  // One slot per question, all unanswered. Read from the prop once, which is
-  // what it is for: a page shows one quiz and never swaps the questions under
-  // the reader.
   // svelte-ignore state_referenced_locally
   let answers = $state<(number | null)[]>(questions.map(() => null));
   let right = $derived(
@@ -50,13 +29,10 @@
   let done = $derived(answered === questions.length);
 
   function answer(question: number, choice: number) {
-    if (answers[question] !== null) return; // one answer per question
+    if (answers[question] !== null) return;
     answers[question] = choice;
   }
 
-  // Where the right answer sits in each question, even across the whole quiz
-  // rather than wherever the author happened to put it. Every question here
-  // had it second before this existed.
   let columns = $derived(
     placements(
       questions.map((q) => q.asks).join("|"),
@@ -65,8 +41,6 @@
     ),
   );
 
-  // Small numbers are written out in prose, the way the heading above writes
-  // them. A digit in the middle of a sentence reads like a form field.
   const WORDS = ["no", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "ten"];
   const word = (n: number) => WORDS[n] ?? String(n);
 
@@ -198,10 +172,6 @@
 </div>
 
 <style>
-  /* An answered choice has to stay readable on both grounds. The light and the
-     dark set are written out rather than left to a single pair of utilities:
-     a dark green word on a dark green card is the same mistake as a pale one
-     on white, and only one of the two is ever visible to whoever wrote it. */
   .choice {
     display: block;
     width: 100%;
@@ -278,9 +248,6 @@
     color: #f87171;
   }
 
-  /* The lesson body styles every ol as prose. These are questions, not a
-     numbered list: the number is inside the question, where it can sit next
-     to the words rather than in the margin beside a group of buttons. */
   ol.quiz-questions {
     margin: 0;
     padding: 0;

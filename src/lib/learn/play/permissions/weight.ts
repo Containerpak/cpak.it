@@ -1,28 +1,6 @@
-// What a permission weighs, worked out from what the module answers rather
-// than from a list of the dangerous ones kept beside it.
-//
-// cpak has no ranking of permissions and this board must not invent one. What
-// cpak does answer is "what does this permission bind, on its own, on this
-// host", and that answer already separates the rows that open one named thing
-// from the rows that do not:
-//
-//   - a permission whose path the paths of other permissions sit inside opens
-//     all of them at once, and the ones underneath it stop mattering;
-//   - a permission that binds a message bus opens whatever is listening on
-//     that bus, which is settled on the host rather than in the manifest;
-//   - a permission that binds no path and adds no command changes what the
-//     container is, which is the one thing a list of mounts cannot show.
-//
-// Everything else opens exactly what it names, and the board says so.
-
 import type { Policy } from "$lib/learn/policy";
 import { reachOfQuiet } from "./reach";
 
-/**
- * The two sockets that are message buses. Reaching one is not reaching a
- * service: it is reaching the place where services are found, and which ones
- * answer is a fact about the host rather than about the package.
- */
 const BUSES = [/^\/run\/user\/\d+\/bus$/, /^\/run\/dbus\/system_bus_socket$/];
 
 export type Kind =
@@ -36,17 +14,13 @@ export type Kind =
 export type Weighed = {
   key: string;
   kind: Kind;
-  /** True for the kinds that open more than the thing the key names. */
   wide: boolean;
   mounts: string[];
   shims: string[];
-  /** Permissions whose every path is inside a path this one binds. */
   swallows: string[];
-  /** Permissions binding exactly the same paths: one door under two names. */
   twins: string[];
 };
 
-/** Everything a board needs to know about one permission, in one answer each. */
 export function weigh(alone: Map<string, Policy>): Map<string, Weighed> {
   const weighed = new Map<string, Weighed>();
   for (const [key, own] of alone) {
@@ -85,7 +59,6 @@ function kindOf(mounts: string[], shims: string[], swallows: string[]): Kind {
   return "node";
 }
 
-/** Why this permission is wider than its name, in the terms it was measured in. */
 export function noteOf(weighed: Weighed): string {
   switch (weighed.kind) {
     case "tree": {
@@ -109,7 +82,6 @@ export function noteOf(weighed: Weighed): string {
   }
 }
 
-/** A path bound by both, in the same order or not. */
 function same(paths: string[], mounts: string[]): boolean {
   return (
     paths.length === mounts.length &&
@@ -117,7 +89,6 @@ function same(paths: string[], mounts: string[]): boolean {
   );
 }
 
-/** cpak writes a directory mount with a trailing slash, and binds all of it. */
 function directory(path: string): boolean {
   return path.endsWith("/");
 }

@@ -3,17 +3,7 @@ compatibility_flags = [ "nodejs_compat", "nodejs_als" ]
 compatibility_date = "2026-08-11"
 pages_build_output_dir = ".svelte-kit/cloudflare"
 
-# The Learn account reads and writes this database: who is signed in, what they
-# have read, and the credentials they hold.
-#
-# Create it once with `wrangler d1 create cpak-learn`, paste the id it prints
-# below, and apply the schema with
-# `wrangler d1 migrations apply cpak-learn --remote`.
-#
-# The id is deliberately left empty rather than the binding left commented out.
-# An empty id fails the deploy and names itself; a missing binding does not
-# fail at all, it silently puts every account in the memory of one isolate and
-# loses it on the next request.
+# Set the production database id before deploying Learn.
 [[d1_databases]]
 binding = "LEARN_DB"
 database_name = "cpak-learn"

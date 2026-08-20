@@ -10,7 +10,7 @@
 
 <Seo
   title="Permissions - cpak"
-  description="Tick a cpak permission and see the exact host paths it binds into the sandbox and what each one reaches, decided by cpak's own code running in the page."
+  description="Edit and validate a cpak manifest, then inspect the requested permissions, host paths and broker commands decided by cpak's own code in the page."
   path="/learn/play/permissions"
 />
 

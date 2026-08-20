@@ -15,5 +15,5 @@
 />
 
 <LessonShell course={COURSE} {lesson}>
-  <Quiz questions={QUESTIONS} lessons={3} />
+  <Quiz questions={QUESTIONS} lessons={7} />
 </LessonShell>

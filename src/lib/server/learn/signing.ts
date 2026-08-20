@@ -1,17 +1,3 @@
-// A credential that can be checked without asking cpak.it.
-//
-// The code on a credential is enough to look it up here, and for most people
-// that is the whole story. It is not enough for somebody who wants to check a
-// credential offline, keep a copy of the proof, or satisfy themselves that
-// cpak.it did not simply make the answer up on the day they asked. For them
-// every credential is also issued as a signed token: the same facts, signed
-// with a key whose public half is published, naming a position in a status
-// list that says whether the credential still stands.
-//
-// Without a key configured, credentials are issued unsigned. That is the same
-// rule the sign-in provider follows: the feature that cannot be configured is
-// absent and says so, rather than pretending with something weaker.
-
 import { env } from "$env/dynamic/private";
 
 const ALGORITHM = { name: "Ed25519" } as const;
@@ -35,12 +21,6 @@ function encode(value: unknown) {
   return base64url(new TextEncoder().encode(JSON.stringify(value)));
 }
 
-/**
- * The private key, as a base64 PKCS#8 Ed25519 key in LEARN_SIGNING_KEY.
- *
- * Generated with:
- *   openssl genpkey -algorithm ed25519 | openssl pkcs8 -topk8 -nocrypt -outform DER | base64 -w0
- */
 async function privateKey(): Promise<CryptoKey | null> {
   const held = env.LEARN_SIGNING_KEY ?? "";
   if (!held) return null;
@@ -53,34 +33,40 @@ async function privateKey(): Promise<CryptoKey | null> {
       ["sign"],
     );
   } catch {
-    // A key that will not import is a deployment mistake, not a request that
-    // should fail: credentials go out unsigned and the account page says so.
     return null;
   }
 }
 
-/**
- * The public half, as a base64 raw Ed25519 public key in LEARN_SIGNING_PUBLIC.
- *
- * It is a separate variable rather than derived from the private key because
- * Web Crypto cannot export the public half of a non-extractable private key,
- * and a signing key that can be exported is a signing key that can leave.
- *
- *   openssl pkey -pubout -outform DER | tail -c 32 | base64 -w0
- */
 function publicBytes(): Uint8Array | null {
   const held = env.LEARN_SIGNING_PUBLIC ?? "";
   if (!held) return null;
-  const bytes = fromBase64(held.trim());
-  return bytes.length === 32 ? bytes : null;
+  try {
+    const bytes = fromBase64(held.trim());
+    return bytes.length === 32 ? bytes : null;
+  } catch {
+    return null;
+  }
 }
 
-/** Names which key signed a token, so an old one can still be checked. */
+async function publicKey(): Promise<CryptoKey | null> {
+  const bytes = publicBytes();
+  if (!bytes) return null;
+  try {
+    return await crypto.subtle.importKey(
+      "raw",
+      bytes.buffer as ArrayBuffer,
+      ALGORITHM,
+      false,
+      ["verify"],
+    );
+  } catch {
+    return null;
+  }
+}
+
 export async function keyId(): Promise<string | null> {
   const bytes = publicBytes();
   if (!bytes) return null;
-  // The RFC 8037 thumbprint: the JWK's required members, in lexicographic
-  // order, hashed. Anybody holding the public key derives the same name.
   const thumbprint = JSON.stringify({
     crv: "Ed25519",
     kty: "OKP",
@@ -102,7 +88,6 @@ export type PublicKey = {
   alg: "EdDSA";
 };
 
-/** The key set, empty when this deployment signs nothing. */
 export async function publicKeys(): Promise<PublicKey[]> {
   const bytes = publicBytes();
   const kid = await keyId();
@@ -128,15 +113,11 @@ export type Claims = {
   statusIndex: number;
 };
 
-/**
- * The signed form of one credential, or an empty string when this deployment
- * has no key. The claims are the ones the verification page shows, so a reader
- * comparing the two never finds a difference.
- */
 export async function signCredential(claims: Claims): Promise<string> {
   const key = await privateKey();
+  const verifier = await publicKey();
   const kid = await keyId();
-  if (!key || !kid) return "";
+  if (!key || !verifier || !kid) return "";
 
   const header = { alg: "EdDSA", typ: "JWT", kid };
   const payload = {
@@ -150,27 +131,21 @@ export async function signCredential(claims: Claims): Promise<string> {
   };
 
   const signed = `${encode(header)}.${encode(payload)}`;
-  const signature = await crypto.subtle.sign(
+  const signature = new Uint8Array(await crypto.subtle.sign(
     ALGORITHM,
     key,
     new TextEncoder().encode(signed),
+  ));
+  const valid = await crypto.subtle.verify(
+    ALGORITHM,
+    verifier,
+    signature,
+    new TextEncoder().encode(signed),
   );
-  return `${signed}.${base64url(new Uint8Array(signature))}`;
+  return valid ? `${signed}.${base64url(signature)}` : "";
 }
 
-/**
- * The published status list: one bit per credential ever issued, set when that
- * credential no longer stands.
- *
- * The encoding is the one the W3C Bitstring Status List describes, so a reader
- * already holding a verifier does not need to be told anything about cpak: the
- * bitstring is gzipped and base64url encoded, and bit 0 is the first credential
- * issued. A list nobody has revoked from is all zeroes, which is what a
- * deployment that has issued nothing serves.
- */
 export async function encodedStatusList(revoked: number[]): Promise<string> {
-  // The minimum the specification allows, so the answer does not leak how many
-  // credentials exist: 16kB of bits, and it grows only when it has to.
   const MINIMUM = 16 * 1024;
   const highest = revoked.length > 0 ? Math.max(...revoked) : 0;
   const bytes = new Uint8Array(Math.max(MINIMUM, Math.ceil((highest + 1) / 8)));

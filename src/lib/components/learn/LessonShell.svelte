@@ -1,16 +1,4 @@
 <script lang="ts">
-  // The shell every lesson and every test sits in.
-  //
-  // Three columns. The rail on the left is the course and it never goes away,
-  // not while a lesson is read and not while a test is sat, because somebody
-  // who does not pass has to be able to walk back into the lesson they missed
-  // and come out again without leaving the course. The centre is the text and
-  // it is a text column: one measure, one heading hierarchy, nothing else. The
-  // right is the playground, and only when the lesson names one. A lesson that
-  // names none does not get an empty panel: the centre takes the width.
-  //
-  // A reader who wants none of the furniture collapses the rail, and that
-  // choice is remembered, so it is made once rather than on every lesson.
   import { onMount, type Snippet } from "svelte";
   import CourseRail from "$lib/components/learn/CourseRail.svelte";
   import {
@@ -35,21 +23,11 @@
     children,
   }: {
     course: Course;
-    /** The lesson being read. It has to be one of the course's own. */
     lesson: Lesson;
-    /** The playground, when this lesson has one. Absent is the common case. */
     playground?: Snippet | null;
     playgroundTitle?: string;
-    /** Where the same playground lives on its own, for somebody who wants it alone. */
     playgroundLink?: { href: string; label: string } | null;
-    /** Whether cpak is ready in the browser yet, said once, here. */
     playgroundStatus?: PlaygroundStatus | null;
-    /**
-     * Keep the playground in this column only where there are two columns.
-     * A page that sets this puts it somewhere better on a narrow screen: the
-     * test does, because a tool stacked under six questions is not beside the
-     * one question that needs it.
-     */
     playgroundWideOnly?: boolean;
     children: Snippet;
   } = $props();
@@ -71,9 +49,7 @@
   onMount(() => {
     try {
       railShown = localStorage.getItem(RAIL) !== "collapsed";
-    } catch {
-      // A browser that will not remember it still shows the rail.
-    }
+    } catch {}
     done = completedIn(course);
   });
 
@@ -81,13 +57,9 @@
     railShown = !railShown;
     try {
       localStorage.setItem(RAIL, railShown ? "shown" : "collapsed");
-    } catch {
-      // The choice still holds for this page.
-    }
+    } catch {}
   }
 
-  // Reaching the next lesson is what marks this one read. Nothing here checks
-  // that it was understood, and the account page says so in those words.
   function advance() {
     const key = lessonKey(course, lesson);
     done = new Set([...done, key]);

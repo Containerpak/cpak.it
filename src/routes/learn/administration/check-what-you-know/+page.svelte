@@ -10,10 +10,10 @@
 
 <Seo
   title="Check what you know - administering cpak"
-  description="Four questions on administering cpak: what a ceiling can and cannot do, what happens when two permission names reach the same thing, and where to start with verified launch."
+  description="Eight questions on ceilings, verified launch, signature policy, trust, revocation and retained removal anchors."
   path="/learn/administration/check-what-you-know"
 />
 
 <LessonShell course={COURSE} {lesson}>
-  <Quiz questions={QUESTIONS} lessons={2} />
+  <Quiz questions={QUESTIONS} lessons={4} />
 </LessonShell>

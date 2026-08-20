@@ -1,7 +1,4 @@
 <script lang="ts">
-  // One credential, drawn the same way wherever it is read. The private page
-  // and the public page share this so the two can never describe the same
-  // record in different words.
   import {
     CLAIM,
     IMMUTABLE,

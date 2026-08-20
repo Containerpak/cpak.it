@@ -1,7 +1,3 @@
-// The shapes the decision module answers with, and the small amount of reading
-// a board does on top of them. Nothing here decides anything: every permission
-// question is asked of the module, and these helpers only arrange the answer.
-
 export type Host = {
   uid: number;
   home: string;
@@ -58,10 +54,6 @@ export type Migration = {
 
 export type Typed<T> = { value?: T; error?: string };
 
-/**
- * Reads what somebody typed. A board has to tell text that is not JSON apart
- * from a policy the module refused, because only the second one is about cpak.
- */
 export function parse<T>(text: string): Typed<T> {
   if (text.trim() === "") return {};
   try {
@@ -75,11 +67,6 @@ export function format(value: unknown): string {
   return JSON.stringify(value, null, 2);
 }
 
-/**
- * Names the permissions a policy actually carries: every key that is on, holds
- * a path, or sets a limit. A key written as false carries nothing, which is the
- * same thing a key nobody wrote carries.
- */
 export function granted(policy: Override, catalog: Catalog): string[] {
   const keys: string[] = [];
   for (const permission of catalog.permissions) {
@@ -98,10 +85,6 @@ function carries(value: unknown): boolean {
   return false;
 }
 
-/**
- * The alias families a set of keys sets off. They are read from the module, so
- * a family added to cpak turns up here without this page being edited.
- */
 export function reaching(named: string[], catalog: Catalog): AliasFamily[] {
   return catalog.aliases.filter((family) =>
     family.WhenAnyOf.some((key) => named.includes(key)),
@@ -113,7 +96,6 @@ export function describe(key: string, catalog: Catalog): string {
   return permission ? permission.description : "";
 }
 
-/** The keys written in an object, in the order they were written. */
 export function keysOf(value: unknown): string[] {
   if (!value || typeof value !== "object" || Array.isArray(value)) return [];
   return Object.keys(value as Record<string, unknown>);

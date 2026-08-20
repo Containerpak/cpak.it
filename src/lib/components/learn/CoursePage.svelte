@@ -1,9 +1,4 @@
 <script lang="ts">
-  // The overview of a course: what it is, how far you are, and one way in.
-  //
-  // The curriculum is the page rather than something behind a tab, because what
-  // you will do is a better reason to start than a paragraph about what the
-  // course is. The paragraph is above it and it is short.
   import {
     completedIn,
     lessonKey,
@@ -20,11 +15,8 @@
     exam = null,
   }: {
     course: Course;
-    /** Two sentences at most. What somebody gets out of it. */
     summary: string;
-    /** Who it is for, and what it assumes. */
     audience: string;
-    /** The exam this course leads to, when there is one. */
     exam?: { id: string; title: string } | null;
   } = $props();
 
@@ -36,9 +28,6 @@
   });
 
   let finished = $derived(done.size);
-  // A quiz is a lesson to the arithmetic and not to the reader, who can see the
-  // Quiz mark on it in the list below. Counting it as one more lesson reads as
-  // an error on a page that then shows two.
   let quizzes = $derived(order.filter((entry) => entry.kind === "test").length);
   let reading = $derived(order.length - quizzes);
   let shape = $derived(
@@ -46,16 +35,11 @@
       ? `${reading} ${reading === 1 ? "lesson" : "lessons"}`
       : `${reading} ${reading === 1 ? "lesson" : "lessons"} and ${quizzes === 1 ? "a quiz" : `${quizzes} quizzes`}`,
   );
-  // Where the primary action goes: the first lesson not yet marked through, or
-  // the beginning again once the whole course is done.
   let next = $derived(
     order.find((lesson) => !done.has(lessonKey(course, lesson))) ?? order[0],
   );
   let started = $derived(finished > 0);
   let complete = $derived(order.length > 0 && finished === order.length);
-  // Three states, three words. "Resume" on a course with nothing left to
-  // resume is the button telling somebody they have not finished when they
-  // have.
   let way = $derived(
     complete ? "Read it again" : started ? "Resume" : "Start the course",
   );

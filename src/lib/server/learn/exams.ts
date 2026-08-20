@@ -1,45 +1,20 @@
-/**
- * The exams, and the answers to them.
- *
- * This file is under `server` for one reason: the key never reaches a browser.
- * The quiz ships its answers to the page because its whole job is to tell you
- * straight away why you were wrong. An exam whose answers are in the page
- * source is not an exam, so the client is sent the questions and the choices
- * and nothing else, and the marking happens here.
- *
- * An exam is deliberately not a longer quiz. It is sat once through with no
- * feedback until the end, it needs an account because the credential names a
- * handle, and it decides something: at or above the pass mark a credential is
- * issued, below it nothing is, and either way the page says the score.
- */
-
 import { orderOf, placements, shuffled } from "$lib/learn/shuffle";
 
 export type ExamQuestion = {
   asks: string;
-  /** The choices, in the order they are shown. */
   choices: string[];
-  /** Index of the right one. Never serialised to the client. */
   correct: number;
 };
 
 export type Exam = {
   id: string;
-  /** What the exam is called while you sit it. */
   title: string;
-  /** What the credential says once you hold it. */
   credential: string;
-  /** The course it follows, so a candidate can go back and read. */
   course: { title: string; href: string };
-  /** The share of questions needed, out of one. */
   pass: number;
   questions: ExamQuestion[];
 };
 
-// 0.8 rather than a bare majority. A credential that a coin flip plus a little
-// reading can produce is worth nothing to the person holding it, and this is
-// open book: the questions are answerable by somebody who has the manifest
-// reference open and understands it, which is exactly the bar being claimed.
 const PASS = 0.8;
 
 export const EXAMS: Record<string, Exam> = {
@@ -152,6 +127,46 @@ export const EXAMS: Record<string, Exam> = {
           "It exports the file unchanged",
         ],
         correct: 2,
+      },
+      {
+        asks: "A vendor permits installation but not redistribution of its binary. Which package design respects that boundary?",
+        choices: [
+          "Copy the binary into a private OCI registry",
+          "Declare a runtime source with the vendor HTTPS URL, exact size and SHA-256",
+          "Commit the binary with Git LFS",
+          "Download the latest file from the wrapper at every launch",
+        ],
+        correct: 1,
+      },
+      {
+        asks: "When should a Debian runtime source use deb-extract instead of dpkg?",
+        choices: [
+          "When its payload is sufficient and maintainer scripts are not required",
+          "Whenever the package contains a desktop entry",
+          "Only when the package is built for arm64",
+          "When its SHA-256 is not available",
+        ],
+        correct: 0,
+      },
+      {
+        asks: "An application requires a helper command but the helper should keep its own sandbox. What relationship should the manifest use?",
+        choices: [
+          "An optional addon",
+          "A layer dependency",
+          "A nested dependency",
+          "A runtime source",
+        ],
+        correct: 2,
+      },
+      {
+        asks: "Why clean APT data in the same image layer that installed the runtime packages?",
+        choices: [
+          "cpak validates only the last layer",
+          "Files removed in a later layer still occupy bytes in the earlier OCI layer",
+          "The storage driver cannot deduplicate package indexes",
+          "The Store rejects images containing manuals",
+        ],
+        correct: 1,
       },
     ],
   },
@@ -266,13 +281,223 @@ export const EXAMS: Record<string, Exam> = {
         ],
         correct: 2,
       },
+      {
+        asks: "A host requires signatures and receives an unsigned package. Which statement is accurate?",
+        choices: [
+          "The package is installed but left unenrolled, and enforcement handles any later launch",
+          "The package is deleted before its manifest can be recorded",
+          "The package runs once while the desktop asks for approval",
+          "The package is enrolled under the local account identity",
+        ],
+        correct: 0,
+      },
+      {
+        asks: "An approved signer entry contains only a GitHub Actions issuer and leaves the other signer fields out. What does it accept?",
+        choices: [
+          "Only repositories below the approved_origins list",
+          "Any package signed through that issuer, unless another policy condition narrows it",
+          "Only packages whose origin matches the signing workflow repository",
+          "Nothing, because every signer field is mandatory",
+        ],
+        correct: 1,
+      },
+      {
+        asks: "A trust policy revokes an origin without naming a generation. What is revoked?",
+        choices: [
+          "The currently installed generation only",
+          "Every generation of that origin",
+          "Future generations only",
+          "The signer, across every origin",
+        ],
+        correct: 1,
+      },
+      {
+        asks: "Which command changes state while diagnosing a refusal left by a removed package?",
+        choices: [
+          "cpak system status",
+          "cpak system explain",
+          "cpak system clear-removal",
+          "cpak system trust",
+        ],
+        correct: 2,
+      },
+    ],
+  },
+
+  developer: {
+    id: "developer",
+    title: "cpak Developer",
+    credential: "cpak Developer",
+    course: {
+      title: "Engineering cpak integrations",
+      href: "/learn/engineering",
+    },
+    pass: PASS,
+    questions: [
+      {
+        asks: "Which order describes the main launch decisions before the application process begins?",
+        choices: [
+          "Resolve package, calculate policy, compose layers, prepare the boundary",
+          "Create namespaces, resolve package, ask the storage driver, calculate policy",
+          "Compose layers, grant addon permissions, resolve package, start the broker",
+          "Start the process, mount the image, verify the manifest, apply the ceiling",
+        ],
+        correct: 0,
+      },
+      {
+        asks: "A user override removes network and the system ceiling allows it. What is the effective network policy?",
+        choices: [
+          "Allowed because the system ceiling has priority",
+          "Allowed only for nested packages",
+          "Denied because a ceiling cannot restore a removed grant",
+          "Denied only when verified launch is set to refuse",
+        ],
+        correct: 2,
+      },
+      {
+        asks: "Which mechanism prevents a process from gaining privilege through a setuid executable after launch setup?",
+        choices: [
+          "OverlayFS",
+          "no_new_privs",
+          "The runtime index",
+          "The package lock",
+        ],
+        correct: 1,
+      },
+      {
+        asks: "Why is an arbitrary command field invalid for a host action provider?",
+        choices: [
+          "It prevents cpak from choosing Podman or Docker",
+          "It cannot preserve standard output",
+          "It turns a finite policy-gated operation into general host execution",
+          "It requires a system bus",
+        ],
+        correct: 2,
+      },
+      {
+        asks: "A container action asks to remove a host container without the requesting package ownership label. What should the provider do?",
+        choices: [
+          "Remove it when manage-owned is granted",
+          "Refuse it before selecting the backend operation",
+          "Ask the desktop user for confirmation",
+          "Forward it only to a rootless backend",
+        ],
+        correct: 1,
+      },
+      {
+        asks: "What may a storage driver change while repairing a derived checkout?",
+        choices: [
+          "The immutable source layer",
+          "The application's writable data",
+          "Only rebuildable data under its assigned driver root",
+          "The package manifest digest",
+        ],
+        correct: 2,
+      },
+      {
+        asks: "Why must a storage driver publish a checkout atomically?",
+        choices: [
+          "So OverlayFS can sort the lower directories",
+          "So a failed preparation never replaces the last valid checkout with a partial one",
+          "So source layers can be removed immediately",
+          "So the driver can run as another user",
+        ],
+        correct: 1,
+      },
+      {
+        asks: "An external storage driver returns a symlink that escapes its assigned root. What happens?",
+        choices: [
+          "cpak follows it when the socket owner matches",
+          "cpak mounts it read-only",
+          "cpak rejects the returned path after symlink resolution",
+          "The system ceiling decides",
+        ],
+        correct: 2,
+      },
+      {
+        asks: "Which runtime source installer is the smaller boundary for a Debian package whose maintainer scripts are not needed?",
+        choices: [
+          "dpkg",
+          "deb-extract",
+          "file",
+          "tar, after renaming the package",
+        ],
+        correct: 1,
+      },
+      {
+        asks: "A runtime source download returns one byte more than its declared size. What happens?",
+        choices: [
+          "The extra byte is ignored and SHA-256 is checked",
+          "The source is installed when the package is signed",
+          "The download is rejected before installation",
+          "The runtime source is retried without a size check",
+        ],
+        correct: 2,
+      },
+      {
+        asks: "What is the correct slot mode for choosing either Go or TinyGo as the active sdk.go provider?",
+        choices: [
+          "multiple",
+          "nested",
+          "exclusive",
+          "layer",
+        ],
+        correct: 2,
+      },
+      {
+        asks: "A provider exports a library_path and include_path. What does that change?",
+        choices: [
+          "The parent receives new host filesystem permissions",
+          "The provider paths join the runtime and compiler search environments",
+          "The provider becomes a required dependency",
+          "The Store selects it for every installed parent",
+        ],
+        correct: 1,
+      },
+      {
+        asks: "A nested request claims a different parent origin from the process that opened the private socket. Which identity is authoritative?",
+        choices: [
+          "The origin written in the request",
+          "The installed dependency's publisher",
+          "The authenticated package instance bound to the connection",
+          "The desktop account name",
+        ],
+        correct: 2,
+      },
+      {
+        asks: "A package session declares an identifier already owned by a system session. What should registration do?",
+        choices: [
+          "Replace it after Polkit approval",
+          "Refuse the collision",
+          "Rename the system session",
+          "Register both and let the display manager decide",
+        ],
+        correct: 1,
+      },
+      {
+        asks: "Verified launch finds a checkout that contradicts the state bound to its layer. Enforcement is off. What happens?",
+        choices: [
+          "The launch starts with a warning",
+          "The launch is refused as tampered",
+          "The layer is enrolled again automatically",
+          "The storage driver chooses whether to continue",
+        ],
+        correct: 1,
+      },
+      {
+        asks: "An update fails after staging new runtime sources but before switching the active package record. Which version remains active?",
+        choices: [
+          "The staged version, without its exports",
+          "Neither version until audit repairs the transaction",
+          "The previous version",
+          "Whichever version has the newer OCI digest",
+        ],
+        correct: 2,
+      },
     ],
   },
 };
 
-// Where the right answer sits, question by question, for this whole paper.
-// Even by construction: no column can carry more right answers than another,
-// whatever habit the questions were written with.
 const columns = new Map<string, number[]>();
 
 function columnFor(exam: Exam, index: number): number {
@@ -286,7 +511,6 @@ function columnFor(exam: Exam, index: number): number {
   return paper[index] % choices;
 }
 
-/** What the client is allowed to see: everything except which one is right. */
 export function asked(exam: Exam) {
   return {
     id: exam.id,
@@ -296,9 +520,6 @@ export function asked(exam: Exam) {
     pass: exam.pass,
     questions: exam.questions.map((question, index) => ({
       asks: question.asks,
-      // Shown in an order the paper decides, so the position of the right
-      // answer carries no information. The server derives the same order when
-      // it marks, so nothing about it has to travel.
       choices: shuffled(
         question.asks,
         question.choices,
@@ -316,10 +537,6 @@ export type Marked = {
   passed: boolean;
 };
 
-/** Mark one sitting. `given` is one answer index per question, or null.
- *
- * The indexes are positions in the shuffled list the candidate was shown, so
- * each one is read back through the same order before it is compared. */
 export function mark(exam: Exam, given: (number | null)[]): Marked {
   const right = exam.questions.reduce((count, question, index) => {
     const shown = orderOf(

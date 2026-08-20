@@ -1,7 +1,3 @@
-// A lesson page posts here when it is marked done. Signed out, this answers
-// 401 and the browser keeps its own copy; that is the normal case, not an
-// error, so $lib/learn/progress does not report it.
-
 import { json } from "@sveltejs/kit";
 import type { RequestHandler } from "./$types";
 import { whoIsHere } from "$lib/server/learn/session";

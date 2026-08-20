@@ -1,10 +1,3 @@
-// The entries the board starts from.
-//
-// Each one is a file a package could plausibly ship, chosen because cpak does
-// something to it that is easy to get wrong by reading the file yourself. The
-// board never says what will happen to them: it asks the module and shows the
-// answer.
-
 export type Example = {
   id: string;
   name: string;
@@ -89,13 +82,6 @@ export const EXPORT_DEFAULTS = {
   icon: "/home/ada/.local/share/cpak/icons/example.org/writer.png",
 };
 
-// A second export of the same file, asked for with values nothing else uses.
-//
-// One export says what cpak wrote. Two say which lines cpak read: a line whose
-// key it acts on moves when these values change, and a line it never read
-// cannot. That is how this board can mark a key without parsing the file
-// itself, which would be this page guessing at what a launcher does instead of
-// showing what cpak does.
 export const PROBE = {
   origin: "probe.invalid/probe",
   cpakId: "0000000000000000",
@@ -103,7 +89,6 @@ export const PROBE = {
   icon: "/probe/icon.png",
 };
 
-/** A probe value that cannot collide with the one the board is asking about. */
 export function probe(value: string, mark: string): string {
   return value.trim() === mark ? `${mark}-2` : mark;
 }

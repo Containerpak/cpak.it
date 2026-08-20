@@ -7,8 +7,8 @@
 </script>
 
 <Seo
-  title="Two decisions, and neither is an install - cpak"
-  description="What an administrator can decide about cpak on a machine they look after: the widest policy anything may run under, and whether a launch has to match what was recorded."
+  title="What you decide, and what you do not - cpak"
+  description="What an administrator can decide about cpak on a machine they look after: how wide anything may run, whether a launch has to match what was recorded, and whose software the host takes at all."
   path="/learn/administration/what-you-decide"
 />
 
@@ -23,9 +23,9 @@
   <p>
     That is deliberate, and it is why there is anything on this page at all: if
     the runtime handed every user a sandbox and gave the machine owner no say in
-    how wide it could be, a managed fleet could not use it. So it gives you two
-    decisions, and both are about the machine rather than about any one
-    installation.
+    how wide it could be, a managed fleet could not use it. So it gives you
+    three decisions, and every one of them is about the machine rather than
+    about any one installation.
   </p>
 
   <h2>One: how wide anything may be</h2>
@@ -89,14 +89,20 @@ cpak system enforcement        # what is in force now</code></pre>
     at nine on a Monday which application nobody had re-enrolled.
   </p>
 
-  <h2>What neither decision can do</h2>
+  <h2>Three: whose software this host takes</h2>
+
+  <p>
+    Whether an unsigned package is enrolled at all, and which publishers you
+    accept a signature from. That one has a lesson of its own further on,
+    because it is the decision with a file behind it rather than a value.
+  </p>
+
+  <h2>What none of them can do</h2>
 
   <p>
     A ceiling cannot give a package something its manifest never asked for, and
     enforcement cannot make an unsigned package signed. Both narrow. If what you
     need is for people to only install software somebody vouched for, that is a
-    third setting, the publisher trust policy, and it is in
-    <a href="/docs/managed-deployment">the managed deployment documentation</a>
-    rather than in this course.
+    third decision, and it is the next lesson but one.
   </p>
 </LessonShell>

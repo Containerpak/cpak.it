@@ -1,6 +1,3 @@
-// The credential as its holder sees it: the same record as the public page,
-// plus the things only the holder needs, such as the link to hand out.
-
 import { error, redirect } from "@sveltejs/kit";
 import type { PageServerLoad } from "./$types";
 import { whoIsHere } from "$lib/server/learn/session";
@@ -15,7 +12,6 @@ export const load: PageServerLoad = async (event) => {
   const entry = await store.readCredential(code);
   if (!entry) error(404, "No credential has that code.");
 
-  // Anyone may read a credential; only its holder reads it from here.
   if (!account || account.key !== entry.account)
     redirect(303, verifyPath(code));
 

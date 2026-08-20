@@ -1,7 +1,4 @@
 <script lang="ts">
-  // The course, listed. The same list serves the column on a wide screen and
-  // the panel a phone opens, so there is one place where a lesson's state is
-  // decided and one place to fix when it is wrong.
   import {
     lessonKey,
     lessonsOf,
@@ -18,11 +15,8 @@
     onnavigate = () => {},
   }: {
     course: Course;
-    /** The slug of the lesson being read. */
     current: string;
-    /** Lesson keys this browser has been marked through. */
     done?: Set<string>;
-    /** The phone panel closes itself when a lesson is chosen. */
     onnavigate?: () => void;
   } = $props();
 

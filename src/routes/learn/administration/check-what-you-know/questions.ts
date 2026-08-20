@@ -1,8 +1,5 @@
 import type { Question } from "$lib/components/learn/Quiz.svelte";
 
-// Four questions on the two decisions an administrator actually makes. Every
-// wrong answer is a real misreading of what a ceiling is, and the first one is
-// the misreading that produces a ceiling nobody notices is doing nothing.
 export const QUESTIONS: Question[] = [
   {
     asks: "Your ceiling contains \"network\": true. A package asks for nothing. What can it reach?",
@@ -73,6 +70,78 @@ export const QUESTIONS: Question[] = [
       {
         text: "off, and set a ceiling instead",
         why: "They answer different questions. A ceiling decides how wide anything may be; enforcement decides whether a launch matches what was recorded.",
+      },
+    ],
+  },
+  {
+    asks: "The host requires signatures and an unsigned application is installed. What happens?",
+    choices: [
+      {
+        text: "The install is rolled back and its files are removed",
+        why: "Signature policy refuses enrolment. It does not turn a completed install into a partial removal.",
+      },
+      {
+        text: "The application stays installed but unenrolled, then enforcement decides whether it may launch",
+        correct: true,
+        why: "Signature policy records the missing identity at enrolment. Warn or refuse then decides what an unenrolled launch does.",
+      },
+      {
+        text: "It launches once so the user can approve its signer",
+        why: "There is no first-launch exception. Approval belongs in the host trust policy.",
+      },
+    ],
+  },
+  {
+    asks: "What is the difference between require_publisher and require_approval?",
+    choices: [
+      {
+        text: "Publisher checks an accepted signer; approval requires the organisation to countersign the exact package state",
+        correct: true,
+        why: "One proves accepted provenance. The other records review of this exact state.",
+      },
+      {
+        text: "Publisher applies to public registries; approval applies to private registries",
+        why: "Registry visibility does not define either policy.",
+      },
+      {
+        text: "They are aliases kept for manifest version 1 compatibility",
+        why: "They represent separate decisions and can be required independently.",
+      },
+    ],
+  },
+  {
+    asks: "A revocation names an origin but no generation. What does it withdraw?",
+    choices: [
+      {
+        text: "Only the newest installed generation",
+        why: "A generation must be named to narrow the revocation to one generation.",
+      },
+      {
+        text: "Only generations installed after the policy was written",
+        why: "The decision is not based on installation time.",
+      },
+      {
+        text: "Every generation of that origin",
+        correct: true,
+        why: "Leaving generation out revokes the origin across all generations.",
+      },
+    ],
+  },
+  {
+    asks: "A removed package refuses enrolment after reinstall. What is the safe order to investigate?",
+    choices: [
+      {
+        text: "clear-removal, status, explain",
+        why: "That gives up the rollback floor before proving it caused the refusal.",
+      },
+      {
+        text: "status, explain, then clear-removal only after reading what will be lost",
+        correct: true,
+        why: "The first two report. The last changes the host anchor and belongs last.",
+      },
+      {
+        text: "remove the trust policy and reinstall",
+        why: "That widens the whole host and still does not identify the retained removal anchor.",
       },
     ],
   },

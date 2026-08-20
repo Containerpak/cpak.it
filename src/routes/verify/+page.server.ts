@@ -1,9 +1,3 @@
-// The way in for somebody holding a code and nothing else.
-//
-// There is no load here on purpose: this page reads no session, holds no
-// listing and runs no search, so there is nothing for it to fetch. The field
-// resolves what was pasted and sends the reader to the record.
-
 import { error, fail, redirect } from "@sveltejs/kit";
 import type { Actions } from "./$types";
 import { codeFrom } from "$lib/server/learn/credentials";

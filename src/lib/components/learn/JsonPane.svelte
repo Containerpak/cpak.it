@@ -1,7 +1,4 @@
 <script lang="ts">
-  // One editable input of a board. The line under the box says what the box
-  // currently means, or why it cannot mean anything yet, so a reader never has
-  // to look elsewhere to find out whether their typing was understood.
   let {
     id,
     label,

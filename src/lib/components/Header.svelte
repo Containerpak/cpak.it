@@ -5,22 +5,18 @@
   import ThemePicker from "$lib/components/ThemePicker.svelte";
   import { packageSlug } from "$lib/store";
 
-  // Who is signed in, when the page is one of Learn's. The rest of the site
-  // has no account, so it passes nothing and no profile is drawn.
   export let account: {
     handle: string;
     avatar: string;
     provider: string;
   } | null = null;
+  export let academy = false;
 
   let query = "";
   let showDropdown = false;
   let showMobileMenu = false;
   let showAccountMenu = false;
 
-  // Inside Learn the account menu is the only thing on the right, so it has to
-  // close the way every other menu on the web closes: a click anywhere else,
-  // or Escape.
   function closeAccountMenu(event: Event) {
     const target = event.target as HTMLElement | null;
     if (target?.closest?.("[data-account-menu]")) return;
@@ -111,8 +107,8 @@
 
 <svelte:window on:click={closeAccountMenu} on:keydown={accountMenuKey} />
 
-<nav class="relative w-full bg-slate-50">
-  <div class="mx-auto flex max-w-7xl items-center gap-3 px-4 py-4 sm:gap-6 sm:px-6">
+<nav class={academy ? "relative w-full bg-transparent" : "relative w-full bg-slate-50"}>
+  <div class:academy-header={academy} class="mx-auto flex max-w-7xl items-center gap-3 px-4 py-4 sm:gap-6 sm:px-6">
     {#if current !== "/"}
       <button
         on:click={() => history.back()}
@@ -124,16 +120,20 @@
     {/if}
     <div class="flex shrink-0 items-center gap-2 sm:gap-3">
       <a href="/" class="flex shrink-0 items-center gap-2">
-        <!-- The wordmark stays at every width, inside Learn as well. Dropping
-             it to the icon on a narrow screen left the mark beside it reading
-             as the name of the product, which is the one thing the pipe was
-             there to prevent. -->
-        <img src="/cpak-brand.svg" alt="cpak logo" class="theme-logo-light" />
-        <img
-          src="/presskit/full/cpak-brand-dark.svg"
-          alt="cpak logo"
-          class="theme-logo-dark h-[46px] w-[104px] object-contain"
-        />
+        {#if academy}
+          <img
+            src="/presskit/full/cpak-brand-dark.svg"
+            alt="cpak logo"
+            class="h-[46px] w-[104px] object-contain"
+          />
+        {:else}
+          <img src="/cpak-brand.svg" alt="cpak logo" class="theme-logo-light" />
+          <img
+            src="/presskit/full/cpak-brand-dark.svg"
+            alt="cpak logo"
+            class="theme-logo-dark h-[46px] w-[104px] object-contain"
+          />
+        {/if}
       </a>
       {#if inLearn}
         <span
@@ -159,7 +159,7 @@
       />
       {#if showDropdown}
         <div
-          class="absolute top-full z-20 mt-2 max-h-96 w-[640px] overflow-auto rounded-lg bg-white shadow-lg"
+          class="header-popover absolute top-full z-20 mt-2 max-h-96 w-[640px] overflow-auto rounded-lg bg-white shadow-lg"
         >
           {#if results.docs.length}
             <div class="border-b px-4 py-2">
@@ -217,9 +217,6 @@
         <span class="material-symbols-outlined">menu</span>
       </button>
       {#if inLearn}
-        <!-- Learn keeps its own nav. Somebody reading a lesson is not shopping
-             the rest of the site, and the one thing they cannot find without a
-             control is their own account. -->
         <div class="hidden items-center gap-6 lg:flex">
           <a
             href="/docs"
@@ -232,7 +229,7 @@
                 on:click={() => (showAccountMenu = !showAccountMenu)}
                 aria-expanded={showAccountMenu}
                 aria-haspopup="menu"
-                class="flex h-9 w-9 shrink-0 items-center justify-center overflow-hidden rounded-full border border-slate-200 bg-slate-100 text-sm font-semibold text-gray-700 transition hover:border-slate-300 focus-visible:ring-2 focus-visible:ring-[#3E7BFF] focus-visible:outline-none"
+                class="account-trigger flex h-9 w-9 shrink-0 items-center justify-center overflow-hidden rounded-full border border-slate-200 bg-slate-100 text-sm font-semibold text-gray-700 transition hover:border-slate-300 focus-visible:ring-2 focus-visible:ring-[#3E7BFF] focus-visible:outline-none"
               >
                 {#if account.avatar}
                   <img
@@ -249,7 +246,7 @@
               {#if showAccountMenu}
                 <div
                   role="menu"
-                  class="absolute right-0 z-30 mt-2 w-60 overflow-hidden rounded-xl border border-slate-200 bg-white py-1 shadow-lg"
+                  class="header-popover absolute right-0 z-30 mt-2 w-60 overflow-hidden rounded-xl border border-slate-200 bg-white py-1 shadow-lg"
                 >
                   <p class="px-4 py-2 text-xs text-gray-500">
                     Signed in as
@@ -269,13 +266,6 @@
                     on:click={() => (showAccountMenu = false)}
                     class="block px-4 py-2 text-sm text-gray-900 hover:bg-slate-100"
                     >Your credentials</a
-                  >
-                  <a
-                    role="menuitem"
-                    href="/learn/exams"
-                    on:click={() => (showAccountMenu = false)}
-                    class="block px-4 py-2 text-sm text-gray-900 hover:bg-slate-100"
-                    >Exams</a
                   >
                   <a
                     role="menuitem"
@@ -416,3 +406,49 @@
     </div>
   {/if}
 </nav>
+
+<style>
+  .academy-header :global(.text-gray-900),
+  .academy-header :global(.text-gray-700) {
+    color: #f8fafc;
+  }
+
+  .academy-header :global(input[type="search"]) {
+    border-color: rgb(148 163 184 / 28%);
+    background: rgb(15 23 42 / 58%);
+    color: #f8fafc;
+  }
+
+  .academy-header :global(input[type="search"]::placeholder) {
+    color: #94a3b8;
+  }
+
+  .academy-header :global(.header-popover .text-gray-900) {
+    color: #111827;
+  }
+
+  .academy-header :global(.header-popover .text-gray-700) {
+    color: #374151;
+  }
+
+  .academy-header :global(.theme-picker summary:hover) {
+    background: rgb(255 255 255 / 12%);
+  }
+
+  .academy-header :global(.account-trigger.text-gray-700) {
+    color: #374151;
+  }
+
+  :global(html[data-theme="dark"]) .academy-header :global(.header-popover .text-gray-900),
+  :global(html[data-theme="dark"]) .academy-header :global(.account-trigger.text-gray-700) {
+    color: #f8fafc;
+  }
+
+  :global(html[data-theme="dark"]) .academy-header :global(.account-trigger) {
+    color: #f8fafc !important;
+  }
+
+  :global(html[data-theme="dark"]) .academy-header :global(.header-popover .text-gray-700) {
+    color: #e2e8f0;
+  }
+</style>

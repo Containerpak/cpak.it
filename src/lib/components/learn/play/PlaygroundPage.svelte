@@ -1,10 +1,4 @@
 <script lang="ts">
-  // The frame a playground shares. A playground is a tool rather than a page
-  // about a tool, so it gets its own ground, says what it is in one sentence,
-  // and the playground starts directly under that.
-  //
-  // The state of the decision module lives here because every board needs it
-  // and none of them can answer anything without it.
   import type { Snippet } from "svelte";
   import { CORE_MODULE } from "$lib/learn/core";
 
@@ -31,7 +25,7 @@
   let showBuild = $state(false);
 
   const megabytes = (CORE_MODULE.bytes / 1024 / 1024).toFixed(1);
-  const digest = `${CORE_MODULE.digest.slice(0, 12)}…`;
+  const digest = `${CORE_MODULE.digest.slice(0, 12)}...`;
 </script>
 
 <div class="bg-slate-950">
