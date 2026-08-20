@@ -16,6 +16,20 @@
   let query = "";
   let showDropdown = false;
   let showMobileMenu = false;
+  let showAccountMenu = false;
+
+  // Inside Learn the account menu is the only thing on the right, so it has to
+  // close the way every other menu on the web closes: a click anywhere else,
+  // or Escape.
+  function closeAccountMenu(event: Event) {
+    const target = event.target as HTMLElement | null;
+    if (target?.closest?.("[data-account-menu]")) return;
+    showAccountMenu = false;
+  }
+
+  function accountMenuKey(event: KeyboardEvent) {
+    if (event.key === "Escape") showAccountMenu = false;
+  }
 
   interface DocItem {
     title: string;
@@ -94,6 +108,8 @@
   $: current = $page.url.pathname;
   $: inLearn = current === "/learn" || current.startsWith("/learn/");
 </script>
+
+<svelte:window on:click={closeAccountMenu} on:keydown={accountMenuKey} />
 
 <nav class="relative w-full bg-slate-50">
   <div class="mx-auto flex max-w-7xl items-center gap-3 px-4 py-4 sm:gap-6 sm:px-6">
@@ -200,61 +216,118 @@
       >
         <span class="material-symbols-outlined">menu</span>
       </button>
-      <div class="hidden items-center gap-6 lg:flex">
-        <a
-          href="/docs"
-          class="text-sm font-medium text-gray-900 hover:underline">Docs</a
-        >
-        <a
-          href="/learn"
-          class="text-sm font-medium text-gray-900 hover:underline">Learn</a
-        >
-        <a
-          href="/announcements"
-          class="text-sm font-medium text-gray-900 hover:underline"
-          >Announcements</a
-        >
-        <a
-          href="/support"
-          class="text-sm font-medium text-gray-900 hover:underline">Support</a
-        >
-        <a
-          href="https://github.com/containerpak/cpak"
-          class="text-sm font-medium text-gray-900 hover:underline">GitHub</a
-        >
-        <a
-          href="/docs/quick-start"
-          class="rounded-full bg-[#3E7BFF]/20 px-4 py-2 text-sm font-semibold text-[#3E7BFF] transition hover:bg-[#3E7BFF]/30"
-        >
-          Get started
-        </a>
-        {#if inLearn}
+      {#if inLearn}
+        <!-- Learn keeps its own nav. Somebody reading a lesson is not shopping
+             the rest of the site, and the one thing they cannot find without a
+             control is their own account. -->
+        <div class="hidden items-center gap-6 lg:flex">
+          <a
+            href="/docs"
+            class="text-sm font-medium text-gray-900 hover:underline">Docs</a
+          >
           {#if account}
-            <a
-              href="/learn/account"
-              title="Your courses and credentials"
-              class="flex h-9 w-9 shrink-0 items-center justify-center overflow-hidden rounded-full border border-slate-200 bg-slate-100 text-sm font-semibold text-gray-700 transition hover:border-slate-300 focus-visible:ring-2 focus-visible:ring-[#3E7BFF] focus-visible:outline-none"
-            >
-              {#if account.avatar}
-                <img
-                  src={account.avatar}
-                  alt=""
-                  class="h-full w-full object-cover"
-                />
-                <span class="sr-only">{account.handle}</span>
-              {:else}
-                {account.handle.slice(0, 1).toUpperCase()}
-                <span class="sr-only">{account.handle}</span>
+            <div class="relative" data-account-menu>
+              <button
+                type="button"
+                on:click={() => (showAccountMenu = !showAccountMenu)}
+                aria-expanded={showAccountMenu}
+                aria-haspopup="menu"
+                class="flex h-9 w-9 shrink-0 items-center justify-center overflow-hidden rounded-full border border-slate-200 bg-slate-100 text-sm font-semibold text-gray-700 transition hover:border-slate-300 focus-visible:ring-2 focus-visible:ring-[#3E7BFF] focus-visible:outline-none"
+              >
+                {#if account.avatar}
+                  <img
+                    src={account.avatar}
+                    alt=""
+                    class="h-full w-full object-cover"
+                  />
+                {:else}
+                  {account.handle.slice(0, 1).toUpperCase()}
+                {/if}
+                <span class="sr-only">Your account, {account.handle}</span>
+              </button>
+
+              {#if showAccountMenu}
+                <div
+                  role="menu"
+                  class="absolute right-0 z-30 mt-2 w-60 overflow-hidden rounded-xl border border-slate-200 bg-white py-1 shadow-lg"
+                >
+                  <p class="px-4 py-2 text-xs text-gray-500">
+                    Signed in as
+                    <span class="font-medium text-gray-900">{account.handle}</span>
+                  </p>
+                  <div class="my-1 border-t border-slate-100"></div>
+                  <a
+                    role="menuitem"
+                    href="/learn/account#completed"
+                    on:click={() => (showAccountMenu = false)}
+                    class="block px-4 py-2 text-sm text-gray-900 hover:bg-slate-100"
+                    >Your courses</a
+                  >
+                  <a
+                    role="menuitem"
+                    href="/learn/account#hold"
+                    on:click={() => (showAccountMenu = false)}
+                    class="block px-4 py-2 text-sm text-gray-900 hover:bg-slate-100"
+                    >Your credentials</a
+                  >
+                  <a
+                    role="menuitem"
+                    href="/learn/account#data"
+                    on:click={() => (showAccountMenu = false)}
+                    class="block px-4 py-2 text-sm text-gray-900 hover:bg-slate-100"
+                    >Settings</a
+                  >
+                  <div class="my-1 border-t border-slate-100"></div>
+                  <form method="POST" action="/learn/account?/signout">
+                    <button
+                      role="menuitem"
+                      type="submit"
+                      class="block w-full px-4 py-2 text-left text-sm text-gray-900 hover:bg-slate-100"
+                      >Sign out</button
+                    >
+                  </form>
+                </div>
               {/if}
-            </a>
+            </div>
           {:else}
             <a
-              href="/learn/account"
-              class="text-sm font-medium text-gray-900 hover:underline">Sign in</a
+              href="/learn/account#signin"
+              class="rounded-full bg-[#3E7BFF]/20 px-4 py-2 text-sm font-semibold text-[#3E7BFF] transition hover:bg-[#3E7BFF]/30"
+              >Sign in</a
             >
           {/if}
-        {/if}
-      </div>
+        </div>
+      {:else}
+        <div class="hidden items-center gap-6 lg:flex">
+          <a
+            href="/docs"
+            class="text-sm font-medium text-gray-900 hover:underline">Docs</a
+          >
+          <a
+            href="/learn"
+            class="text-sm font-medium text-gray-900 hover:underline">Learn</a
+          >
+          <a
+            href="/announcements"
+            class="text-sm font-medium text-gray-900 hover:underline"
+            >Announcements</a
+          >
+          <a
+            href="/support"
+            class="text-sm font-medium text-gray-900 hover:underline">Support</a
+          >
+          <a
+            href="https://github.com/containerpak/cpak"
+            class="text-sm font-medium text-gray-900 hover:underline">GitHub</a
+          >
+          <a
+            href="/docs/quick-start"
+            class="rounded-full bg-[#3E7BFF]/20 px-4 py-2 text-sm font-semibold text-[#3E7BFF] transition hover:bg-[#3E7BFF]/30"
+          >
+            Get started
+          </a>
+        </div>
+      {/if}
     </div>
   </div>
   {#if showMobileMenu}
@@ -264,32 +337,68 @@
         class="block px-6 py-4 text-sm font-medium text-gray-900 hover:bg-slate-100"
         >Docs</a
       >
-      <a
-        href="/learn"
-        class="block px-6 py-4 text-sm font-medium text-gray-900 hover:bg-slate-100"
-        >Learn</a
-      >
-      <a
-        href="/announcements"
-        class="block px-6 py-4 text-sm font-medium text-gray-900 hover:bg-slate-100"
-        >Announcements</a
-      >
-      <a
-        href="/support"
-        class="block px-6 py-4 text-sm font-medium text-gray-900 hover:bg-slate-100"
-        >Support</a
-      >
-      <a
-        href="https://github.com/containerpak/cpak"
-        class="block px-6 py-4 text-sm font-medium text-gray-900 hover:bg-slate-100"
-        >GitHub</a
-      >
-      <a
-        href="/docs/quick-start"
-        class="block px-6 py-4 text-sm font-medium text-[#3E7BFF] hover:bg-slate-100"
-      >
-        Get started
-      </a>
+      {#if inLearn}
+        {#if account}
+          <p class="border-t border-slate-100 px-6 pt-4 text-xs text-gray-500">
+            Signed in as <span class="font-medium text-gray-900">{account.handle}</span>
+          </p>
+          <a
+            href="/learn/account#completed"
+            class="block px-6 py-4 text-sm font-medium text-gray-900 hover:bg-slate-100"
+            >Your courses</a
+          >
+          <a
+            href="/learn/account#hold"
+            class="block px-6 py-4 text-sm font-medium text-gray-900 hover:bg-slate-100"
+            >Your credentials</a
+          >
+          <a
+            href="/learn/account#data"
+            class="block px-6 py-4 text-sm font-medium text-gray-900 hover:bg-slate-100"
+            >Settings</a
+          >
+          <form method="POST" action="/learn/account?/signout">
+            <button
+              type="submit"
+              class="block w-full px-6 py-4 text-left text-sm font-medium text-gray-900 hover:bg-slate-100"
+              >Sign out</button
+            >
+          </form>
+        {:else}
+          <a
+            href="/learn/account#signin"
+            class="block px-6 py-4 text-sm font-medium text-[#3E7BFF] hover:bg-slate-100"
+            >Sign in</a
+          >
+        {/if}
+      {:else}
+        <a
+          href="/learn"
+          class="block px-6 py-4 text-sm font-medium text-gray-900 hover:bg-slate-100"
+          >Learn</a
+        >
+        <a
+          href="/announcements"
+          class="block px-6 py-4 text-sm font-medium text-gray-900 hover:bg-slate-100"
+          >Announcements</a
+        >
+        <a
+          href="/support"
+          class="block px-6 py-4 text-sm font-medium text-gray-900 hover:bg-slate-100"
+          >Support</a
+        >
+        <a
+          href="https://github.com/containerpak/cpak"
+          class="block px-6 py-4 text-sm font-medium text-gray-900 hover:bg-slate-100"
+          >GitHub</a
+        >
+        <a
+          href="/docs/quick-start"
+          class="block px-6 py-4 text-sm font-medium text-[#3E7BFF] hover:bg-slate-100"
+        >
+          Get started
+        </a>
+      {/if}
       <input
         type="search"
         bind:value={query}

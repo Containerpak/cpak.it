@@ -16,13 +16,23 @@
 
   let {
     questions,
+    /** The playground a question needs, shown inline where there is no second
+     *  column to put it in. */
+    tool = null,
+    /** Which question it belongs under, counting from one. */
+    toolAfter = 0,
     /** How many lessons this course has, so the page can say it rather than
      *  guess. */
     lessons,
     /** Whether one of the questions needs the playground beside the text. */
     usesPlayground = false,
-  }: { questions: Question[]; lessons: number; usesPlayground?: boolean } =
-    $props();
+  }: {
+    questions: Question[];
+    lessons: number;
+    usesPlayground?: boolean;
+    tool?: import("svelte").Snippet | null;
+    toolAfter?: number;
+  } = $props();
 
   // One slot per question, all unanswered. Read from the prop once, which is
   // what it is for: a page shows one quiz and never swaps the questions under
@@ -42,6 +52,11 @@
     answers[question] = choice;
   }
 
+  // Small numbers are written out in prose, the way the heading above writes
+  // them. A digit in the middle of a sentence reads like a form field.
+  const WORDS = ["no", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "ten"];
+  const word = (n: number) => WORDS[n] ?? String(n);
+
   function again() {
     answers = questions.map(() => null);
   }
@@ -49,10 +64,11 @@
 
 <div class="not-prose">
   <p class="text-base leading-7 text-gray-600">
-    {questions.length} questions on what you have just read. Nothing is recorded
-    and nothing is issued for it: it is here so you find out which of the {lessons}
+    {word(questions.length).replace(/^./, (c) => c.toUpperCase())} questions on what
+    you have just read. Nothing is recorded
+    and nothing is issued for it: it is here so you find out which of the {word(lessons)}
     lessons to read again, while you still have them open in the rail.{usesPlayground
-      ? " One of them needs the playground beside this text."
+      ? " One of them needs the playground on this page."
       : ""}
   </p>
 
@@ -111,6 +127,15 @@
             {/each}
           </div>
         </fieldset>
+
+        {#if tool && toolAfter === index + 1}
+          <div class="mt-5 rounded-2xl border border-slate-200 bg-white p-4 xl:hidden">
+            <p class="text-sm font-semibold text-gray-900">
+              The playground for this question
+            </p>
+            {@render tool()}
+          </div>
+        {/if}
       </li>
     {/each}
   </ol>

@@ -24,10 +24,15 @@
   playgroundTitle={meta.title}
   playgroundLink={{ href: meta.href, label: "Open on its own" }}
   playgroundStatus={status}
+  playgroundWideOnly
 >
   {#snippet playground()}
     <PermissionsPlayground onstatus={(next) => (status = next)} />
   {/snippet}
 
-  <Quiz questions={QUESTIONS} lessons={4} usesPlayground />
+  <Quiz questions={QUESTIONS} lessons={4} usesPlayground toolAfter={4}>
+    {#snippet tool()}
+      <PermissionsPlayground onstatus={(next) => (status = next)} />
+    {/snippet}
+  </Quiz>
 </LessonShell>

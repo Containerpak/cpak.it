@@ -65,7 +65,7 @@ export const QUESTIONS: Question[] = [
   {
     // The one question that cannot be answered by recognising a sentence. The
     // playground is beside it for exactly this.
-    asks: "Press \u201cA window and nothing else\u201d in the playground beside this question. How many host paths does that one permission bind?",
+    asks: "Press \u201cA window and nothing else\u201d in the permissions playground. How many host paths does that one permission bind?",
     choices: [
       {
         text: "One, the socket the window is drawn through",

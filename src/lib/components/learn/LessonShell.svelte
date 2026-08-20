@@ -31,6 +31,7 @@
     playgroundTitle = "",
     playgroundLink = null,
     playgroundStatus = null,
+    playgroundWideOnly = false,
     children,
   }: {
     course: Course;
@@ -43,6 +44,13 @@
     playgroundLink?: { href: string; label: string } | null;
     /** Whether cpak is ready in the browser yet, said once, here. */
     playgroundStatus?: PlaygroundStatus | null;
+    /**
+     * Keep the playground in this column only where there are two columns.
+     * A page that sets this puts it somewhere better on a narrow screen: the
+     * test does, because a tool stacked under six questions is not beside the
+     * one question that needs it.
+     */
+    playgroundWideOnly?: boolean;
     children: Snippet;
   } = $props();
 
@@ -203,7 +211,9 @@
       {#if playground}
         <section
           aria-labelledby="playground-heading"
-          class="min-w-0 rounded-2xl border border-slate-200 bg-white p-4 sm:p-5"
+          class="min-w-0 rounded-2xl border border-slate-200 bg-white p-4 sm:p-5 {playgroundWideOnly
+            ? 'hidden xl:block'
+            : ''}"
         >
           <div
             class="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1"
