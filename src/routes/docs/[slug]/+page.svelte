@@ -1,8 +1,9 @@
 <script lang="ts">
   import { afterNavigate } from "$app/navigation";
   import type { PageData } from "./$types";
-  import { extractHeadings, groupedArticles, renderMarkdown } from "$lib/docs";
+  import { extractHeadings, renderMarkdown } from "$lib/docs";
   import Seo from "$lib/components/Seo.svelte";
+  import * as m from "$lib/paraglide/messages.js";
   import { SITE_URL, jsonLd } from "$lib/store";
 
   let { data }: { data: PageData } = $props();
@@ -87,10 +88,10 @@
         class="mb-7 inline-flex items-center gap-2 text-sm font-semibold text-[#4670EC]"
       >
         <span class="material-symbols-outlined text-lg">grid_view</span>
-        Documentation home
+        {m.docs_home()}
       </a>
       <div class="space-y-7">
-        {#each groupedArticles as group}
+        {#each data.groups as group}
           {#if group.articles.length}
             <div>
               <p
@@ -128,7 +129,7 @@
       <a href="/docs" class="hover:text-[#4670EC]">Docs</a>
       <span class="material-symbols-outlined text-base">chevron_right</span>
       <span
-        >{groupedArticles.find((group) => group.id === article.section)
+        >{data.groups.find((group) => group.id === article.section)
           ?.title}</span
       >
     </div>
@@ -148,7 +149,7 @@
         <a href={`/docs/${data.previous.slug}`} class="doc-pagination">
           <span
             class="text-xs font-semibold tracking-wide text-slate-500 uppercase"
-            >Previous</span
+            >{m.previous()}</span
           >
           <span class="mt-1 font-semibold text-gray-950"
             >{data.previous.title}</span
@@ -159,7 +160,7 @@
         <a href={`/docs/${data.next.slug}`} class="doc-pagination text-right">
           <span
             class="text-xs font-semibold tracking-wide text-slate-500 uppercase"
-            >Next</span
+            >{m.next_page()}</span
           >
           <span class="mt-1 font-semibold text-gray-950">{data.next.title}</span
           >
@@ -170,14 +171,14 @@
     <div
       class="mt-6 flex flex-wrap items-center justify-between gap-4 text-sm text-slate-500"
     >
-      <span>Found a mistake?</span>
+      <span>{m.found_mistake()}</span>
       <a
         href={`https://github.com/Containerpak/cpak.it/edit/main/src/content/docs/${article.slug}.md`}
         target="_blank"
         rel="noopener noreferrer"
         class="inline-flex items-center gap-1.5 font-medium text-[#4670EC] hover:underline"
       >
-        Edit this page on GitHub
+        {m.edit_github()}
         <span class="material-symbols-outlined text-base">open_in_new</span>
       </a>
     </div>
@@ -186,7 +187,7 @@
   <aside class="hidden xl:block">
     <nav class="sticky top-6" aria-label="On this page">
       <p class="text-xs font-bold tracking-wide text-slate-500 uppercase">
-        On this page
+        {m.on_this_page()}
       </p>
       <ul class="mt-3 space-y-2 border-l border-slate-200 pl-4">
         {#each headings as heading}

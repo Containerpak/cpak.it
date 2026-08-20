@@ -32,12 +32,10 @@
     Your account
   </a>
   <h1 class="mt-5 text-4xl font-extrabold tracking-tight text-gray-900">
-    A credential you hold
+    Your {data.held.title} credential
   </h1>
   <p class="mt-4 text-lg leading-8 text-gray-600">
-    This is the record as it was written. Nobody can edit it, including you, and
-    nobody at cpak can reword it later. What you can do with it is hand out the
-    link below.
+    Share its verification link or download a certificate for your records.
   </p>
 
   <div class="mt-8">

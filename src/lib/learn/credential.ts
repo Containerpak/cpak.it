@@ -1,3 +1,6 @@
+import * as m from "$lib/paraglide/messages.js";
+import { getLocale } from "$lib/paraglide/runtime.js";
+
 export type Standing = "valid" | "superseded" | "expired";
 
 export type Held = {
@@ -13,22 +16,20 @@ export type Held = {
   signed?: boolean;
 };
 
-export const CLAIM =
-  "This records the result of an online exam taken on the candidate's own machine. The exam is open book and nobody watched it being taken. The account named here is the only part of it that was authenticated, and an account is a sign-in, not a person.";
+export const claim = () => m.credential_claim();
 
-export const IMMUTABLE =
-  "A credential is written once. It is never reworded and never withdrawn. Taking the exam again issues a new one and marks this one superseded, and a credential stops being current on its expiry date. Either way this page keeps showing what was earned and when.";
+export const immutable = () => m.credential_immutable();
 
 export function standing(entry: Held, now = new Date()): Standing {
   if (entry.supersededBy) return "superseded";
   return Date.parse(entry.expiresAt) <= now.getTime() ? "expired" : "valid";
 }
 
-export const STANDING_WORD: Record<Standing, string> = {
-  valid: "Current",
-  superseded: "Superseded",
-  expired: "Expired",
-};
+export function standingWord(value: Standing) {
+  if (value === "superseded") return m.credential_superseded();
+  if (value === "expired") return m.credential_expired();
+  return m.credential_current();
+}
 
 export const STANDING_CHIP: Record<Standing, string> = {
   valid: "border-[#3E7BFF] bg-[#3E7BFF]/10 text-[#3158c7]",
@@ -39,11 +40,11 @@ export const STANDING_CHIP: Record<Standing, string> = {
 export function standingLine(entry: Held, now = new Date()) {
   switch (standing(entry, now)) {
     case "superseded":
-      return "Superseded by a later result for the same exam.";
+      return m.credential_superseded_line();
     case "expired":
-      return `Expired on ${longDate(entry.expiresAt)}.`;
+      return m.credential_expired_on({ date: longDate(entry.expiresAt) });
     default:
-      return `Current until ${longDate(entry.expiresAt)}.`;
+      return m.credential_current_until({ date: longDate(entry.expiresAt) });
   }
 }
 
@@ -56,15 +57,19 @@ export function verifyPath(code: string) {
 }
 
 export function longDate(value: string) {
-  return new Date(value).toLocaleDateString("en-GB", {
-    day: "numeric",
-    month: "long",
-    year: "numeric",
-  });
+  const locale = getLocale();
+  return new Date(value).toLocaleDateString(
+    locale === "it" ? "it-IT" : locale === "es" ? "es-ES" : "en-GB",
+    {
+      day: "numeric",
+      month: "long",
+      year: "numeric",
+    },
+  );
 }
 
 export function issuerLine(entry: Held) {
   return entry.provider === "github"
-    ? `GitHub account @${entry.handle}`
-    : `Local development account ${entry.handle}, not checked against any provider`;
+    ? m.credential_github_account({ handle: `@${entry.handle}` })
+    : m.credential_local_account({ handle: entry.handle });
 }

@@ -52,6 +52,10 @@ intersection, so `"deviceDri": true` says only that the host does not stand in
 the way, which is the same as leaving it out. An application that asks for
 nothing keeps nothing: the ceiling never grants, it only limits.
 
+On an unmanaged machine, the owner may add or remove access through a saved
+local override. On a managed machine the same override is accepted only within
+the ceiling. It cannot widen or disable the administrator's policy.
+
 The ceiling is independent of signatures. It applies to a package nobody
 signed and to one signed by an approved publisher alike, so approving a
 publisher does not become a standing grant of whatever that publisher asks for

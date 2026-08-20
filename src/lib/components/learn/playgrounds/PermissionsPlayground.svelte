@@ -1,6 +1,7 @@
 <script lang="ts">
   import { onMount, untrack } from "svelte";
   import { CoreError, loadCore, type Core } from "$lib/learn/core";
+  import * as m from "$lib/paraglide/messages.js";
   import type { PlaygroundStatus } from "$lib/learn/playgrounds";
   import type {
     Catalog,
@@ -39,7 +40,7 @@
   let text = $state(startingManifest());
   let transcript = $state<TranscriptLine[]>([
     { text: "$ cpak validate", tone: "command" },
-    { text: "Loading cpak's decision module...", tone: "muted" },
+    { text: "Loading cpak...", tone: "muted" },
   ]);
 
   onMount(load);
@@ -75,6 +76,41 @@
       STARTING_PERMISSIONS.map((permission) => [permission, true]),
     );
     return format(manifestFor(STARTING_PERMISSIONS, ticks, false));
+  }
+
+  function permissionDescription(permission: Permission) {
+    switch (permission.key) {
+      case "socketX11": return m.permission_socket_x11();
+      case "socketWayland": return m.permission_socket_wayland();
+      case "socketPulseAudio": return m.permission_socket_pulse_audio();
+      case "socketSessionBus": return m.permission_socket_session_bus();
+      case "socketSystemBus": return m.permission_socket_system_bus();
+      case "socketSshAgent": return m.permission_socket_ssh_agent();
+      case "socketCups": return m.permission_socket_cups();
+      case "socketGpgAgent": return m.permission_socket_gpg_agent();
+      case "socketAtSpiBus": return m.permission_socket_at_spi_bus();
+      case "socketBluetooth": return m.permission_socket_bluetooth();
+      case "deviceDri": return m.permission_device_dri();
+      case "deviceKvm": return m.permission_device_kvm();
+      case "deviceShm": return m.permission_device_shm();
+      case "deviceAlsa": return m.permission_device_alsa();
+      case "deviceVideo": return m.permission_device_video();
+      case "deviceFuse": return m.permission_device_fuse();
+      case "deviceTun": return m.permission_device_tun();
+      case "deviceUsb": return m.permission_device_usb();
+      case "deviceSerial": return m.permission_device_serial();
+      case "deviceInput": return m.permission_device_input();
+      case "deviceTTY": return m.permission_device_tty();
+      case "deviceAll": return m.permission_device_all();
+      case "notification": return m.permission_notification();
+      case "openURI": return m.permission_open_uri();
+      case "hostApplications": return m.permission_host_applications();
+      case "network": return m.permission_network();
+      case "process": return m.permission_process();
+      case "userNamespaces": return m.permission_user_namespaces();
+      case "asRoot": return m.permission_as_root();
+      default: return permission.description;
+    }
   }
 
   const manifest = $derived.by<Manifest | null>(() => {
@@ -174,7 +210,7 @@
       text = startingManifest();
       transcript = [
         ...next,
-        { text: "Created cpak.json in the browser workspace.", tone: "answer" },
+        { text: "Created cpak.json.", tone: "answer" },
       ];
       return;
     }
@@ -217,7 +253,7 @@
     transcript = [
       ...next,
       {
-        text: "That command is not available in this browser workspace. Run help.",
+        text: "That command is not available here. Run help.",
         tone: "error",
       },
     ];
@@ -242,10 +278,10 @@
     <header class="border-b border-slate-800 px-4 py-3 sm:px-5">
       <div>
         <h2 id="workspace-heading" class="font-semibold text-white">
-          Package workspace
+          {m.permissions_workspace()}
         </h2>
         <p class="mt-0.5 text-xs text-slate-400">
-          Edit the manifest, then validate it without leaving the browser.
+          {m.permissions_workspace_intro()}
         </p>
       </div>
     </header>
@@ -257,14 +293,14 @@
         >
           <span class="font-mono text-xs text-slate-200">cpak.json</span>
           {#if !manifest}
-            <span class="ml-auto text-xs text-red-300">JSON error</span>
+            <span class="ml-auto text-xs text-red-300">{m.permissions_json_error()}</span>
           {:else if validation && !validation.valid}
-            <span class="ml-auto text-xs text-amber-300">Refused</span>
+            <span class="ml-auto text-xs text-amber-300">{m.permissions_refused()}</span>
           {:else if validation?.valid}
-            <span class="ml-auto text-xs text-emerald-300">Valid</span>
+            <span class="ml-auto text-xs text-emerald-300">{m.permissions_valid()}</span>
           {/if}
         </div>
-        <label for="permissions-manifest" class="sr-only">cpak manifest</label>
+        <label for="permissions-manifest" class="sr-only">{m.permissions_manifest_label()}</label>
         <textarea
           id="permissions-manifest"
           bind:value={text}
@@ -278,36 +314,36 @@
 
       <aside class="min-w-0 bg-slate-900/70" aria-live="polite">
         <div class="border-b border-slate-800 px-4 py-3 sm:px-5">
-          <h3 class="text-sm font-semibold text-white">What cpak decides</h3>
+          <h3 class="text-sm font-semibold text-white">{m.permissions_decision()}</h3>
           <p class="mt-1 text-xs leading-5 text-slate-400">
-            {FIXTURE.summary}. The browser sends this manifest to cpak's pinned WebAssembly core.
+            {m.permissions_host_summary()}.
           </p>
         </div>
 
         <div class="space-y-6 px-4 py-5 sm:px-5">
           {#if status === "loading"}
-            <p class="text-sm text-slate-400">Loading the decision module...</p>
+            <p class="text-sm text-slate-400">{m.cpak_loading()}</p>
           {:else if status === "failed"}
             <div>
-              <p class="text-sm font-semibold text-red-300">The core did not start</p>
+              <p class="text-sm font-semibold text-red-300">{m.permissions_core_failed()}</p>
               <p class="mt-1 font-mono text-xs leading-5 text-slate-300">{failure}</p>
             </div>
           {:else if !manifest}
             <div>
-              <p class="text-sm font-semibold text-red-300">cpak.json is not readable</p>
+              <p class="text-sm font-semibold text-red-300">{m.permissions_unreadable()}</p>
               <p class="mt-1 font-mono text-xs leading-5 text-slate-300">{parseError}</p>
             </div>
           {:else if validation && !validation.valid}
             <div>
-              <p class="text-sm font-semibold text-amber-300">cpak refuses this manifest</p>
+              <p class="text-sm font-semibold text-amber-300">{m.permissions_refuses()}</p>
               <p class="mt-1 font-mono text-xs leading-5 text-slate-300">
-                {validation.error || "The manifest failed validation."}
+                {validation.error || m.permissions_validation_failed()}
               </p>
             </div>
           {:else if policy}
             <div>
               <p class="text-xs font-semibold tracking-wide text-slate-400 uppercase">
-                Requested permissions
+                {m.permissions_requested()}
               </p>
               {#if requested.length > 0}
                 <div class="mt-2 flex flex-wrap gap-1.5">
@@ -318,13 +354,13 @@
                   {/each}
                 </div>
               {:else}
-                <p class="mt-2 text-sm text-slate-300">None.</p>
+                <p class="mt-2 text-sm text-slate-300">{m.play_none()}</p>
               {/if}
             </div>
 
             <div>
               <p class="text-xs font-semibold tracking-wide text-slate-400 uppercase">
-                Host paths
+                {m.permissions_host_paths()}
               </p>
               {#if policy.mounts.length > 0}
                 <ul class="mt-2 space-y-2">
@@ -333,14 +369,14 @@
                   {/each}
                 </ul>
               {:else}
-                <p class="mt-2 text-sm text-slate-300">No host path is bound.</p>
+                <p class="mt-2 text-sm text-slate-300">{m.permissions_no_host_path()}</p>
               {/if}
             </div>
 
             {#if policy.shims.length > 0}
               <div>
                 <p class="text-xs font-semibold tracking-wide text-slate-400 uppercase">
-                  Broker commands
+                  {m.play_broker_commands()}
                 </p>
                 <ul class="mt-2 space-y-2">
                   {#each policy.shims as shim (shim)}
@@ -352,7 +388,7 @@
 
             <details class="border-t border-slate-800 pt-4">
               <summary class="cursor-pointer text-sm font-medium text-slate-200">
-                {ungranted.length} permissions were not requested
+                {m.permissions_unrequested({ count: String(ungranted.length) })}
               </summary>
               <div class="mt-3 columns-2 gap-4">
                 {#each ungranted as permission (permission)}
@@ -383,7 +419,7 @@
       </div>
       <form onsubmit={submit} class="relative flex items-center border-t border-slate-800 px-4 sm:px-5">
         <span class="font-mono text-sm text-[#7DA2FF]" aria-hidden="true">$</span>
-        <label for="playground-command" class="sr-only">Run a command</label>
+        <label for="playground-command" class="sr-only">{m.permissions_run_command()}</label>
         <input
           id="playground-command"
           bind:value={command}
@@ -392,23 +428,23 @@
           placeholder="help"
           class="min-w-0 flex-1 border-0 bg-transparent px-3 py-3 pr-24 font-mono text-sm text-white placeholder:text-slate-600 focus:ring-0 focus:outline-none"
         />
-        <span class="pointer-events-none absolute right-5 hidden text-xs text-slate-600 sm:inline">Enter to run</span>
+        <span class="pointer-events-none absolute right-5 hidden text-xs text-slate-600 sm:inline">{m.permissions_enter_to_run()}</span>
       </form>
     </div>
   </section>
 
   <details class="mt-5 rounded-2xl border border-slate-200 bg-white px-5 py-4">
     <summary class="cursor-pointer font-semibold text-gray-900">
-      Permission names available in this build
+      {m.permissions_available()}
     </summary>
     <p class="mt-2 max-w-3xl text-sm leading-6 text-gray-600">
-      Add a key under <code>override</code>, save nothing, and watch the result above change immediately.
+      {m.permissions_available_intro()}
     </p>
     <dl class="mt-4 grid gap-x-8 gap-y-4 sm:grid-cols-2">
       {#each permissions as permission (permission.key)}
         <div>
           <dt class="font-mono text-sm text-gray-900">{permission.key}</dt>
-          <dd class="mt-1 text-sm leading-6 text-gray-600">{permission.description}</dd>
+          <dd class="mt-1 text-sm leading-6 text-gray-600">{permissionDescription(permission)}</dd>
         </div>
       {/each}
     </dl>

@@ -1,5 +1,10 @@
 import { error, redirect } from "@sveltejs/kit";
-import { getArticle, getArticleNeighbors } from "$lib/docs";
+import {
+  getArticle,
+  getArticleNeighbors,
+  getGroupedArticles,
+} from "$lib/docs";
+import { getLocale } from "$lib/paraglide/runtime.js";
 
 export const load = ({ params }) => {
   if (params.slug === "packaging") redirect(301, "/docs/first-package");
@@ -17,7 +22,12 @@ export const load = ({ params }) => {
   if (retired.has(params.slug))
     error(410, "This documentation belongs to a retired project");
 
-  const article = getArticle(params.slug);
+  const locale = getLocale();
+  const article = getArticle(params.slug, locale);
   if (!article) throw error(404, "Article not found");
-  return { article, ...getArticleNeighbors(article.slug) };
+  return {
+    article,
+    groups: getGroupedArticles(locale),
+    ...getArticleNeighbors(article.slug, locale),
+  };
 };

@@ -2,6 +2,7 @@
   import Header from "$lib/components/Header.svelte";
   import Footer from "$lib/components/Footer.svelte";
   import Seo from "$lib/components/Seo.svelte";
+  import * as m from "$lib/paraglide/messages.js";
   import { SITE_URL, jsonLd } from "$lib/store";
 
   const homeSchema = jsonLd({
@@ -29,38 +30,38 @@
   const features = [
     {
       id: "footprint",
-      title: "Ultra-light footprint",
-      desc: "Two static binaries provide the runtime and one shared content store for every application.",
+      title: m.feature_footprint_title(),
+      desc: m.feature_footprint_desc(),
       details: `cpak pulls OCI content directly and starts cpak-storaged only while an application filesystem is mounted. Equal OCI layers are reused by digest, while FVS stores equal content blocks once across different layers and packages. Applications keep explicit dependencies without carrying a second copy of the same runtime files.`,
     },
     {
       id: "docker",
-      title: "Docker-style compatibility",
-      desc: "Familiar Dockerfile syntax, layer caching and incremental builds without a container daemon in production.",
+      title: m.feature_docker_title(),
+      desc: m.feature_docker_desc(),
       details: `Use the same Dockerfile instructions you already know; cpak reuses build layers for fast incremental builds and cacheable steps. Integrate it into existing CI/CD pipelines without installing or managing a background daemon in live environments. This approach speeds up build times, reduces infrastructure complexity, and ensures reproducible artifacts across development, staging, and production.`,
     },
     {
       id: "nvidia",
-      title: "Host GPU integration",
-      desc: "Bind host graphics drivers at launch instead of packaging a second driver stack in every image.",
+      title: m.feature_nvidia_title(),
+      desc: m.feature_nvidia_desc(),
       details: `cpak maps DRI devices and discovers host NVIDIA userspace libraries when the package grants GPU access. Images stay independent from the host driver version, while the application receives the matching host stack at launch. NVIDIA support remains experimental until it has broader hardware coverage.`,
     },
     {
       id: "secure",
-      title: "Secure system resource access",
-      desc: "Declare access to DBus, sockets and devices. Grant only the resources an application needs.",
+      title: m.feature_secure_title(),
+      desc: m.feature_secure_desc(),
       details: `Define exactly which system resources (DBus, UNIX sockets, GPIO, camera devices, audio, network interfaces, etc.) your application can access via simple override flags. No modifications to the app's source code are required, enforcing the principle of least privilege and reducing your attack surface. This model is ideal for secure production environments, CI isolation, and multi-tenant edge deployments.`,
     },
     {
       id: "git",
-      title: "Git-native versioning",
-      desc: "Install any tag, branch or exact commit SHA, then pin the source that should receive updates.",
+      title: m.feature_git_title(),
+      desc: m.feature_git_desc(),
       details: `Specify package versions directly using Git refs: tags, branches, or commit SHAs. This enables you to pin to an exact commit for reproducible deployments or follow a development branch for continuous integration. Combine conventional semver tags with Git references to implement strategies like canary releases, hotfix branches, and automatic rollbacks with full auditability.`,
     },
     {
       id: "build",
-      title: "One package model",
-      desc: "Use the same manifest and command across systems, with an OCI image built for each architecture.",
+      title: m.feature_build_title(),
+      desc: m.feature_build_desc(),
       details: `A package keeps one manifest and one Git origin while its OCI registry can publish the architecture-specific images it supports. The same \`cpak run\` command works on each supported target, and cpak selects the matching image without pretending an amd64 binary can run unchanged on ARM.`,
     },
   ];
@@ -135,26 +136,25 @@
       alt="Isometric cubes"
       class="w-96 lg:w-[28rem]"
     />
-    <div class="text-center lg:text-left">
+    <div class="min-w-0 flex-1 text-center lg:text-left">
       <h1
-        class="text-6xl leading-tight font-extrabold tracking-tight text-gray-900 lg:text-7xl"
+        class="text-balance text-6xl leading-tight font-extrabold tracking-tight text-gray-900 lg:text-7xl"
       >
-        Deploy as <span class="text-[#3E7BFF]">freely</span><br />as you develop
+        {m.home_title_before()} <span class="text-[#3E7BFF]">{m.home_title_accent()}</span><br />{m.home_title_after()}
       </h1>
-      <p class="mx-auto mt-8 max-w-md text-xl text-gray-600 lg:mx-0">
-        <span class="font-semibold text-gray-900">cpak</span> is the OCI application
-        package format for Linux desktops, servers and devices.
+      <p class="mx-auto mt-8 max-w-3xl text-pretty text-xl text-gray-600 lg:mx-0">
+        <span class="font-semibold text-gray-900">cpak</span> {m.home_intro()}
       </p>
       <div class="mt-12 flex justify-center gap-4 lg:justify-start">
         <a
           href="/docs/quick-start"
           class="rounded-full bg-[#3E7BFF] px-8 py-3 font-semibold text-white transition hover:brightness-110"
-          >Get started</a
+          >{m.get_started()}</a
         >
         <a
           href="/store"
           class="rounded-full border border-slate-200 bg-white px-8 py-3 text-gray-900 transition hover:bg-slate-100"
-          >Browse store</a
+          >{m.browse_store()}</a
         >
       </div>
     </div>
@@ -163,26 +163,25 @@
 
 <section class="border-y border-slate-200 bg-white">
   <div class="mx-auto max-w-7xl px-6 py-24">
-    <div class="flex flex-col justify-between gap-6 sm:flex-row sm:items-end">
-      <div class="max-w-xl">
+    <div class="flex flex-col justify-between gap-6 lg:flex-row lg:items-end">
+      <div class="max-w-3xl">
         <p
           class="text-sm font-semibold tracking-[0.16em] text-[#3E7BFF] uppercase"
         >
-          The Store
+          {m.home_store_eyebrow()}
         </p>
-        <h2 class="mt-3 text-4xl font-extrabold tracking-tight text-gray-900">
-          Familiar apps, ready for cpak
+        <h2 class="mt-3 text-balance text-4xl font-extrabold tracking-tight text-gray-900">
+          {m.home_store_title()}
         </h2>
-        <p class="mt-4 text-lg text-gray-600">
-          Every package has a clear manifest, a real origin and a command you
-          can inspect before installing it.
+        <p class="mt-4 text-pretty text-lg text-gray-600">
+          {m.home_store_intro()}
         </p>
       </div>
       <a
         href="/store"
-        class="inline-flex items-center gap-1 font-semibold text-[#3E7BFF] hover:text-[#3158c7]"
+        class="inline-flex shrink-0 items-center gap-1 font-semibold text-[#3E7BFF] hover:text-[#3158c7]"
       >
-        Browse every package
+        {m.home_store_all()}
         <span class="material-symbols-outlined">arrow_forward</span>
       </a>
     </div>
@@ -219,6 +218,31 @@
   </div>
 </section>
 
+<section class="learn-strip border-b border-slate-800 bg-slate-950 text-white">
+  <div
+    class="relative mx-auto grid max-w-7xl gap-10 overflow-hidden px-6 py-20 lg:grid-cols-[1fr_auto] lg:items-end"
+  >
+    <div class="relative z-10 max-w-3xl">
+      <p class="text-sm font-semibold tracking-[0.16em] text-[#8aa8ff] uppercase">
+        cpak Learn
+      </p>
+      <h2 class="mt-3 text-4xl font-extrabold tracking-tight lg:text-5xl">
+        {m.home_learn_title()}
+      </h2>
+      <p class="mt-5 max-w-2xl text-lg leading-8 text-slate-300">
+        {m.home_learn_intro()}
+      </p>
+    </div>
+    <a
+      href="/learn"
+      class="relative z-10 inline-flex w-fit items-center gap-2 rounded-full bg-[#4670EC] px-7 py-3 font-semibold text-white transition hover:bg-[#3158c7] focus-visible:ring-2 focus-visible:ring-white focus-visible:outline-none"
+    >
+      {m.home_learn_action()}
+      <span class="material-symbols-outlined" aria-hidden="true">arrow_forward</span>
+    </a>
+  </div>
+</section>
+
 <div
   class="mx-auto grid max-w-7xl gap-16 px-6 py-24 sm:grid-cols-2 lg:grid-cols-3"
 >
@@ -230,7 +254,7 @@
         on:click={() => open(f.id)}
         class="inline-flex cursor-pointer items-center text-[#4670EC] hover:text-[#435280] focus:outline-none"
       >
-        Learn More
+        {m.learn_more()}
         <span class="material-symbols-outlined ml-1">arrow_forward</span>
       </button>
     </div>
@@ -242,10 +266,10 @@
     class="mx-auto flex max-w-7xl flex-col items-center justify-between gap-10 px-6 py-12 sm:flex-row"
   >
     <div class="space-y-2 text-center sm:text-left">
-      <h2 class="text-xl font-semibold">cpak runs everywhere</h2>
+      <h2 class="text-xl font-semibold">{m.home_everywhere()}</h2>
       <p class="text-black">
-        Out-of-the-box support for every Linux distributions.
-        <a href="/install" class="text-blue-800 underline">How to install</a>
+        {m.home_everywhere_intro()}
+        <a href="/install" class="text-blue-800 underline">{m.how_to_install()}</a>
       </p>
     </div>
     <div class="flex flex-wrap justify-center gap-6 sm:justify-start">
@@ -312,3 +336,11 @@
 {/if}
 
 <Footer />
+
+<style>
+  .learn-strip {
+    background-image:
+      radial-gradient(circle at 18% 25%, rgb(70 112 236 / 0.24), transparent 34%),
+      radial-gradient(circle at 78% 82%, rgb(126 87 194 / 0.18), transparent 30%);
+  }
+</style>

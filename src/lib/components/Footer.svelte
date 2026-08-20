@@ -1,5 +1,6 @@
 <script>
   import ProjectStrip from "$lib/components/ProjectStrip.svelte";
+  import * as m from "$lib/paraglide/messages.js";
 </script>
 
 <ProjectStrip />
@@ -18,66 +19,66 @@
         />
       </div>
       <p class="leading-relaxed text-gray-600">
-        Decentralized software distribution for any context.
+        {m.footer_description()}
       </p>
     </div>
 
     <div class="space-y-3">
-      <h3 class="font-semibold text-gray-900">Product</h3>
-      <a href="/store" class="block text-gray-600 hover:underline">Store</a>
+      <h3 class="font-semibold text-gray-900">{m.footer_product()}</h3>
+      <a href="/store" class="block text-gray-600 hover:underline">{m.footer_store()}</a>
       <a href="/docs/quick-start" class="block text-gray-600 hover:underline"
-        >Get started</a
+        >{m.get_started()}</a
       >
       <a href="/docs/updates" class="block text-gray-600 hover:underline"
-        >Updates</a
+        >{m.footer_updates()}</a
       >
     </div>
 
     <div class="space-y-3">
-      <h3 class="font-semibold text-gray-900">Developers</h3>
+      <h3 class="font-semibold text-gray-900">{m.footer_developers()}</h3>
       <a href="/docs" class="block text-gray-600 hover:underline"
-        >Documentation</a
+        >{m.documentation()}</a
       >
       <a href="/docs/first-package" class="block text-gray-600 hover:underline"
-        >Build a package</a
+        >{m.footer_build_package()}</a
       >
       <a href="/docs/manifest" class="block text-gray-600 hover:underline"
-        >Manifest v2</a
+        >{m.footer_manifest()}</a
       >
       <a href="/docs/contributing" class="block text-gray-600 hover:underline"
-        >Contributing</a
+        >{m.footer_contributing()}</a
       >
-      <a href="/learn" class="block text-gray-600 hover:underline">Learn cpak</a
+      <a href="/learn" class="block text-gray-600 hover:underline">{m.footer_learn()}</a
       >
       <a href="/verify" class="block text-gray-600 hover:underline"
-        >Check a credential</a
+        >{m.footer_check_credential()}</a
       >
     </div>
 
     <div class="space-y-3">
-      <h3 class="font-semibold text-gray-900">Project</h3>
+      <h3 class="font-semibold text-gray-900">{m.footer_project()}</h3>
       <a
         href="https://github.com/Containerpak"
         class="block text-gray-600 hover:underline">GitHub</a
       >
       <a href="/announcements" class="block text-gray-600 hover:underline"
-        >Announcements</a
+        >{m.announcements()}</a
       >
       <a href="/branding" class="block text-gray-600 hover:underline"
-        >Branding</a
+        >{m.footer_branding()}</a
       >
       <a href="/support" class="block text-gray-600 hover:underline"
-        >Support cpak</a
+        >{m.footer_support()}</a
       >
     </div>
 
     <div class="space-y-3">
-      <h3 class="font-semibold text-gray-900">Legal</h3>
+      <h3 class="font-semibold text-gray-900">{m.footer_legal()}</h3>
       <a href="/legal/terms" class="block text-gray-600 hover:underline"
-        >Terms of Service</a
+        >{m.footer_terms()}</a
       >
       <a href="/legal/privacy" class="block text-gray-600 hover:underline"
-        >Privacy Policy</a
+        >{m.footer_privacy()}</a
       >
     </div>
   </div>
@@ -85,9 +86,9 @@
   <div
     class="border-t border-slate-200 px-6 py-6 text-center text-xs text-gray-500"
   >
-    A project by <a
+    {m.footer_credit_prefix()} <a
       href="https://bromb.in/"
       class="font-medium text-gray-700 hover:underline">Mirko Brombin</a
-    >, made with the cpak community. © {new Date().getFullYear()}.
+    >, {m.footer_credit_suffix({ year: String(new Date().getFullYear()) })}
   </div>
 </footer>

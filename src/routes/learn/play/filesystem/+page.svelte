@@ -2,15 +2,17 @@
   import Seo from "$lib/components/Seo.svelte";
   import PlaygroundPage from "$lib/components/learn/play/PlaygroundPage.svelte";
   import FilesystemPlayground from "$lib/components/learn/playgrounds/FilesystemPlayground.svelte";
-  import { PLAYGROUNDS, waiting, type PlaygroundStatus } from "$lib/learn/playgrounds";
+  import { waiting, type PlaygroundStatus } from "$lib/learn/playgrounds";
+  import type { PageData } from "./$types";
 
-  const play = PLAYGROUNDS.filesystem;
+  let { data }: { data: PageData } = $props();
+  let play = $derived(data.playgrounds.filesystem);
   let status = $state<PlaygroundStatus>(waiting());
 </script>
 
 <Seo
   title="Filesystem access - cpak"
-  description="Write a cpak filesystem permission list and see the host directory and the path inside the sandbox each entry resolves to, decided by cpak's own code running in the page."
+  description="Write a cpak filesystem permission list and see the host and sandbox path each entry resolves to."
   path="/learn/play/filesystem"
 />
 

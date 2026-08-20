@@ -1,9 +1,8 @@
-import { orderOf, placements, shuffled } from "$lib/learn/shuffle";
+import { permutationOf, permuted } from "$lib/learn/shuffle";
 
 export type ExamQuestion = {
   asks: string;
   choices: string[];
-  correct: number;
 };
 
 export type Exam = {
@@ -36,7 +35,6 @@ export const EXAMS: Record<string, Exam> = {
           "host read-only",
           "home read-only, and xdg-pictures read-write",
         ],
-        correct: 1,
       },
       {
         asks: "Why is a user directory written as xdg-documents rather than home/Documents?",
@@ -46,7 +44,6 @@ export const EXAMS: Record<string, Exam> = {
           "It resolves against whatever that person's desktop has that directory set to",
           "The xdg form survives the manifest migration and the other does not",
         ],
-        correct: 2,
       },
       {
         asks: "A .desktop file in your image sets Exec three times with different leading whitespace. What does cpak rewrite?",
@@ -56,7 +53,6 @@ export const EXAMS: Record<string, Exam> = {
           "All three",
           "None, and the export is refused",
         ],
-        correct: 2,
       },
       {
         asks: "The same file also has a line reading Exec[de]=... . What happens to it?",
@@ -66,7 +62,6 @@ export const EXAMS: Record<string, Exam> = {
           "It is deleted, because cpak exports one locale",
           "It makes the export fail",
         ],
-        correct: 1,
       },
       {
         asks: "Your manifest asks for nothing at all. What can the application reach?",
@@ -76,7 +71,6 @@ export const EXAMS: Record<string, Exam> = {
           "Its own image, and nothing else on the machine",
           "The home directory, read-only",
         ],
-        correct: 2,
       },
       {
         asks: "A user runs cpak override --network=false on your package. What happens?",
@@ -86,7 +80,6 @@ export const EXAMS: Record<string, Exam> = {
           "The install is refused until the manifest is changed",
           "The package is re-fetched with a different manifest",
         ],
-        correct: 1,
       },
       {
         asks: "Which of these is not a grant cpak can express, and would be dropped with a warning?",
@@ -96,7 +89,6 @@ export const EXAMS: Record<string, Exam> = {
           "home/.local/share/example",
           "~/Documents",
         ],
-        correct: 3,
       },
       {
         asks: "You are unsure whether your program needs a directory. What belongs in the manifest you publish?",
@@ -106,7 +98,6 @@ export const EXAMS: Record<string, Exam> = {
           "Nothing, and the entry is added when somebody reports what broke",
           "The directory, read-only, as a compromise",
         ],
-        correct: 2,
       },
       {
         asks: "What does socketX11 open, beyond a socket to draw through?",
@@ -116,7 +107,6 @@ export const EXAMS: Record<string, Exam> = {
           "The display and the audio server, which share a socket directory",
           "The display, and the network if the session is remote",
         ],
-        correct: 1,
       },
       {
         asks: "Your image ships a .desktop file with no [Desktop Entry] group. What does cpak do on export?",
@@ -126,7 +116,6 @@ export const EXAMS: Record<string, Exam> = {
           "It rewrites the commands it can read and does not invent the group",
           "It exports the file unchanged",
         ],
-        correct: 2,
       },
       {
         asks: "A vendor permits installation but not redistribution of its binary. Which package design respects that boundary?",
@@ -136,7 +125,6 @@ export const EXAMS: Record<string, Exam> = {
           "Commit the binary with Git LFS",
           "Download the latest file from the wrapper at every launch",
         ],
-        correct: 1,
       },
       {
         asks: "When should a Debian runtime source use deb-extract instead of dpkg?",
@@ -146,7 +134,6 @@ export const EXAMS: Record<string, Exam> = {
           "Only when the package is built for arm64",
           "When its SHA-256 is not available",
         ],
-        correct: 0,
       },
       {
         asks: "An application requires a helper command but the helper should keep its own sandbox. What relationship should the manifest use?",
@@ -156,7 +143,6 @@ export const EXAMS: Record<string, Exam> = {
           "A nested dependency",
           "A runtime source",
         ],
-        correct: 2,
       },
       {
         asks: "Why clean APT data in the same image layer that installed the runtime packages?",
@@ -166,7 +152,6 @@ export const EXAMS: Record<string, Exam> = {
           "The storage driver cannot deduplicate package indexes",
           "The Store rejects images containing manuals",
         ],
-        correct: 1,
       },
     ],
   },
@@ -182,14 +167,13 @@ export const EXAMS: Record<string, Exam> = {
     pass: PASS,
     questions: [
       {
-        asks: "Your ceiling contains \"network\": true and a package asks for nothing. What can it reach?",
+        asks: 'Your ceiling contains "network": true and a package asks for nothing. What can it reach?',
         choices: [
           "The network, because the host allows it",
           "Nothing off the machine",
           "The network, for accounts that opted in",
           "It depends on the enforcement level",
         ],
-        correct: 1,
       },
       {
         asks: "A key your ceiling does not name is:",
@@ -199,7 +183,6 @@ export const EXAMS: Record<string, Exam> = {
           "Left to the manifest and the owner of the installation",
           "Refused at install time as undeclared",
         ],
-        correct: 2,
       },
       {
         asks: "Your ceiling names socketSystemBus. What happens to socketBluetooth?",
@@ -209,7 +192,6 @@ export const EXAMS: Record<string, Exam> = {
           "It is granted, to keep the bus usable",
           "The ceiling is refused as ambiguous",
         ],
-        correct: 1,
       },
       {
         asks: "A package asks for the whole home read-write and your ceiling allows the home read-only. What runs?",
@@ -219,7 +201,6 @@ export const EXAMS: Record<string, Exam> = {
           "The application, with the access it asked for and a warning",
           "The application, with no filesystem access at all",
         ],
-        correct: 1,
       },
       {
         asks: "The same manifest also asks for /mnt/work, which the ceiling does not cover. What happens to that one?",
@@ -229,7 +210,6 @@ export const EXAMS: Record<string, Exam> = {
           "It is kept, because the ceiling is silent about it",
           "It makes the launch refuse",
         ],
-        correct: 1,
       },
       {
         asks: "You are turning on verified launch across a fleet. What do you set first?",
@@ -239,7 +219,6 @@ export const EXAMS: Record<string, Exam> = {
           "off, and set a ceiling instead",
           "refuse, on one machine, then the rest",
         ],
-        correct: 1,
       },
       {
         asks: "What does enforcement decide?",
@@ -249,17 +228,15 @@ export const EXAMS: Record<string, Exam> = {
           "Which publishers a machine will install from",
           "Whether users may write their own overrides",
         ],
-        correct: 1,
       },
       {
         asks: "Which of these can a ceiling do?",
         choices: [
-          "Give a package access its manifest never asked for",
+          "Give a package access neither its manifest nor its owner requested",
           "Make an unsigned package count as signed",
           "Narrow what a package and the installation owner agreed on",
           "Remove a package from another account",
         ],
-        correct: 2,
       },
       {
         asks: "Setting a ceiling asks for an administrator password. When is the file read?",
@@ -269,7 +246,6 @@ export const EXAMS: Record<string, Exam> = {
           "At the next launch of each application",
           "Only when cpak system ceiling is run",
         ],
-        correct: 1,
       },
       {
         asks: "cpak installs into a person's own home as that person. What can you do to another account's installation?",
@@ -279,7 +255,6 @@ export const EXAMS: Record<string, Exam> = {
           "Nothing directly: what you set is the policy the host permits",
           "Re-enrol it under the fleet policy",
         ],
-        correct: 2,
       },
       {
         asks: "A host requires signatures and receives an unsigned package. Which statement is accurate?",
@@ -289,7 +264,6 @@ export const EXAMS: Record<string, Exam> = {
           "The package runs once while the desktop asks for approval",
           "The package is enrolled under the local account identity",
         ],
-        correct: 0,
       },
       {
         asks: "An approved signer entry contains only a GitHub Actions issuer and leaves the other signer fields out. What does it accept?",
@@ -299,7 +273,6 @@ export const EXAMS: Record<string, Exam> = {
           "Only packages whose origin matches the signing workflow repository",
           "Nothing, because every signer field is mandatory",
         ],
-        correct: 1,
       },
       {
         asks: "A trust policy revokes an origin without naming a generation. What is revoked?",
@@ -309,7 +282,6 @@ export const EXAMS: Record<string, Exam> = {
           "Future generations only",
           "The signer, across every origin",
         ],
-        correct: 1,
       },
       {
         asks: "Which command changes state while diagnosing a refusal left by a removed package?",
@@ -319,7 +291,6 @@ export const EXAMS: Record<string, Exam> = {
           "cpak system clear-removal",
           "cpak system trust",
         ],
-        correct: 2,
       },
     ],
   },
@@ -342,7 +313,6 @@ export const EXAMS: Record<string, Exam> = {
           "Compose layers, grant addon permissions, resolve package, start the broker",
           "Start the process, mount the image, verify the manifest, apply the ceiling",
         ],
-        correct: 0,
       },
       {
         asks: "A user override removes network and the system ceiling allows it. What is the effective network policy?",
@@ -352,7 +322,6 @@ export const EXAMS: Record<string, Exam> = {
           "Denied because a ceiling cannot restore a removed grant",
           "Denied only when verified launch is set to refuse",
         ],
-        correct: 2,
       },
       {
         asks: "Which mechanism prevents a process from gaining privilege through a setuid executable after launch setup?",
@@ -362,7 +331,6 @@ export const EXAMS: Record<string, Exam> = {
           "The runtime index",
           "The package lock",
         ],
-        correct: 1,
       },
       {
         asks: "Why is an arbitrary command field invalid for a host action provider?",
@@ -372,7 +340,6 @@ export const EXAMS: Record<string, Exam> = {
           "It turns a finite policy-gated operation into general host execution",
           "It requires a system bus",
         ],
-        correct: 2,
       },
       {
         asks: "A container action asks to remove a host container without the requesting package ownership label. What should the provider do?",
@@ -382,7 +349,6 @@ export const EXAMS: Record<string, Exam> = {
           "Ask the desktop user for confirmation",
           "Forward it only to a rootless backend",
         ],
-        correct: 1,
       },
       {
         asks: "What may a storage driver change while repairing a derived checkout?",
@@ -392,7 +358,6 @@ export const EXAMS: Record<string, Exam> = {
           "Only rebuildable data under its assigned driver root",
           "The package manifest digest",
         ],
-        correct: 2,
       },
       {
         asks: "Why must a storage driver publish a checkout atomically?",
@@ -402,7 +367,6 @@ export const EXAMS: Record<string, Exam> = {
           "So source layers can be removed immediately",
           "So the driver can run as another user",
         ],
-        correct: 1,
       },
       {
         asks: "An external storage driver returns a symlink that escapes its assigned root. What happens?",
@@ -412,7 +376,6 @@ export const EXAMS: Record<string, Exam> = {
           "cpak rejects the returned path after symlink resolution",
           "The system ceiling decides",
         ],
-        correct: 2,
       },
       {
         asks: "Which runtime source installer is the smaller boundary for a Debian package whose maintainer scripts are not needed?",
@@ -422,7 +385,6 @@ export const EXAMS: Record<string, Exam> = {
           "file",
           "tar, after renaming the package",
         ],
-        correct: 1,
       },
       {
         asks: "A runtime source download returns one byte more than its declared size. What happens?",
@@ -432,17 +394,10 @@ export const EXAMS: Record<string, Exam> = {
           "The download is rejected before installation",
           "The runtime source is retried without a size check",
         ],
-        correct: 2,
       },
       {
         asks: "What is the correct slot mode for choosing either Go or TinyGo as the active sdk.go provider?",
-        choices: [
-          "multiple",
-          "nested",
-          "exclusive",
-          "layer",
-        ],
-        correct: 2,
+        choices: ["multiple", "nested", "exclusive", "layer"],
       },
       {
         asks: "A provider exports a library_path and include_path. What does that change?",
@@ -452,7 +407,6 @@ export const EXAMS: Record<string, Exam> = {
           "The provider becomes a required dependency",
           "The Store selects it for every installed parent",
         ],
-        correct: 1,
       },
       {
         asks: "A nested request claims a different parent origin from the process that opened the private socket. Which identity is authoritative?",
@@ -462,7 +416,6 @@ export const EXAMS: Record<string, Exam> = {
           "The authenticated package instance bound to the connection",
           "The desktop account name",
         ],
-        correct: 2,
       },
       {
         asks: "A package session declares an identifier already owned by a system session. What should registration do?",
@@ -472,7 +425,6 @@ export const EXAMS: Record<string, Exam> = {
           "Rename the system session",
           "Register both and let the display manager decide",
         ],
-        correct: 1,
       },
       {
         asks: "Verified launch finds a checkout that contradicts the state bound to its layer. Enforcement is off. What happens?",
@@ -482,7 +434,6 @@ export const EXAMS: Record<string, Exam> = {
           "The layer is enrolled again automatically",
           "The storage driver chooses whether to continue",
         ],
-        correct: 1,
       },
       {
         asks: "An update fails after staging new runtime sources but before switching the active package record. Which version remains active?",
@@ -492,24 +443,10 @@ export const EXAMS: Record<string, Exam> = {
           "The previous version",
           "Whichever version has the newer OCI digest",
         ],
-        correct: 2,
       },
     ],
   },
 };
-
-const columns = new Map<string, number[]>();
-
-function columnFor(exam: Exam, index: number): number {
-  let paper = columns.get(exam.id);
-  if (!paper) {
-    const widest = Math.max(...exam.questions.map((q) => q.choices.length));
-    paper = placements(exam.id, exam.questions.length, widest);
-    columns.set(exam.id, paper);
-  }
-  const choices = exam.questions[index].choices.length;
-  return paper[index] % choices;
-}
 
 export function asked(exam: Exam) {
   return {
@@ -518,14 +455,9 @@ export function asked(exam: Exam) {
     credential: exam.credential,
     course: exam.course,
     pass: exam.pass,
-    questions: exam.questions.map((question, index) => ({
+    questions: exam.questions.map((question) => ({
       asks: question.asks,
-      choices: shuffled(
-        question.asks,
-        question.choices,
-        question.correct,
-        columnFor(exam, index),
-      ),
+      choices: permuted(question.asks, question.choices),
     })),
   };
 }
@@ -537,17 +469,16 @@ export type Marked = {
   passed: boolean;
 };
 
-export function mark(exam: Exam, given: (number | null)[]): Marked {
+export function mark(
+  exam: Exam,
+  answers: number[],
+  given: (number | null)[],
+): Marked {
   const right = exam.questions.reduce((count, question, index) => {
-    const shown = orderOf(
-      question.asks,
-      question.choices.length,
-      question.correct,
-      columnFor(exam, index),
-    );
+    const shown = permutationOf(question.asks, question.choices.length);
     const chosen = given[index];
     if (chosen === null || chosen < 0 || chosen >= shown.length) return count;
-    return count + (shown[chosen] === question.correct ? 1 : 0);
+    return count + (shown[chosen] === answers[index] ? 1 : 0);
   }, 0);
   const total = exam.questions.length;
   const share = total === 0 ? 0 : right / total;

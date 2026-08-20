@@ -3,10 +3,10 @@
     completedIn,
     lessonKey,
     lessonsOf,
-    progressLine,
     type Course,
     type Lesson,
   } from "$lib/learn/course";
+  import * as m from "$lib/paraglide/messages.js";
 
   let {
     course,
@@ -32,8 +32,8 @@
   let reading = $derived(order.length - quizzes);
   let shape = $derived(
     quizzes === 0
-      ? `${reading} ${reading === 1 ? "lesson" : "lessons"}`
-      : `${reading} ${reading === 1 ? "lesson" : "lessons"} and ${quizzes === 1 ? "a quiz" : `${quizzes} quizzes`}`,
+      ? reading === 1 ? m.lesson_one() : m.lesson_many({ count: String(reading) })
+      : `${reading === 1 ? m.lesson_one() : m.lesson_many({ count: String(reading) })}, ${quizzes === 1 ? m.quiz_one() : m.quiz_many({ count: String(quizzes) })}`,
   );
   let next = $derived(
     order.find((lesson) => !done.has(lessonKey(course, lesson))) ?? order[0],
@@ -41,7 +41,7 @@
   let started = $derived(finished > 0);
   let complete = $derived(order.length > 0 && finished === order.length);
   let way = $derived(
-    complete ? "Read it again" : started ? "Resume" : "Start the course",
+    complete ? m.read_again() : started ? m.resume() : m.start_course(),
   );
 
   function isDone(lesson: Lesson): boolean {
@@ -52,7 +52,7 @@
 <section class="border-b border-slate-200 bg-slate-50">
   <div class="mx-auto max-w-5xl px-6 py-12 lg:py-16">
     <nav aria-label="Breadcrumb" class="text-sm text-slate-500">
-      <a href="/learn" class="hover:underline">Learn</a>
+      <a href="/learn" class="hover:underline">{m.learn()}</a>
       <span aria-hidden="true" class="px-1.5">/</span>
       <span aria-current="page">{course.title}</span>
     </nav>
@@ -70,10 +70,10 @@
 
       <div class="mt-8 w-full shrink-0 lg:mt-1 lg:w-72">
         <p class="text-sm text-slate-600">
-          {shape}, about {course.minutes} minutes
+          {m.course_time({ size: shape, minutes: String(course.minutes) })}
         </p>
         <p class="mt-3 text-sm text-slate-500">
-          {progressLine(finished, order.length)}
+          {m.progress_count({ completed: String(finished), total: String(order.length) })}
         </p>
         <div
           class="mt-2 h-1.5 w-full overflow-hidden rounded-full bg-slate-200"
@@ -81,7 +81,7 @@
           aria-valuemin="0"
           aria-valuemax={order.length}
           aria-valuenow={finished}
-          aria-label="Lessons completed"
+          aria-label={m.course_progress()}
         >
           <div
             class="h-full rounded-full bg-[#4670EC] transition-[width]"
@@ -99,11 +99,10 @@
         </a>
         {#if complete}
           <p class="mt-3 text-xs text-slate-500">
-            Every lesson marked done. Nothing here checked that you understood
-            them, and the questions at the end are the closest it comes.
+            {m.all_lessons_done()}
           </p>
         {:else if started}
-          <p class="mt-3 text-xs text-slate-500">Next: {next?.title}</p>
+          <p class="mt-3 text-xs text-slate-500">{m.next({ lesson: next?.title ?? "" })}</p>
         {/if}
       </div>
     </div>
@@ -112,7 +111,7 @@
 
 <section class="mx-auto max-w-5xl px-6 py-12">
   <h2 class="text-sm font-bold tracking-wide text-slate-500 uppercase">
-    What you will do
+    {m.what_you_will_do()}
   </h2>
 
   <div class="mt-6 space-y-10">
@@ -144,11 +143,11 @@
                 {#if lesson.kind === "test"}
                   <span
                     class="shrink-0 rounded-full bg-slate-100 px-2.5 py-0.5 text-xs font-medium text-slate-600"
-                    >Quiz</span
+                    >{m.quiz()}</span
                   >
                 {/if}
                 <span class="sr-only"
-                  >, {isDone(lesson) ? "completed" : "not started"}</span
+                  >, {isDone(lesson) ? m.completed() : m.not_started()}</span
                 >
               </a>
             </li>
@@ -157,25 +156,22 @@
       </div>
       {#if index === course.modules.length - 1}
         <p class="text-sm text-slate-500">
-          Marking a lesson done is kept in this browser. An account keeps it
-          across machines, and you can read every lesson without one.
+          {m.browser_progress_note()}
         </p>
         {#if exam}
           <div class="rounded-2xl border border-slate-200 bg-slate-50 p-6">
             <p class="text-xs font-bold tracking-wide text-slate-500 uppercase">
-              After the course
+              {m.after_course()}
             </p>
             <h3 class="mt-2 text-xl font-bold text-gray-900">{exam.title}</h3>
             <p class="mt-2 max-w-2xl text-sm leading-6 text-gray-600">
-              The quiz above tells you whether you understood this. The exam
-              decides something: pass it and a credential is issued under your
-              account, with a page anyone can read.
+              {m.exam_course_intro()}
             </p>
             <a
               href="/learn/exams/{exam.id}"
               class="mt-4 inline-flex items-center gap-2 rounded-full border border-slate-900 px-5 py-2.5 text-sm font-semibold text-slate-900 transition hover:bg-slate-900 hover:text-white"
             >
-              Sit the exam
+              {m.sit_exam()}
               <span class="material-symbols-outlined text-base" aria-hidden="true"
                 >arrow_forward</span
               >

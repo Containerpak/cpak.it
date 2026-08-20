@@ -2,15 +2,17 @@
   import Seo from "$lib/components/Seo.svelte";
   import PlaygroundPage from "$lib/components/learn/play/PlaygroundPage.svelte";
   import DesktopEntryPlayground from "$lib/components/learn/playgrounds/DesktopEntryPlayground.svelte";
-  import { PLAYGROUNDS, waiting, type PlaygroundStatus } from "$lib/learn/playgrounds";
+  import { waiting, type PlaygroundStatus } from "$lib/learn/playgrounds";
+  import type { PageData } from "./$types";
 
-  const play = PLAYGROUNDS["desktop-entry"];
+  let { data }: { data: PageData } = $props();
+  let play = $derived(data.playgrounds["desktop-entry"]);
   let status = $state<PlaygroundStatus>(waiting());
 </script>
 
 <Seo
   title="Desktop entries - cpak"
-  description="Paste a .desktop file and see exactly what cpak exports for it, line by line, decided by cpak's own code running in the page."
+  description="Paste a .desktop file and see exactly what cpak exports, line by line."
   path="/learn/play/desktop-entry"
 />
 

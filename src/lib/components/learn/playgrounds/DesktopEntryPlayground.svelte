@@ -1,6 +1,8 @@
 <script lang="ts">
   import { onMount, untrack } from "svelte";
+  import SearchSelect from "$lib/components/SearchSelect.svelte";
   import { CoreError, loadCore, type Core } from "$lib/learn/core";
+  import * as m from "$lib/paraglide/messages.js";
   import type { PlaygroundStatus } from "$lib/learn/playgrounds";
   import { EXAMPLES, EXPORT_DEFAULTS } from "$lib/learn/play/desktop-entry/examples";
   import { format, parse } from "$lib/learn/policy";
@@ -66,6 +68,14 @@
     entryText = example.entry;
     const current = parse<ExportRequest>(requestText).value ?? defaults;
     requestText = format({ ...current, name: example.fileName });
+  }
+
+  function exampleLabel(id: string) {
+    if (id === "spellings") return m.desktop_example_spellings();
+    if (id === "near-misses") return m.desktop_example_near_misses();
+    if (id === "published") return m.desktop_example_published();
+    if (id === "no-group") return m.desktop_example_no_group();
+    return m.play_custom();
   }
 
   function currentText() {
@@ -141,19 +151,20 @@
 <section class="overflow-hidden rounded-2xl border border-slate-300 bg-slate-950 shadow-sm">
   <header class="flex flex-wrap items-center gap-3 border-b border-slate-800 px-4 py-3 sm:px-5">
     <div class="min-w-0 flex-1">
-      <h2 class="font-semibold text-white">Desktop entry workspace</h2>
-      <p class="mt-0.5 text-xs text-slate-400">Edit the file shipped by the image and the export request cpak receives.</p>
+      <h2 class="font-semibold text-white">{m.desktop_workspace()}</h2>
+      <p class="mt-0.5 text-xs text-slate-400">{m.desktop_workspace_intro()}</p>
     </div>
-    <label for="desktop-example" class="sr-only">Starting desktop entry</label>
-    <select
+    <SearchSelect
       id="desktop-example"
       value={selected}
-      onchange={(event) => choose(event.currentTarget.value)}
-      class="rounded-lg border-slate-700 bg-slate-900 py-1.5 pr-8 pl-3 text-xs text-slate-200 focus:border-[#7DA2FF] focus:ring-[#7DA2FF]"
-    >
-      {#each EXAMPLES as example (example.id)}<option value={example.id}>{example.name}</option>{/each}
-      {#if selected === "custom"}<option value="custom">Custom</option>{/if}
-    </select>
+      label={m.desktop_starting_entry()}
+      searchLabel={m.desktop_search_entries()}
+      options={[
+        ...EXAMPLES.map((example) => ({ value: example.id, label: exampleLabel(example.id) })),
+        ...(selected === "custom" ? [{ value: "custom", label: m.play_custom() }] : []),
+      ]}
+      onchange={choose}
+    />
   </header>
 
   <div class="grid min-h-[34rem] lg:grid-cols-2">
@@ -190,27 +201,27 @@
             type="button"
             onclick={() => (output = "exported")}
             class={`rounded-lg px-3 py-1.5 text-xs ${output === "exported" ? "bg-slate-700 text-white" : "text-slate-400 hover:text-white"}`}
-          >Exported entry</button>
+          >{m.desktop_exported_entry()}</button>
           <button
             type="button"
             onclick={() => (output = "alias")}
             class={`rounded-lg px-3 py-1.5 text-xs ${output === "alias" ? "bg-slate-700 text-white" : "text-slate-400 hover:text-white"}`}
-          >Alias</button>
+          >{m.desktop_alias()}</button>
         </div>
         {#if result}
           <button type="button" onclick={copy} class="rounded-lg border border-slate-700 px-3 py-1.5 text-xs text-slate-200 hover:bg-slate-800">
-            {copied ? "Copied" : "Copy"}
+            {copied ? m.play_copied() : m.play_copy()}
           </button>
         {/if}
       </div>
 
       {#if phase === "loading"}
-        <p class="p-5 text-sm text-slate-400">Loading cpak...</p>
+        <p class="p-5 text-sm text-slate-400">{m.cpak_loading()}</p>
       {:else if phase === "failed"}
         <p class="p-5 font-mono text-xs leading-5 text-red-300">{failure}</p>
       {:else if refusal}
         <div class="p-5">
-          <p class="text-sm font-semibold text-amber-300">cpak refuses this export</p>
+          <p class="text-sm font-semibold text-amber-300">{m.desktop_refuses()}</p>
           <p class="mt-2 font-mono text-xs leading-5 text-slate-300">{refusal}</p>
         </div>
       {:else if result}

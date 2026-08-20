@@ -6,6 +6,7 @@ import type { Account, Provider } from "./store";
 import { randomToken } from "./session";
 
 const STATE_COOKIE = "cpak_learn_signin";
+const RETURN_COOKIE = "cpak_learn_return";
 const AUTHORIZE = "https://github.com/login/oauth/authorize";
 const TOKEN = "https://github.com/login/oauth/access_token";
 const USER = "https://api.github.com/user";
@@ -30,7 +31,15 @@ function callbackOrigin(requestOrigin: string) {
   return dev ? requestOrigin : SITE_URL;
 }
 
-export function beginGithub(cookies: Cookies, origin: string) {
+export function examReturn(value: string | null) {
+  return value && /^\/learn\/exams\/[a-z0-9-]+$/.test(value) ? value : null;
+}
+
+export function beginGithub(
+  cookies: Cookies,
+  origin: string,
+  returnTo: string | null = null,
+) {
   const keys = secrets();
   if (!keys) return null;
 
@@ -42,6 +51,17 @@ export function beginGithub(cookies: Cookies, origin: string) {
     secure: !dev,
     maxAge: 600,
   });
+  cookies.set(
+    RETURN_COOKIE,
+    examReturn(returnTo) ?? "/learn/account?welcome=1",
+    {
+      path: "/learn/account",
+      httpOnly: true,
+      sameSite: "lax",
+      secure: !dev,
+      maxAge: 600,
+    },
+  );
 
   const url = new URL(AUTHORIZE);
   url.searchParams.set("client_id", keys.id);
@@ -53,6 +73,12 @@ export function beginGithub(cookies: Cookies, origin: string) {
   url.searchParams.set("state", state);
   url.searchParams.set("allow_signup", "false");
   return url.toString();
+}
+
+export function takeReturn(cookies: Cookies) {
+  const target = cookies.get(RETURN_COOKIE) ?? "";
+  cookies.delete(RETURN_COOKIE, { path: "/learn/account" });
+  return examReturn(target) ?? "/learn/account?welcome=1";
 }
 
 export function matchState(cookies: Cookies, given: string | null) {

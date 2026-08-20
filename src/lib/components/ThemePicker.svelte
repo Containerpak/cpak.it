@@ -1,12 +1,13 @@
 <script lang="ts">
   import { onMount } from "svelte";
+  import * as m from "$lib/paraglide/messages.js";
 
   type ThemePreference = "system" | "light" | "dark";
 
   const options: { value: ThemePreference; label: string; icon: string }[] = [
-    { value: "system", label: "System", icon: "brightness_auto" },
-    { value: "light", label: "Light", icon: "light_mode" },
-    { value: "dark", label: "Dark", icon: "dark_mode" },
+    { value: "system", label: m.theme_system(), icon: "brightness_auto" },
+    { value: "light", label: m.theme_light(), icon: "light_mode" },
+    { value: "dark", label: m.theme_dark(), icon: "dark_mode" },
   ];
 
   let preference: ThemePreference = "system";
@@ -53,8 +54,8 @@
 <details bind:this={menu} class="theme-picker relative">
   <summary
     class="theme-trigger flex h-10 w-10 cursor-pointer list-none items-center justify-center rounded-full transition hover:shadow-sm"
-    aria-label={`Theme: ${current.label}`}
-    title={`Theme: ${current.label}`}
+    aria-label={m.theme_menu({ theme: current.label })}
+    title={m.theme_menu({ theme: current.label })}
   >
     <span class="material-symbols-outlined text-[21px]">{current.icon}</span>
   </summary>

@@ -2,9 +2,11 @@
   import Seo from "$lib/components/Seo.svelte";
   import PlaygroundPage from "$lib/components/learn/play/PlaygroundPage.svelte";
   import MigrationPlayground from "$lib/components/learn/playgrounds/MigrationPlayground.svelte";
-  import { PLAYGROUNDS, waiting, type PlaygroundStatus } from "$lib/learn/playgrounds";
+  import { waiting, type PlaygroundStatus } from "$lib/learn/playgrounds";
+  import type { PageData } from "./$types";
 
-  const play = PLAYGROUNDS.migration;
+  let { data }: { data: PageData } = $props();
+  let play = $derived(data.playgrounds.migration);
   let status = $state<PlaygroundStatus>(waiting());
 </script>
 

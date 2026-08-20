@@ -96,5 +96,7 @@ cpak override github.com/example/app --key filePicker --value '{"openFile":true}
 
 Overrides are stored per application version. Review them after a major package change. `cpak update` reports permission additions before committing the new version.
 
+A local override replaces the manifest defaults and may either remove or add access. On a managed machine the system ceiling is applied afterwards, so no user override can exceed the maximum selected by the administrator. See [Managed deployment](/docs/managed-deployment).
+
 > [!WARNING] Broad access
 > `deviceAll`, `socketSystemBus`, `process`, `asRoot`, and `host` filesystem access cross large parts of the sandbox boundary. Document why a package needs them.

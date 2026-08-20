@@ -2,6 +2,7 @@
 	import type { PageData } from './$types';
 	import CategoryCard from '$lib/components/CategoryCard.svelte';
 	import Seo from '$lib/components/Seo.svelte';
+	import * as m from '$lib/paraglide/messages.js';
 
 	export let data: PageData;
 </script>
@@ -15,10 +16,9 @@
 
 <div class="mx-auto max-w-7xl px-6 py-16">
 	<div class="mb-10 max-w-2xl">
-		<h1 class="text-4xl font-extrabold text-gray-900">Browse the Store</h1>
-		<p class="mt-3 text-lg text-gray-600">
-			Find {data.packageCount} desktop applications, development tools and complete environments packaged
-			for cpak.
+		<h1 class="text-balance text-4xl font-extrabold text-gray-900">{m.store_title()}</h1>
+		<p class="mt-3 text-pretty text-lg text-gray-600">
+			{m.store_intro({ count: String(data.packageCount) })}
 		</p>
 	</div>
 

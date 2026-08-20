@@ -33,6 +33,17 @@ export function placements(salt: string, questions: number, columns: number) {
   return shuffle(even, seedOf(salt));
 }
 
+export function permutationOf(seed: string, count: number): number[] {
+  return shuffle(
+    Array.from({ length: count }, (_, index) => index),
+    seedOf(seed),
+  );
+}
+
+export function permuted<T>(seed: string, items: T[]): T[] {
+  return permutationOf(seed, items.length).map((index) => items[index]);
+}
+
 export function orderOf(
   question: string,
   count: number,

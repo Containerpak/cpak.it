@@ -2,15 +2,17 @@
   import Seo from "$lib/components/Seo.svelte";
   import PlaygroundPage from "$lib/components/learn/play/PlaygroundPage.svelte";
   import PermissionsPlayground from "$lib/components/learn/playgrounds/PermissionsPlayground.svelte";
-  import { PLAYGROUNDS, waiting, type PlaygroundStatus } from "$lib/learn/playgrounds";
+  import { waiting, type PlaygroundStatus } from "$lib/learn/playgrounds";
+  import type { PageData } from "./$types";
 
-  const play = PLAYGROUNDS.permissions;
+  let { data }: { data: PageData } = $props();
+  let play = $derived(data.playgrounds.permissions);
   let status = $state<PlaygroundStatus>(waiting());
 </script>
 
 <Seo
   title="Permissions - cpak"
-  description="Edit and validate a cpak manifest, then inspect the requested permissions, host paths and broker commands decided by cpak's own code in the page."
+  description="Edit and validate a cpak manifest, then inspect its requested permissions, host paths and broker commands."
   path="/learn/play/permissions"
 />
 

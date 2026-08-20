@@ -1,6 +1,6 @@
 <script lang="ts">
   import type { Snippet } from "svelte";
-  import { CORE_MODULE } from "$lib/learn/core";
+  import * as m from "$lib/paraglide/messages.js";
 
   let {
     title,
@@ -21,11 +21,6 @@
     onretry?: () => void;
     children: Snippet;
   } = $props();
-
-  let showBuild = $state(false);
-
-  const megabytes = (CORE_MODULE.bytes / 1024 / 1024).toFixed(1);
-  const digest = `${CORE_MODULE.digest.slice(0, 12)}...`;
 </script>
 
 <div class="bg-slate-950">
@@ -38,7 +33,7 @@
           <a
             href="/learn"
             class="rounded-sm text-slate-300 hover:text-white hover:underline focus-visible:ring-2 focus-visible:ring-[#8aa8ff] focus-visible:outline-none"
-            >Learn</a
+            >{m.learn()}</a
           >
         </li>
         <li aria-hidden="true">/</li>
@@ -46,7 +41,7 @@
           <a
             href="/learn#playgrounds"
             class="rounded-sm text-slate-300 hover:text-white hover:underline focus-visible:ring-2 focus-visible:ring-[#8aa8ff] focus-visible:outline-none"
-            >Playgrounds</a
+            >{m.workspaces()}</a
           >
         </li>
         <li aria-hidden="true">/</li>
@@ -72,7 +67,7 @@
         <span class="material-symbols-outlined text-[18px]" aria-hidden="true"
           >menu_book</span
         >
-        Read the docs on {reference.label.toLowerCase()}
+        {m.documentation()}: {reference.label}
       </a>
     </div>
 
@@ -87,9 +82,7 @@
             class="material-symbols-outlined animate-spin text-[18px] text-slate-400"
             aria-hidden="true">progress_activity</span
           >
-          <span>
-            Getting cpak ready in your browser, {megabytes} MB.
-          </span>
+          <span>{m.cpak_loading()}</span>
         </p>
       {:else if phase === "ready"}
         <p class="flex flex-wrap items-center gap-x-2 gap-y-1 text-slate-300">
@@ -97,26 +90,9 @@
             class="material-symbols-outlined text-[18px] text-[#8aa8ff]"
             aria-hidden="true">verified</span
           >
-          <span class="font-medium text-white"
-            >These answers come from cpak itself, running in your browser.</span
-          >
-          <span>Nothing you type leaves this page.</span>
-          <button
-            type="button"
-            onclick={() => (showBuild = !showBuild)}
-            aria-expanded={showBuild}
-            class="underline decoration-slate-500 underline-offset-2 hover:text-white focus-visible:ring-2 focus-visible:ring-[#8aa8ff] focus-visible:outline-none"
-          >
-            {showBuild ? "Hide the build" : "Which build?"}
-          </button>
+          <span class="font-medium text-white">cpak {version}</span>
+          <span>{m.cpak_ready()}</span>
         </p>
-        {#if showBuild}
-          <p class="mt-2 text-xs leading-6 text-slate-400">
-            cpak {version}, compiled to WebAssembly, build
-            <code class="font-mono text-slate-300">{digest}</code>. A course
-            pins one build so an answer means the same thing tomorrow.
-          </p>
-        {/if}
       {:else}
         <div class="flex flex-wrap items-center gap-x-3 gap-y-2">
           <p class="flex items-start gap-2 text-[#fda4af]">
@@ -124,14 +100,14 @@
               class="material-symbols-outlined text-[18px]"
               aria-hidden="true">error</span
             >
-            <span>{error || "The decision module could not be loaded."}</span>
+            <span>{error || m.cpak_failed()}</span>
           </p>
           <button
             type="button"
             onclick={onretry}
             class="rounded-full border border-white/20 px-4 py-1.5 text-sm font-medium text-white hover:bg-white/10 focus-visible:ring-2 focus-visible:ring-[#8aa8ff] focus-visible:outline-none"
           >
-            Try again
+            {m.try_again()}
           </button>
         </div>
       {/if}

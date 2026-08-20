@@ -1,6 +1,8 @@
 <script lang="ts">
   import { onMount, untrack } from "svelte";
+  import SearchSelect from "$lib/components/SearchSelect.svelte";
   import { CoreError, loadCore, type Core } from "$lib/learn/core";
+  import * as m from "$lib/paraglide/messages.js";
   import type { PlaygroundStatus } from "$lib/learn/playgrounds";
   import { HOST, STARTING_POINTS } from "$lib/learn/play/filesystem/fixture";
   import { format, parse } from "$lib/learn/policy";
@@ -39,6 +41,14 @@
   function choose(index: number) {
     selected = String(index);
     filesystemText = format(STARTING_POINTS[index].entries);
+  }
+
+  function exampleLabel(index: number) {
+    if (index === 0) return m.filesystem_example_editor();
+    if (index === 1) return m.filesystem_example_player();
+    if (index === 2) return m.filesystem_example_user_dirs();
+    if (index === 3) return m.filesystem_example_host();
+    return m.filesystem_example_refused();
   }
 
   function currentText() {
@@ -101,23 +111,22 @@
 <section class="overflow-hidden rounded-2xl border border-slate-300 bg-slate-950 shadow-sm">
   <header class="flex flex-wrap items-center gap-3 border-b border-slate-800 px-4 py-3 sm:px-5">
     <div class="min-w-0 flex-1">
-      <h2 class="font-semibold text-white">Filesystem workspace</h2>
-      <p class="mt-0.5 text-xs text-slate-400">Write the manifest list and the host it will be resolved against.</p>
+      <h2 class="font-semibold text-white">{m.filesystem_workspace()}</h2>
+      <p class="mt-0.5 text-xs text-slate-400">{m.filesystem_workspace_intro()}</p>
     </div>
-    <label for="filesystem-example" class="sr-only">Starting example</label>
-    <select
+    <SearchSelect
       id="filesystem-example"
       value={selected}
-      onchange={(event) => {
-        if (event.currentTarget.value !== "custom") choose(Number(event.currentTarget.value));
+      label={m.filesystem_starting_example()}
+      searchLabel={m.filesystem_search_examples()}
+      options={[
+        ...STARTING_POINTS.map((point, index) => ({ value: String(index), label: exampleLabel(index) })),
+        ...(selected === "custom" ? [{ value: "custom", label: m.play_custom() }] : []),
+      ]}
+      onchange={(value) => {
+        if (value !== "custom") choose(Number(value));
       }}
-      class="rounded-lg border-slate-700 bg-slate-900 py-1.5 pr-8 pl-3 text-xs text-slate-200 focus:border-[#7DA2FF] focus:ring-[#7DA2FF]"
-    >
-      {#each STARTING_POINTS as point, index (point.name)}
-        <option value={index}>{point.name}</option>
-      {/each}
-      {#if selected === "custom"}<option value="custom">Custom</option>{/if}
-    </select>
+    />
   </header>
 
   <div class="grid min-h-[34rem] lg:grid-cols-[minmax(0,1.05fr)_minmax(20rem,0.95fr)]">
@@ -149,22 +158,22 @@
 
     <aside class="min-w-0 bg-slate-900/70" aria-live="polite">
       <div class="border-b border-slate-800 px-4 py-3 sm:px-5">
-        <h3 class="text-sm font-semibold text-white">Mount plan</h3>
-        <p class="mt-1 text-xs leading-5 text-slate-400">Every accepted line shows its host source and path inside the application.</p>
+        <h3 class="text-sm font-semibold text-white">{m.filesystem_mount_plan()}</h3>
+        <p class="mt-1 text-xs leading-5 text-slate-400">{m.filesystem_mount_plan_intro()}</p>
       </div>
       <div class="space-y-4 px-4 py-5 sm:px-5">
         {#if phase === "loading"}
-          <p class="text-sm text-slate-400">Loading cpak...</p>
+          <p class="text-sm text-slate-400">{m.cpak_loading()}</p>
         {:else if phase === "failed"}
           <p class="font-mono text-xs leading-5 text-red-300">{failure}</p>
         {:else if refusal}
           <div>
-            <p class="text-sm font-semibold text-amber-300">cpak refuses this input</p>
+            <p class="text-sm font-semibold text-amber-300">{m.filesystem_refuses()}</p>
             <p class="mt-2 font-mono text-xs leading-5 text-slate-300">{refusal}</p>
           </div>
         {:else if plan}
           <p class={`text-sm font-semibold ${plan.valid ? "text-emerald-300" : "text-amber-300"}`}>
-            {plan.valid ? "The filesystem list is valid." : plan.error}
+            {plan.valid ? m.filesystem_valid() : plan.error}
           </p>
           {#if plan.entries.length}
             <ol class="space-y-3">
@@ -178,15 +187,15 @@
                     <p class="mt-2 text-xs leading-5 text-amber-200">{entry.error}</p>
                   {:else}
                     <dl class="mt-3 grid gap-2 text-xs">
-                      <div><dt class="text-slate-500">Host</dt><dd class="mt-0.5 break-all font-mono text-slate-200">{entry.source}</dd></div>
-                      <div><dt class="text-slate-500">Application</dt><dd class="mt-0.5 break-all font-mono text-slate-200">{entry.target}</dd></div>
+                      <div><dt class="text-slate-500">{m.play_host()}</dt><dd class="mt-0.5 break-all font-mono text-slate-200">{entry.source}</dd></div>
+                      <div><dt class="text-slate-500">{m.play_application()}</dt><dd class="mt-0.5 break-all font-mono text-slate-200">{entry.target}</dd></div>
                     </dl>
                   {/if}
                 </li>
               {/each}
             </ol>
           {:else}
-            <p class="text-sm text-slate-300">No host path is mounted.</p>
+            <p class="text-sm text-slate-300">{m.filesystem_no_mount()}</p>
           {/if}
         {/if}
       </div>

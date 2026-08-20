@@ -2,6 +2,7 @@
 	import Header from '$lib/components/Header.svelte';
 	import Footer from '$lib/components/Footer.svelte';
 	import { announcements } from '$lib/announcements';
+	import * as m from '$lib/paraglide/messages.js';
 </script>
 
 <svelte:head>
@@ -14,12 +15,12 @@
 <main>
 	<section class="border-b border-slate-200 bg-slate-50">
 		<div class="mx-auto max-w-7xl px-6 py-24">
-			<p class="text-sm font-semibold tracking-[0.16em] text-[#3E7BFF] uppercase">News</p>
-			<h1 class="mt-4 max-w-3xl text-4xl font-extrabold tracking-tight text-gray-900 sm:text-6xl">
-				Announcements
+			<p class="text-sm font-semibold tracking-[0.16em] text-[#3E7BFF] uppercase">{m.news()}</p>
+			<h1 class="mt-4 max-w-4xl text-balance text-4xl font-extrabold tracking-tight text-gray-900 sm:text-6xl">
+				{m.announcements()}
 			</h1>
-			<p class="mt-6 max-w-2xl text-xl leading-8 text-gray-600">
-				Notes on new packages, runtime changes and the projects that choose to ship with cpak.
+			<p class="mt-6 max-w-3xl text-pretty text-xl leading-8 text-gray-600">
+				{m.announcements_intro()}
 			</p>
 		</div>
 	</section>
@@ -42,7 +43,7 @@
 						</p>
 					</div>
 					<span class="inline-flex items-center gap-1 font-semibold text-[#3E7BFF]">
-						Read announcement
+						{m.read_announcement()}
 						<span class="material-symbols-outlined">arrow_forward</span>
 					</span>
 				</div>

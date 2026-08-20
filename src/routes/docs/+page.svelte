@@ -1,31 +1,31 @@
 <script lang="ts">
-  import { groupedArticles } from "$lib/docs";
+  import type { PageData } from "./$types";
   import Seo from "$lib/components/Seo.svelte";
+  import * as m from "$lib/paraglide/messages.js";
+
+  let { data }: { data: PageData } = $props();
 
   const paths = [
     {
       icon: "play_circle",
-      title: "Use cpak",
-      description:
-        "Install the runtime, check your host, and run an application.",
+      title: m.docs_use_title(),
+      description: m.docs_use_desc(),
       href: "/docs/quick-start",
-      label: "Run your first package",
+      label: m.docs_use_action(),
     },
     {
       icon: "inventory_2",
-      title: "Package an application",
-      description:
-        "Turn an OCI image and a small manifest into a distributable application.",
+      title: m.docs_package_title(),
+      description: m.docs_package_desc(),
       href: "/docs/first-package",
-      label: "Build a package",
+      label: m.docs_package_action(),
     },
     {
       icon: "code",
-      title: "Work on cpak",
-      description:
-        "Understand the repository map, development flow, and project conventions.",
+      title: m.docs_work_title(),
+      description: m.docs_work_desc(),
       href: "/docs/contributing",
-      label: "Start contributing",
+      label: m.docs_work_action(),
     },
   ];
 </script>
@@ -39,16 +39,15 @@
 <section class="border-b border-slate-200 bg-white">
   <div class="mx-auto max-w-7xl px-6 py-20">
     <p class="text-sm font-semibold tracking-wide text-[#4670EC] uppercase">
-      cpak documentation
+      {m.docs_eyebrow()}
     </p>
     <h1
-      class="mt-4 max-w-4xl text-5xl font-extrabold tracking-tight text-gray-950 sm:text-6xl"
+      class="mt-4 max-w-4xl text-balance text-5xl font-extrabold tracking-tight text-gray-950 sm:text-6xl"
     >
-      Everything you need to build and ship with cpak.
+      {m.docs_title()}
     </h1>
-    <p class="mt-6 max-w-3xl text-xl leading-8 text-gray-600">
-      Choose the path that matches what you are doing. Each guide uses the
-      current v2 runtime, manifest, and command line interface.
+    <p class="mt-6 max-w-3xl text-pretty text-xl leading-8 text-gray-600">
+      {m.docs_intro()}
     </p>
 
     <div class="mt-12 grid gap-5 lg:grid-cols-3">
@@ -82,7 +81,7 @@
 </section>
 
 <div class="mx-auto max-w-7xl space-y-16 px-6 py-20">
-  {#each groupedArticles as group}
+  {#each data.groups as group}
     {#if group.articles.length}
       <section id={group.id} class="scroll-mt-24">
         <div class="max-w-3xl">
@@ -129,10 +128,9 @@
       class="flex flex-col justify-between gap-8 lg:flex-row lg:items-center"
     >
       <div>
-        <h2 class="text-3xl font-bold">Cannot find what you need?</h2>
+        <h2 class="text-3xl font-bold">{m.docs_missing_title()}</h2>
         <p class="mt-3 max-w-2xl leading-7 text-slate-300">
-          The documentation is maintained beside the project. Open the
-          repository, inspect the code, or propose a focused correction.
+          {m.docs_missing_desc()}
         </p>
       </div>
       <a
@@ -141,7 +139,7 @@
         rel="noopener noreferrer"
         class="inline-flex shrink-0 items-center justify-center gap-2 rounded-full bg-white px-6 py-3 font-semibold text-slate-950 hover:bg-slate-100"
       >
-        Open cpak on GitHub
+        {m.docs_open_github()}
         <span class="material-symbols-outlined text-lg">open_in_new</span>
       </a>
     </div>

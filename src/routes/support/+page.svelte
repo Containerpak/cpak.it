@@ -83,7 +83,7 @@
       >
         Help cpak grow past the experiment.
       </h1>
-      <p class="mx-auto mt-6 max-w-2xl text-xl leading-8 text-gray-600">
+      <p class="mx-auto mt-6 max-w-3xl text-xl leading-8 text-gray-600">
         cpak, its runtime, official packages, SDKs, Store, and compatibility
         work are maintained as an independent project. Funding buys the time
         needed to test more hardware and keep releases moving.

@@ -11,6 +11,7 @@
   } from "$lib/learn/course";
   import { markDone } from "$lib/learn/progress";
   import type { PlaygroundStatus } from "$lib/learn/playgrounds";
+  import * as m from "$lib/paraglide/messages.js";
 
   let {
     course,
@@ -90,7 +91,7 @@
         <ol class="flex flex-wrap items-center gap-2 text-slate-500">
           <li>
             <a href="/learn" class="font-medium text-[#4670EC] hover:underline"
-              >Learn</a
+              >{m.learn()}</a
             >
           </li>
           <li aria-hidden="true">/</li>
@@ -104,7 +105,7 @@
           </li>
           <li aria-hidden="true">/</li>
           <li aria-current="page">
-            Lesson {place.number} of {place.total}
+            {m.lesson_position({ current: String(place.number), total: String(place.total) })}
           </li>
         </ol>
       </nav>
@@ -118,7 +119,7 @@
         <span class="material-symbols-outlined text-[18px]" aria-hidden="true">
           {railShown ? "open_in_full" : "close_fullscreen"}
         </span>
-        {railShown ? "Full width" : "Show the course"}
+        {railShown ? m.full_width() : m.show_course()}
       </button>
     </div>
 
@@ -194,7 +195,7 @@
               id="playground-heading"
               class="text-sm font-semibold text-gray-900"
             >
-              {playgroundTitle || "Playground"}
+              {playgroundTitle || m.playground()}
             </h2>
             {#if playgroundLink}
               <a
@@ -213,19 +214,18 @@
               aria-live="polite"
             >
               {#if playgroundStatus.phase === "ready"}
-                These answers come from cpak itself, running in your browser.
-                Nothing you type leaves this page.
+                {m.cpak_ready()}
               {:else if playgroundStatus.phase === "loading"}
-                Getting cpak ready in your browser.
+                {m.cpak_loading()}
               {:else}
                 {playgroundStatus.error ||
-                  "cpak could not be loaded in this browser."}
+                  m.cpak_failed()}
                 <button
                   type="button"
                   onclick={() => playgroundStatus?.retry()}
                   class="font-medium text-[#4670EC] hover:underline"
                 >
-                  Try again
+                  {m.try_again()}
                 </button>
               {/if}
             </p>
@@ -249,7 +249,7 @@
           <span class="material-symbols-outlined text-[18px]" aria-hidden="true"
             >arrow_back</span
           >
-          <span class="truncate">Previous</span>
+          <span class="truncate">{m.previous()}</span>
         </a>
       {:else}
         <a
@@ -260,8 +260,8 @@
             >arrow_back</span
           >
           <span class="truncate">
-            <span class="sm:hidden">Overview</span>
-            <span class="hidden sm:inline">Course overview</span>
+            <span class="sm:hidden">{m.overview()}</span>
+            <span class="hidden sm:inline">{m.course_overview()}</span>
           </span>
         </a>
       {/if}
@@ -273,7 +273,7 @@
           class="inline-flex min-w-0 items-center gap-2 rounded-full bg-[#3E7BFF] px-6 py-2.5 text-sm font-semibold text-white transition hover:brightness-110"
         >
           <span class="truncate">
-            Next<span class="hidden sm:inline">: {place.next.title}</span>
+            {m.next_page()}<span class="hidden sm:inline">: {place.next.title}</span>
           </span>
           <span class="material-symbols-outlined text-[18px]" aria-hidden="true"
             >arrow_forward</span
@@ -285,7 +285,7 @@
           onclick={advance}
           class="inline-flex min-w-0 items-center gap-2 rounded-full bg-[#3E7BFF] px-6 py-2.5 text-sm font-semibold text-white transition hover:brightness-110"
         >
-          <span class="truncate">Finish the course</span>
+          <span class="truncate">{m.finish_course()}</span>
           <span class="material-symbols-outlined text-[18px]" aria-hidden="true"
             >arrow_forward</span
           >

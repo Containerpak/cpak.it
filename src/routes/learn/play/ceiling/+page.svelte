@@ -2,15 +2,17 @@
   import Seo from "$lib/components/Seo.svelte";
   import PlaygroundPage from "$lib/components/learn/play/PlaygroundPage.svelte";
   import CeilingPlayground from "$lib/components/learn/playgrounds/CeilingPlayground.svelte";
-  import { PLAYGROUNDS, waiting, type PlaygroundStatus } from "$lib/learn/playgrounds";
+  import { waiting, type PlaygroundStatus } from "$lib/learn/playgrounds";
+  import type { PageData } from "./$types";
 
-  const play = PLAYGROUNDS.ceiling;
+  let { data }: { data: PageData } = $props();
+  let play = $derived(data.playgrounds.ceiling);
   let status = $state<PlaygroundStatus>(waiting());
 </script>
 
 <Seo
   title="The ceiling - cpak"
-  description="Set a manifest, an owner override and an administrator ceiling against each other, and read the permissions and mounts that survive all three, decided by cpak's own code running in the page."
+  description="Set a manifest, an owner override and an administrator ceiling, then read the permissions and mounts that survive all three."
   path="/learn/play/ceiling"
 />
 

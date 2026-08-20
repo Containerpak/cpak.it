@@ -2,11 +2,11 @@
   import {
     lessonKey,
     lessonsOf,
-    progressLine,
     type Course,
     type Lesson,
     type LessonState,
   } from "$lib/learn/course";
+  import * as m from "$lib/paraglide/messages.js";
 
   let {
     course,
@@ -36,7 +36,7 @@
 </script>
 
 <nav aria-label={course.title}>
-  <p class="text-xs font-bold tracking-wide text-slate-500 uppercase">Course</p>
+  <p class="text-xs font-bold tracking-wide text-slate-500 uppercase">{m.course()}</p>
   <a
     href={course.href}
     class="mt-1 block text-base leading-6 font-semibold text-gray-900 hover:underline"
@@ -50,17 +50,17 @@
     <span class="material-symbols-outlined text-base" aria-hidden="true"
       >grid_view</span
     >
-    Course overview
+    {m.course_overview()}
   </a>
 
-  <p class="mt-4 text-xs text-gray-500">{progressLine(finished, total)}</p>
+  <p class="mt-4 text-xs text-gray-500">{m.progress_count({ completed: String(finished), total: String(total) })}</p>
   <div
     class="mt-2 h-1.5 w-full overflow-hidden rounded-full bg-slate-200"
     role="progressbar"
     aria-valuemin="0"
     aria-valuemax={total}
     aria-valuenow={finished}
-    aria-label="Lessons completed"
+    aria-label={m.course_progress()}
   >
     <div
       class="h-full rounded-full bg-[#4670EC]"

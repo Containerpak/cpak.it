@@ -3,6 +3,7 @@ import { error, fail, redirect } from "@sveltejs/kit";
 import type { Actions, PageServerLoad } from "./$types";
 import { endSession, startSession, whoIsHere } from "$lib/server/learn/session";
 import {
+  examReturn,
   githubReady,
   localAccount,
   localSigninOffered,
@@ -15,6 +16,7 @@ export const load: PageServerLoad = async (event) => {
     github: githubReady(),
     local: localSigninOffered(),
     durable: store.durable,
+    returnTo: examReturn(event.url.searchParams.get("returnTo")),
   };
 
   if (!account)
@@ -62,6 +64,7 @@ export const actions: Actions = {
       error(404, "Local sign-in is not available here.");
     const form = await event.request.formData();
     const handle = String(form.get("handle") ?? "");
+    const returnTo = examReturn(String(form.get("returnTo") ?? ""));
     const { store } = await whoIsHere(event);
     try {
       await startSession(store, event.cookies, localAccount(handle));
@@ -73,7 +76,7 @@ export const actions: Actions = {
             : "That handle was not usable.",
       });
     }
-    redirect(303, "/learn/account?welcome=1");
+    redirect(303, returnTo ?? "/learn/account?welcome=1");
   },
 
   signout: async (event) => {

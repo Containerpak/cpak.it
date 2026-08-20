@@ -2,6 +2,8 @@
   import { page } from "$app/stores";
   import { onMount } from "svelte";
   import { searchQuery } from "$lib/stores/search";
+  import * as m from "$lib/paraglide/messages.js";
+  import LanguagePicker from "$lib/components/LanguagePicker.svelte";
   import ThemePicker from "$lib/components/ThemePicker.svelte";
   import { packageSlug } from "$lib/store";
 
@@ -112,7 +114,7 @@
     {#if current !== "/"}
       <button
         on:click={() => history.back()}
-        aria-label="Back"
+        aria-label={m.back()}
         class="hidden cursor-pointer items-center rounded-full bg-transparent p-2 text-gray-700 shadow-none transition duration-200 hover:bg-white hover:shadow-sm sm:flex"
       >
         <span class="material-symbols-outlined">arrow_back</span>
@@ -154,7 +156,7 @@
         type="search"
         bind:value={query}
         on:input={handleInput}
-        placeholder="Search docs & apps"
+        placeholder={m.search_placeholder()}
         class="hidden h-12 w-full max-w-[480px] rounded-full border border-slate-200 bg-white px-5 text-sm placeholder-gray-400 shadow-sm focus:ring-2 focus:ring-[#3E7BFF] focus:outline-none lg:block xl:max-w-[560px]"
       />
       {#if showDropdown}
@@ -163,7 +165,7 @@
         >
           {#if results.docs.length}
             <div class="border-b px-4 py-2">
-              <h4 class="text-sm font-semibold text-gray-700">Documentation</h4>
+              <h4 class="text-sm font-semibold text-gray-700">{m.documentation()}</h4>
               {#each results.docs as d}
                 <!-- svelte-ignore a11y_click_events_have_key_events -->
                 <!-- svelte-ignore a11y_no_static_element_interactions -->
@@ -186,7 +188,7 @@
           {/if}
           {#if results.apps.length}
             <div class="px-4 py-2">
-              <h4 class="text-sm font-semibold text-gray-700">Apps</h4>
+              <h4 class="text-sm font-semibold text-gray-700">{m.apps()}</h4>
               {#each results.apps as a}
                 <!-- svelte-ignore a11y_click_events_have_key_events -->
                 <!-- svelte-ignore a11y_no_static_element_interactions -->
@@ -202,13 +204,14 @@
           {/if}
           {#if !results.docs.length && !results.apps.length}
             <div class="p-4 text-center text-sm text-gray-500">
-              No results found
+              {m.no_results()}
             </div>
           {/if}
         </div>
       {/if}
     </div>
     <div class="flex shrink-0 items-center gap-6">
+      <LanguagePicker />
       <ThemePicker />
       <button
         class="flex items-center justify-center rounded-full bg-transparent p-2 text-gray-700 shadow-none transition duration-200 hover:bg-white hover:shadow-sm lg:hidden"
@@ -220,7 +223,7 @@
         <div class="hidden items-center gap-6 lg:flex">
           <a
             href="/docs"
-            class="text-sm font-medium text-gray-900 hover:underline">Docs</a
+            class="text-sm font-medium text-gray-900 hover:underline">{m.docs()}</a
           >
           {#if account}
             <div class="relative" data-account-menu>
@@ -240,7 +243,7 @@
                 {:else}
                   {account.handle.slice(0, 1).toUpperCase()}
                 {/if}
-                <span class="sr-only">Your account, {account.handle}</span>
+                <span class="sr-only">{m.your_account({ handle: account.handle })}</span>
               </button>
 
               {#if showAccountMenu}
@@ -249,7 +252,7 @@
                   class="header-popover absolute right-0 z-30 mt-2 w-60 overflow-hidden rounded-xl border border-slate-200 bg-white py-1 shadow-lg"
                 >
                   <p class="px-4 py-2 text-xs text-gray-500">
-                    Signed in as
+                    {m.signed_in_as()}
                     <span class="font-medium text-gray-900">{account.handle}</span>
                   </p>
                   <div class="my-1 border-t border-slate-100"></div>
@@ -258,21 +261,21 @@
                     href="/learn/account#completed"
                     on:click={() => (showAccountMenu = false)}
                     class="block px-4 py-2 text-sm text-gray-900 hover:bg-slate-100"
-                    >Your courses</a
+                    >{m.your_courses()}</a
                   >
                   <a
                     role="menuitem"
                     href="/learn/account#hold"
                     on:click={() => (showAccountMenu = false)}
                     class="block px-4 py-2 text-sm text-gray-900 hover:bg-slate-100"
-                    >Your credentials</a
+                    >{m.your_credentials()}</a
                   >
                   <a
                     role="menuitem"
                     href="/learn/account#data"
                     on:click={() => (showAccountMenu = false)}
                     class="block px-4 py-2 text-sm text-gray-900 hover:bg-slate-100"
-                    >Settings</a
+                    >{m.settings()}</a
                   >
                   <div class="my-1 border-t border-slate-100"></div>
                   <form method="POST" action="/learn/account?/signout">
@@ -280,7 +283,7 @@
                       role="menuitem"
                       type="submit"
                       class="block w-full px-4 py-2 text-left text-sm text-gray-900 hover:bg-slate-100"
-                      >Sign out</button
+                      >{m.sign_out()}</button
                     >
                   </form>
                 </div>
@@ -290,7 +293,7 @@
             <a
               href="/learn/account#signin"
               class="rounded-full bg-[#3E7BFF]/20 px-4 py-2 text-sm font-semibold text-[#3E7BFF] transition hover:bg-[#3E7BFF]/30"
-              >Sign in</a
+              >{m.sign_in()}</a
             >
           {/if}
         </div>
@@ -298,30 +301,26 @@
         <div class="hidden items-center gap-6 lg:flex">
           <a
             href="/docs"
-            class="text-sm font-medium text-gray-900 hover:underline">Docs</a
+            class="text-sm font-medium text-gray-900 hover:underline">{m.docs()}</a
           >
           <a
             href="/learn"
-            class="text-sm font-medium text-gray-900 hover:underline">Learn</a
+            class="text-sm font-medium text-gray-900 hover:underline">{m.learn()}</a
           >
           <a
             href="/announcements"
             class="text-sm font-medium text-gray-900 hover:underline"
-            >Announcements</a
+            >{m.announcements()}</a
           >
           <a
             href="/support"
-            class="text-sm font-medium text-gray-900 hover:underline">Support</a
-          >
-          <a
-            href="https://github.com/containerpak/cpak"
-            class="text-sm font-medium text-gray-900 hover:underline">GitHub</a
+            class="text-sm font-medium text-gray-900 hover:underline">{m.support()}</a
           >
           <a
             href="/docs/quick-start"
             class="rounded-full bg-[#3E7BFF]/20 px-4 py-2 text-sm font-semibold text-[#3E7BFF] transition hover:bg-[#3E7BFF]/30"
           >
-            Get started
+            {m.get_started()}
           </a>
         </div>
       {/if}
@@ -332,75 +331,70 @@
       <a
         href="/docs"
         class="block px-6 py-4 text-sm font-medium text-gray-900 hover:bg-slate-100"
-        >Docs</a
+        >{m.docs()}</a
       >
       {#if inLearn}
         {#if account}
           <p class="border-t border-slate-100 px-6 pt-4 text-xs text-gray-500">
-            Signed in as <span class="font-medium text-gray-900">{account.handle}</span>
+            {m.signed_in_as()} <span class="font-medium text-gray-900">{account.handle}</span>
           </p>
           <a
             href="/learn/account#completed"
             class="block px-6 py-4 text-sm font-medium text-gray-900 hover:bg-slate-100"
-            >Your courses</a
+            >{m.your_courses()}</a
           >
           <a
             href="/learn/account#hold"
             class="block px-6 py-4 text-sm font-medium text-gray-900 hover:bg-slate-100"
-            >Your credentials</a
+            >{m.your_credentials()}</a
           >
           <a
             href="/learn/account#data"
             class="block px-6 py-4 text-sm font-medium text-gray-900 hover:bg-slate-100"
-            >Settings</a
+            >{m.settings()}</a
           >
           <form method="POST" action="/learn/account?/signout">
             <button
               type="submit"
               class="block w-full px-6 py-4 text-left text-sm font-medium text-gray-900 hover:bg-slate-100"
-              >Sign out</button
+              >{m.sign_out()}</button
             >
           </form>
         {:else}
           <a
             href="/learn/account#signin"
             class="block px-6 py-4 text-sm font-medium text-[#3E7BFF] hover:bg-slate-100"
-            >Sign in</a
+            >{m.sign_in()}</a
           >
         {/if}
       {:else}
         <a
           href="/learn"
           class="block px-6 py-4 text-sm font-medium text-gray-900 hover:bg-slate-100"
-          >Learn</a
+          >{m.learn()}</a
         >
         <a
           href="/announcements"
           class="block px-6 py-4 text-sm font-medium text-gray-900 hover:bg-slate-100"
-          >Announcements</a
+          >{m.announcements()}</a
         >
         <a
           href="/support"
           class="block px-6 py-4 text-sm font-medium text-gray-900 hover:bg-slate-100"
-          >Support</a
-        >
-        <a
-          href="https://github.com/containerpak/cpak"
-          class="block px-6 py-4 text-sm font-medium text-gray-900 hover:bg-slate-100"
-          >GitHub</a
+          >{m.support()}</a
         >
         <a
           href="/docs/quick-start"
           class="block px-6 py-4 text-sm font-medium text-[#3E7BFF] hover:bg-slate-100"
         >
-          Get started
+          {m.get_started()}
         </a>
       {/if}
       <input
         type="search"
         bind:value={query}
         on:input={handleInput}
-        placeholder="Search docs & apps"
+        placeholder={m.search_placeholder()}
         class="block w-full border-t border-slate-200 px-6 py-4 text-sm focus:ring-2 focus:ring-[#3E7BFF] focus:outline-none"
       />
     </div>
@@ -432,6 +426,10 @@
   }
 
   .academy-header :global(.theme-picker summary:hover) {
+    background: rgb(255 255 255 / 12%);
+  }
+
+  .academy-header :global(.language-picker summary:hover) {
     background: rgb(255 255 255 / 12%);
   }
 
