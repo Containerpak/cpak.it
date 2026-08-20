@@ -7,7 +7,6 @@ import {
   localAccount,
   localSigninOffered,
 } from "$lib/server/learn/signin";
-import { issue } from "$lib/server/learn/credentials";
 
 export const load: PageServerLoad = async (event) => {
   const { store, account } = await whoIsHere(event);
@@ -16,7 +15,6 @@ export const load: PageServerLoad = async (event) => {
     github: githubReady(),
     local: localSigninOffered(),
     durable: store.durable,
-    sampling: dev,
   };
 
   if (!account)
@@ -108,15 +106,4 @@ export const actions: Actions = {
 
   // Development only. The exam pages are not built yet, and without a real
   // credential row there is no way to look at the pages that show one.
-  sample: async (event) => {
-    if (!dev) error(404, "Not here.");
-    const { store, account } = await whoIsHere(event);
-    if (!account) return fail(401, { problem: "Sign in first." });
-    const entry = await issue(store, account, {
-      exam: "packaging-foundations",
-      title: "Packaging foundations",
-      result: "Passed",
-    });
-    redirect(303, `/learn/account/credentials/${entry.code}`);
-  },
 };

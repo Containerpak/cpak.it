@@ -18,6 +18,7 @@
     minutes,
     summary,
     audience,
+    exam = null,
   }: {
     course: Course;
     /** Honest, and rounded to something a person would say. */
@@ -26,6 +27,8 @@
     summary: string;
     /** Who it is for, and what it assumes. */
     audience: string;
+    /** The exam this course leads to, when there is one. */
+    exam?: { id: string; title: string } | null;
   } = $props();
 
   let order = $derived(lessonsOf(course));
@@ -176,6 +179,28 @@
           Marking a lesson done is kept in this browser. An account keeps it
           across machines, and you can read every lesson without one.
         </p>
+        {#if exam}
+          <div class="rounded-2xl border border-slate-200 bg-slate-50 p-6">
+            <p class="text-xs font-bold tracking-wide text-slate-500 uppercase">
+              After the course
+            </p>
+            <h3 class="mt-2 text-xl font-bold text-gray-900">{exam.title}</h3>
+            <p class="mt-2 max-w-2xl text-sm leading-6 text-gray-600">
+              The quiz above tells you whether you understood this. The exam
+              decides something: pass it and a credential is issued under your
+              account, with a page anyone can read.
+            </p>
+            <a
+              href="/learn/exams/{exam.id}"
+              class="mt-4 inline-flex items-center gap-2 rounded-full border border-slate-900 px-5 py-2.5 text-sm font-semibold text-slate-900 transition hover:bg-slate-900 hover:text-white"
+            >
+              Sit the exam
+              <span class="material-symbols-outlined text-base" aria-hidden="true"
+                >arrow_forward</span
+              >
+            </a>
+          </div>
+        {/if}
       {/if}
     {/each}
   </div>

@@ -476,28 +476,12 @@
         </ul>
       {/if}
 
-      {#if data.sampling}
-        <form
-          method="POST"
-          action="?/sample"
-          use:enhance={() => submitting("sample")}
-          class="mt-6 rounded-2xl border border-slate-200 bg-slate-50 p-5"
-        >
-          <p class="text-sm leading-6 text-gray-600">
-            Development only. The exam pages are not built yet, so this issues a
-            real credential record against your account to make the pages that
-            show one reachable. Doing it twice supersedes the first, which is
-            what a retake does.
-          </p>
-          <button
-            type="submit"
-            disabled={working === "sample"}
-            class="mt-4 rounded-full border border-slate-200 bg-white px-5 py-2 text-sm font-medium text-gray-900 hover:bg-slate-100 focus-visible:ring-2 focus-visible:ring-[#3E7BFF] focus-visible:outline-none disabled:opacity-60"
-          >
-            {working === "sample" ? "Issuing..." : "Issue a credential"}
-          </button>
-        </form>
-      {/if}
+      <p class="mt-6 text-sm leading-6 text-gray-600">
+        A credential comes from an exam. <a
+          href="/learn/exams"
+          class="font-medium text-[#4670EC] hover:underline">The exams</a
+        > are open book and you can sit one as many times as you like.
+      </p>
     </div>
   </section>
 

@@ -134,6 +134,28 @@
   </section>
 {/each}
 
+<section class="border-t border-slate-200 bg-slate-50">
+  <div class="mx-auto max-w-6xl px-6 py-14">
+    <div class="max-w-2xl">
+      <h2 class="text-3xl font-bold tracking-tight text-gray-900">Exams</h2>
+      <p class="mt-3 text-lg leading-8 text-gray-700">
+        A quiz tells you whether you understood a course. An exam decides
+        something: pass one and a credential is issued under your account, with
+        a page anyone can read.
+      </p>
+      <a
+        href="/learn/exams"
+        class="mt-6 inline-flex items-center gap-2 rounded-full border border-slate-900 px-5 py-2.5 text-sm font-semibold text-slate-900 transition hover:bg-slate-900 hover:text-white focus-visible:ring-2 focus-visible:ring-[#3E7BFF] focus-visible:ring-offset-2 focus-visible:outline-none"
+      >
+        See the exams
+        <span class="material-symbols-outlined text-base" aria-hidden="true"
+          >arrow_forward</span
+        >
+      </a>
+    </div>
+  </div>
+</section>
+
 <section id="playgrounds" class="mx-auto max-w-6xl px-6 py-16">
   <h2 class="text-3xl font-bold tracking-tight text-gray-900">Playgrounds</h2>
   <p class="mt-3 max-w-2xl text-lg leading-8 text-gray-600">

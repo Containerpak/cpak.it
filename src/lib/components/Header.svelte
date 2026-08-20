@@ -272,6 +272,13 @@
                   >
                   <a
                     role="menuitem"
+                    href="/learn/exams"
+                    on:click={() => (showAccountMenu = false)}
+                    class="block px-4 py-2 text-sm text-gray-900 hover:bg-slate-100"
+                    >Exams</a
+                  >
+                  <a
+                    role="menuitem"
                     href="/learn/account#data"
                     on:click={() => (showAccountMenu = false)}
                     class="block px-4 py-2 text-sm text-gray-900 hover:bg-slate-100"
