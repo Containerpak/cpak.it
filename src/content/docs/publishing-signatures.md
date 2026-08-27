@@ -151,10 +151,11 @@ another image the day after it is signed. So `cpak-sign state` resolves the
 reference you give it and puts the digest it resolved to inside the payload.
 The signature is the pin.
 
-This is why `image_ref: source` needs no change. Keep publishing a tag per
-branch, release and commit as you do now. Each publish signs the digest that
-tag currently points at, and a tag that is later moved to another image no
-longer matches what the signature states.
+Manifest v3 makes the same rule visible before signature verification: the
+`image` field itself must contain an OCI digest. Keep publishing tags for normal
+registry use, then write the digest produced by the build into `cpak.json`
+before creating the signed state. The manifest hash and the image digest then
+name the same publication.
 
 `cpak-sign state` refuses a reference that is not a digest in `--image-digest`,
 loudly, rather than signing something that can move under it.

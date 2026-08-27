@@ -36,13 +36,13 @@ manifest and to the owner of the application:
 
 ```json
 {
-  "socketSessionBus": false,
+  "sessionBus": {},
   "network": false,
   "filesystem": [{ "path": "xdg-download", "access": "read-only" }]
 }
 ```
 
-That file closes the session bus and the network, and holds every filesystem
+That file closes every session bus rule and the network, and holds every filesystem
 request down to read-only access to the download directory. It says nothing
 about audio, devices or the accessibility bus, so applications keep whatever
 their manifests ask for there.
@@ -86,7 +86,11 @@ cpak system set-trust none
     }
   ],
   "revoked": [
-    { "origin": "github.com/acme/editor", "generation": 7, "reason": "CVE-2026-1234" }
+    {
+      "origin": "github.com/acme/editor",
+      "generation": 7,
+      "reason": "CVE-2026-1234"
+    }
   ]
 }
 ```
@@ -112,7 +116,10 @@ the publisher's word alone.
   "abi": 1,
   "require_approval": true,
   "approval_signers": [
-    { "issuer": "https://token.actions.githubusercontent.com", "repo": "github.com/acme/approvals" }
+    {
+      "issuer": "https://token.actions.githubusercontent.com",
+      "repo": "github.com/acme/approvals"
+    }
   ]
 }
 ```

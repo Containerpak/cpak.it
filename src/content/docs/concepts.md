@@ -18,16 +18,16 @@ An alias is a local shortcut for an installed origin. Updates continue to resolv
 
 ## Manifest
 
-`cpak.json` is the package contract. Manifest v2 declares:
+`cpak.json` is the package contract. Manifest v3 declares:
 
-- package metadata and the OCI image
+- package metadata and a digest-pinned OCI image
 - exported binaries and desktop entries
 - required cpak dependencies and optional addons
 - idle lifecycle behavior
-- filesystem, device, socket, broker, network, and resource permissions
+- filesystem, device, desktop service, broker, network, and resource permissions
 - verified artifacts that must be installed at package installation time
 
-Unknown fields and unsupported v2 features fail manifest validation.
+Unknown fields, movable image tags, and removed raw host sockets fail manifest validation.
 
 ## Image and layers
 

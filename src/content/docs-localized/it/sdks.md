@@ -5,6 +5,7 @@ tags: [sdk, addons, development]
 section: packages
 order: 60
 ---
+
 # SDK e strumenti di sviluppo
 
 cpak modella gli SDK come pacchetti aggiuntivi. Un editor dichiara le origini dell'SDK che supporta, quindi ogni utente abilita solo le toolchain necessarie a quell'editor.
@@ -30,16 +31,16 @@ Esegui VS Code tramite cpak dopo aver modificato la selezione del componente agg
 
 ## Crea un pacchetto SDK
 
-Un SDK è un pacchetto manifest v2. La sua image contiene la toolchain mentre lo stato dell'editor rimane con l'applicazione madre. Dichiara ogni comando che altri strumenti possono chiamare:
+Un SDK è un pacchetto manifest v3. La sua immagine contiene la toolchain mentre lo stato dell'editor rimane con l'applicazione madre. Dichiara ogni comando che altri strumenti possono chiamare:
 
 ```json
 {
-  "$schema": "https://raw.githubusercontent.com/Containerpak/cpak/v2/schema/manifest-v2.json",
-  "manifest_version": "2.0",
+  "$schema": "https://raw.githubusercontent.com/Containerpak/cpak/v2/schema/manifest-v3.json",
+  "manifest_version": "3.0",
   "name": "Example SDK",
   "description": "Example language tools for cpak development environments.",
   "version": "1.0.0",
-  "image": "ghcr.io/example/sdk-example:main",
+  "image": "ghcr.io/example/sdk-example@sha256:0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef",
   "binaries": ["/usr/local/bin/example", "/usr/local/bin/examplefmt"],
   "desktop_entries": [],
   "dependencies": [],

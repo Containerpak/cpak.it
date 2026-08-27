@@ -14,18 +14,13 @@ A permission a manifest does not declare is not granted. There is no field that 
 
 ## Display and desktop sockets
 
-| Field              | Access                                                                |
-| ------------------ | --------------------------------------------------------------------- |
-| `socketWayland`    | The active Wayland display socket.                                    |
-| `socketX11`        | The host X11 socket directory.                                        |
-| `socketPulseAudio` | The PulseAudio-compatible audio socket.                               |
-| `socketSessionBus` | The desktop session D-Bus socket.                                     |
-| `socketSystemBus`  | The system D-Bus socket. Use only when direct bus access is required. |
-| `socketCups`       | The CUPS printing socket.                                             |
-| `socketAtSpiBus`   | The accessibility bus socket.                                         |
-| `socketSshAgent`   | The user's SSH agent socket.                                          |
-| `socketGpgAgent`   | The user's GPG agent socket.                                          |
-| `socketBluetooth`  | The Bluetooth socket.                                                 |
+| Field              | Access                                  |
+| ------------------ | --------------------------------------- |
+| `socketWayland`    | The active Wayland display socket.      |
+| `socketPulseAudio` | The PulseAudio-compatible audio socket. |
+| `socketCups`       | The CUPS printing socket.               |
+| `socketSshAgent`   | The user's SSH agent socket.            |
+| `socketGpgAgent`   | The user's GPG agent socket.            |
 
 Use the system broker for notifications and external URIs. Each permission exposes one operation to the package.
 
@@ -39,7 +34,7 @@ NVIDIA userspace libraries are resolved from the host at launch when GPU passthr
 
 ## Filesystem
 
-Manifest v2 uses structured filesystem entries:
+Manifest v3 uses structured filesystem entries:
 
 ```json
 "filesystem": [
@@ -50,7 +45,13 @@ Manifest v2 uses structured filesystem entries:
 
 The portable `home` scope maps to the user's home directory. The `host` scope maps to the host root. Absolute paths select one explicit location. Access must be `read-only` or `read-write`.
 
-Avoid the legacy `fsHost`, `fsHostHome`, `fsHostEtc`, and `fsExtra` fields in new packages. They exist for v1 migration and are rejected by the strict v2 schema.
+The legacy `fsHost`, `fsHostHome`, `fsHostEtc`, and `fsExtra` fields are rejected by the strict v3 schema.
+
+## Session bus
+
+`sessionBus` grants exact calls on the desktop session bus. Each `talk` entry names one destination, object path, interface, and list of methods. The optional `own` list names the well-known bus names the package may claim.
+
+Raw X11, session bus, system bus, AT-SPI, and Bluetooth socket fields are not available in manifest v3. Use typed broker permissions for notifications, external URIs, file selection, and host application launch. cpak has no raw system bus permission.
 
 ## User-selected files
 
@@ -99,4 +100,4 @@ Overrides are stored per application version. Review them after a major package 
 A local override replaces the manifest defaults and may either remove or add access. On a managed machine the system ceiling is applied afterwards, so no user override can exceed the maximum selected by the administrator. See [Managed deployment](/docs/managed-deployment).
 
 > [!WARNING] Broad access
-> `deviceAll`, `socketSystemBus`, `process`, `asRoot`, and `host` filesystem access cross large parts of the sandbox boundary. Document why a package needs them.
+> `deviceAll`, `process`, `asRoot`, broad session bus rules, and `host` filesystem access cross large parts of the sandbox boundary. Document why a package needs them.

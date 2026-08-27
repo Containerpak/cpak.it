@@ -5,6 +5,7 @@ tags: [permissions, files, desktop]
 section: runtime
 order: 30
 ---
+
 # Acceso al selector de archivos
 
 Una aplicación cpak tiene un hogar persistente privado a menos que su manifest monte explícitamente el hogar host. El permiso de selección de archivos permite al usuario traer archivos o carpetas host individuales a ese entorno cuando sea necesario.
@@ -29,12 +30,12 @@ Habilite solo las operaciones utilizadas por la aplicación:
 }
 ```
 
-| Campo | Efecto |
-| ------------------ | ------------------------------------------------------------------ |
-| `openFile` | Seleccione uno o más archivos existentes. |
-| `openFolder` | Seleccione una carpeta existente. |
-| `saveFile` | Seleccione un destino de escritura para un archivo nuevo. |
-| `persistent` | Ofrezca acceso que se pueda restaurar en inicios posteriores. |
+| Campo              | Efecto                                                                           |
+| ------------------ | -------------------------------------------------------------------------------- |
+| `openFile`         | Seleccione uno o más archivos existentes.                                        |
+| `openFolder`       | Seleccione una carpeta existente.                                                |
+| `saveFile`         | Seleccione un destino de escritura para un archivo nuevo.                        |
+| `persistent`       | Ofrezca acceso que se pueda restaurar en inicios posteriores.                    |
 | `containingFolder` | Ofrezca la carpeta que contiene el archivo seleccionado como contexto adicional. |
 
 Al seleccionar un archivo, dicho archivo se otorga como de solo lectura de forma predeterminada. El acceso a la carpeta contenedora es una decisión independiente del usuario y aparece solo cuando el manifest lo permite. Es útil para ejecutables que cargan archivos uno al lado del otro, mientras que los documentos y las cargas pueden permanecer aislados en un solo archivo.
@@ -102,7 +103,7 @@ Utilice `--multiple` para varios archivos, `open-folder` para un directorio o `s
 
 El corredor transporta solicitudes estructuradas a través de un socket Unix privado. Los objetos seleccionados se pasan al espacio de nombres del montaje en ejecución a través de descriptores de archivos, por lo que el montaje permanece adjunto al objeto aprobado por el usuario incluso si cambia la path del host. El adaptador de escritorio puede utilizar los servicios disponibles en la sesión actual, pero el protocolo de concesión y el runtime sin cabeza no dependen de D-Bus.
 
-El adaptador de bus de escritorio restringido reenvía el tráfico de bus de sesión normal solo cuando `socketSessionBus` está habilitado. Las llamadas al selector de archivos siguen estando disponibles solo con `filePicker`. Esto proporciona a las aplicaciones GTK y GIO su API esperada sin exponer servicios de bus no relacionados.
+El adaptador de bus de escritorio restringido reenvía solo las llamadas aceptadas por la política `sessionBus` del manifest. Las llamadas al selector de archivos siguen disponibles solo con `filePicker`. Esto proporciona a las aplicaciones GTK y GIO su API esperada sin exponer servicios de bus no relacionados.
 
 Las commits en runtime utilizan el backend seleccionado por el usuario o la distribución. Consulte [Adaptadores de diálogo de escritorio](/docs/desktop-dialogs) para obtener coincidencias automáticas de escritorios, archivos de configuración, tags de build y ubicaciones de ayuda externa.
 

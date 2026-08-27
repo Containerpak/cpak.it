@@ -12,15 +12,15 @@ The manifest controls display, audio, devices, desktop services, and broker oper
 
 ## Display and input
 
-Wayland packages receive the active Wayland socket when `socketWayland` is enabled. X11 packages receive `/tmp/.X11-unix` when `socketX11` is enabled. GPU rendering normally also needs `deviceDri`.
+Wayland packages receive the active Wayland socket when `socketWayland` is enabled. GPU rendering normally also needs `deviceDri`. Manifest v3 does not expose the raw X11 socket.
 
-The runtime carries the display environment needed to address the mounted socket. Test both display paths when a package advertises both.
+The runtime carries the display environment needed to address the mounted socket.
 
 ## Audio and accessibility
 
 `socketPulseAudio` exposes the PulseAudio-compatible socket used by PulseAudio and PipeWire desktop sessions. Direct ALSA devices require `deviceAlsa`.
 
-Accessibility clients use `socketAtSpiBus`. Printing uses `socketCups`. Agent sockets for SSH and GPG are separate grants because they can authorize actions as the user.
+Printing uses `socketCups`. Agent sockets for SSH and GPG are separate grants because they can authorize actions as the user. Manifest v3 does not mount a raw accessibility bus socket.
 
 ## Notifications
 
@@ -56,7 +56,7 @@ URI callbacks follow the opposite path. The host desktop starts the exported ent
 
 ## Native file choosers
 
-`filePicker` lets an application request files, folders, and save destinations without a permanent home mount. GTK and GIO calls use a restricted desktop-bus adapter that handles the file chooser protocol even when `socketSessionBus` is disabled. The proxy rejects unrelated bus destinations unless the manifest grants the complete session bus.
+`filePicker` lets an application request files, folders, and save destinations without a permanent home mount. GTK and GIO calls use a restricted desktop-bus adapter that handles the file chooser protocol without a general session bus grant. The proxy rejects unrelated destinations unless an exact `sessionBus` rule allows them.
 
 The host presents the chooser and cpak attaches the accepted object to the package namespace. Scope and lifetime confirmations use the configured desktop dialog backend. See [File chooser access](/docs/file-access) for package policy and [Desktop dialog adapters](/docs/desktop-dialogs) for distribution configuration.
 
@@ -74,7 +74,7 @@ cpak builds a private catalog from trusted desktop entries and gives the package
 
 Use `hostActions` for supported host services represented by broker capabilities. Each provider publishes a fixed capability set. See [Host actions](/docs/host-actions) for the container provider and its compatibility shims.
 
-During v1 migration, `allowedHostCommands` maps the old notification, URI, and host application shims to typed permissions. Manifest v2 rejects executable names in this field.
+During v1 migration, `allowedHostCommands` maps the old notification, URI, and host application shims to typed permissions. New manifests declare the typed permissions directly.
 
 ## Desktop entries and icons
 

@@ -5,6 +5,7 @@ tags: [publishing, security, signing]
 section: packages
 order: 50
 ---
+
 # Firma dell'editore
 
 Questa pagina è per le persone che pubblicano un pacchetto cpak. Spiega cos'è un pacchetto
@@ -150,10 +151,10 @@ un'altra image il giorno successivo alla firma. Quindi `cpak-sign state` risolve
 riferimento che gli dai e inserisce il digest in cui è stato risolto all'interno del payload.
 La firma è la spilla.
 
-Questo è il motivo per cui `image_ref: source` non necessita di modifiche. Continua a pubblicare un tag per
-branch, release e commit come fai adesso. Ogni pubblicazione firma il riassunto
-il tag attualmente punta e un tag che verrà successivamente spostato su un'altra image n
-non corrisponde più a ciò che afferma la firma.
+Manifest v3 rende visibile la stessa regola prima della verifica della firma: il campo
+`image` deve contenere un digest OCI. Continua a pubblicare i tag per il normale uso del
+registry, poi scrivi in `cpak.json` il digest prodotto dalla build prima di creare lo stato
+firmato. L'hash del manifest e il digest dell'immagine indicano così la stessa pubblicazione.
 
 `cpak-sign state` rifiuta un riferimento che non sia un digest in `--image-digest`,
 ad alta voce, piuttosto che firmare qualcosa che possa muoversi sotto di esso.
@@ -199,22 +200,22 @@ Ancora `cpak lock cpak.json` e commit il risultato.
 
 `cpak-sign state` crea il carico utile:
 
-| Bandiera | Significato |
-| ---------------- | ----------------------------------------------------------------------------------- |
-| `--manifest` | Percorso verso manifest. Il valore predefinito è `cpak.json`.                                      |
-| `--lock` | Percorso verso la serratura. Il valore predefinito è `cpak.lock.json` accanto a manifest, quando esiste. |
-| `--origin` | Il repository da cui è pubblicato manifest.                                      |
-| `--image` | Il riferimento da risolvere. Il valore predefinito è l'image dichiarata da manifest.              |
-| `--image-digest` | Un digest da firmare così com'è, per un registro che la corsa non può raggiungere.                     |
-| `--generation` | La generazione di questo stato. Inizia alle 1. |
-| `--output` | Dove è scritto il carico utile. Il valore predefinito è `cpak-state`, `-` per uscita standard.    |
+| Bandiera         | Significato                                                                                              |
+| ---------------- | -------------------------------------------------------------------------------------------------------- |
+| `--manifest`     | Percorso verso manifest. Il valore predefinito è `cpak.json`.                                            |
+| `--lock`         | Percorso verso la serratura. Il valore predefinito è `cpak.lock.json` accanto a manifest, quando esiste. |
+| `--origin`       | Il repository da cui è pubblicato manifest.                                                              |
+| `--image`        | Il riferimento da risolvere. Il valore predefinito è l'image dichiarata da manifest.                     |
+| `--image-digest` | Un digest da firmare così com'è, per un registro che la corsa non può raggiungere.                       |
+| `--generation`   | La generazione di questo stato. Inizia alle 1.                                                           |
+| `--output`       | Dove è scritto il carico utile. Il valore predefinito è `cpak-state`, `-` per uscita standard.           |
 
 `cpak-sign attach` pubblica il bundle:
 
-| Bandiera | Significato |
-| ---------- | ------------------------------------------------------------------ |
-| `--image` | Il repository in cui risiede l'image firmata. |
-| `--state` | Il payload che è stato firmato. Il valore predefinito è `cpak-state`.             |
+| Bandiera   | Significato                                                                        |
+| ---------- | ---------------------------------------------------------------------------------- |
+| `--image`  | Il repository in cui risiede l'image firmata.                                      |
+| `--state`  | Il payload che è stato firmato. Il valore predefinito è `cpak-state`.              |
 | `--bundle` | Il bundle `cosign` ha scritto. Il valore predefinito è `cpak-state.sigstore.json`. |
 
 `attach` legge il digest dell'image dallo stato firmato, quindi può sempre e solo

@@ -1,23 +1,23 @@
 ---
-title: Manifest v2 reference
+title: Manifest v3 reference
 description: Every top-level field in cpak.json, with strict validation and portable examples.
 tags: [manifest, reference]
 section: packages
 order: 20
 ---
 
-# Manifest v2 reference
+# Manifest v3 reference
 
-Manifest v2 is a strict JSON contract. Add the schema URL to receive editor completion and validation from the versioned definition in the cpak repository.
+Manifest v3 is the current strict JSON contract. It pins the OCI image by digest and replaces raw desktop sockets with typed operations and exact session bus rules. Add the schema URL to receive editor completion and validation from the versioned definition in the cpak repository.
 
 ```json
 {
-  "$schema": "https://raw.githubusercontent.com/Containerpak/cpak/v2/schema/manifest-v2.json",
-  "manifest_version": "2.0",
+  "$schema": "https://raw.githubusercontent.com/Containerpak/cpak/v2/schema/manifest-v3.json",
+  "manifest_version": "3.0",
   "name": "Example",
   "description": "Example desktop application.",
   "version": "1.0.0",
-  "image": "ghcr.io/example/example:main",
+  "image": "ghcr.io/example/example@sha256:0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef",
   "binaries": ["/usr/bin/example"],
   "desktop_entries": ["/usr/share/applications/example.desktop"],
   "dependencies": [],
@@ -25,7 +25,6 @@ Manifest v2 is a strict JSON contract. Add the schema URL to receive editor comp
   "idle_time": 0,
   "override": {
     "socketWayland": true,
-    "socketX11": true,
     "deviceDri": true,
     "filesystem": [{ "path": "home", "access": "read-write" }],
     "network": true
@@ -38,11 +37,11 @@ Manifest v2 is a strict JSON contract. Add the schema URL to receive editor comp
 | Field              | Required | Meaning                                                          |
 | ------------------ | -------- | ---------------------------------------------------------------- |
 | `$schema`          | No       | JSON Schema URI used by editors.                                 |
-| `manifest_version` | Yes      | Must be `2.0`.                                                   |
+| `manifest_version` | Yes      | Must be `3.0`.                                                   |
 | `name`             | Yes      | Human-readable application name.                                 |
 | `description`      | Yes      | Short package description.                                       |
 | `version`          | No       | Application version shown by cpak.                               |
-| `image`            | Yes      | OCI image reference or digest.                                   |
+| `image`            | Yes      | OCI image reference pinned with `@sha256:`.                      |
 | `binaries`         | Yes      | One or more absolute executable paths.                           |
 | `desktop_entries`  | No       | Absolute paths to `.desktop` files in the image.                 |
 | `sessions`         | No       | Desktop or kiosk sessions offered to a display manager.          |
@@ -54,6 +53,12 @@ Manifest v2 is a strict JSON contract. Add the schema URL to receive editor comp
 | `runtime_sources`  | No       | Verified HTTPS artifacts installed into a managed layer.         |
 
 Unknown top-level and nested fields fail validation.
+
+## Immutable image
+
+The `image` field must name an OCI repository and digest. Tags such as `main` and `latest` are rejected, and `image_ref` is not part of v3.
+
+Record the digest returned by the image build in `cpak.json` before signing the package state. A GitHub Actions workflow using `docker/build-push-action` receives the index digest as `${{ steps.build.outputs.digest }}`. Keep publishing tags for people and tools, but publish the manifest with the immutable reference.
 
 ## Dependencies
 
@@ -128,6 +133,26 @@ layout, and CI checks.
 
 The `override` object declares the package defaults for sockets, devices, filesystem paths, file chooser operations, networking, process sharing, nested user namespaces, resource limits, and system broker actions. See [Permissions](/docs/permissions) for every field and its effect.
 
+Manifest v3 removes `socketX11`, `socketSessionBus`, `socketSystemBus`, `socketAtSpiBus`, and `socketBluetooth`. Notifications, external URIs, file selection, and host application launches use their typed permissions. There is no raw system bus grant.
+
+An application that needs a session bus method can declare the exact call surface:
+
+```json
+"sessionBus": {
+  "talk": [
+    {
+      "name": "org.example.Service",
+      "path": "/org/example/Service",
+      "interface": "org.example.Service",
+      "members": ["Open"]
+    }
+  ],
+  "own": ["org.example.Application"]
+}
+```
+
+Each `talk` rule fixes the destination, object path, interface, and accepted methods. `own` lists the well-known names the package may claim. cpak rejects rules for services that would bypass its security boundary, including the desktop portal, Secret Service, systemd, and the D-Bus daemon itself.
+
 ### File chooser policy
 
 `filePicker` grants operations, not host paths. Each field is disabled by default:
@@ -154,8 +179,8 @@ The optional `sessions` array turns an exported binary into a desktop or kiosk c
 
 ```bash
 cpak validate cpak.json
-cpak gen-schema --output manifest-v2.json
+cpak gen-schema --manifest-version 3.0 --output manifest-v3.json
 cpak migrate-manifest old-cpak.json --output cpak.json
 ```
 
-Migration converts supported v1 fields to their v2 representation. Review the result and run `cpak validate`; legacy broad filesystem flags should be replaced by explicit `filesystem` entries.
+`migrate-manifest` converts supported v1 fields to their v2 representation. A v2 package needs a publisher decision before it can become v3: pin the current OCI digest, remove `image_ref`, replace removed raw sockets with typed permissions or exact session bus rules, then set `manifest_version` to `3.0` and run `cpak validate`.

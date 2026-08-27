@@ -26,7 +26,7 @@ El archivo usa la misma estructura de permisos que un override y solo decide sob
 
 ```json
 {
-  "socketSessionBus": false,
+  "sessionBus": {},
   "network": false,
   "filesystem": [{ "path": "xdg-download", "access": "read-only" }]
 }
@@ -62,7 +62,11 @@ cpak system set-trust none
     }
   ],
   "revoked": [
-    { "origin": "github.com/acme/editor", "generation": 7, "reason": "CVE-2026-1234" }
+    {
+      "origin": "github.com/acme/editor",
+      "generation": 7,
+      "reason": "CVE-2026-1234"
+    }
   ]
 }
 ```
@@ -80,7 +84,10 @@ cpak system set-trust none
   "abi": 1,
   "require_approval": true,
   "approval_signers": [
-    { "issuer": "https://token.actions.githubusercontent.com", "repo": "github.com/acme/approvals" }
+    {
+      "issuer": "https://token.actions.githubusercontent.com",
+      "repo": "github.com/acme/approvals"
+    }
   ]
 }
 ```

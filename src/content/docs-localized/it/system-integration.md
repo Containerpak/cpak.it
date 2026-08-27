@@ -5,13 +5,14 @@ tags: [desktop, broker, actions]
 section: runtime
 order: 30
 ---
+
 # Integrazione del sistema
 
 manifest controlla display, audio, dispositivi, servizi desktop e operazioni broker disponibili per un'applicazione.
 
 ## Visualizzazione e input
 
-I pacchetti Wayland ricevono lo Wayland socket attivo quando `socketWayland` è abilitato. I pacchetti X11 ricevono `/tmp/.X11-unix` quando `socketX11` è abilitato. Il rendering GPU normalmente richiede anche `deviceDri`.
+I pacchetti Wayland ricevono il socket Wayland attivo quando `socketWayland` è abilitato. Il rendering GPU normalmente richiede anche `deviceDri`. Manifest v3 non espone il socket X11 grezzo.
 
 Lo runtime è dotato dell'ambiente di visualizzazione necessario per indirizzare il socket montato. Testa entrambi i percorsi di visualizzazione quando un pacchetto li pubblicizza entrambi.
 
@@ -19,7 +20,7 @@ Lo runtime è dotato dell'ambiente di visualizzazione necessario per indirizzare
 
 `socketPulseAudio` espone lo PulseAudio compatibile con socket utilizzato dalle sessioni desktop PulseAudio e PipeWire. I dispositivi ALSA diretti richiedono `deviceAlsa`.
 
-I client di accessibilità utilizzano `socketAtSpiBus`. La stampa utilizza `socketCups`. I socket dell'agente per SSH e GPG sono grant separate perché possono autorizzare azioni come utente.
+La stampa utilizza `socketCups`. I socket degli agenti SSH e GPG sono permessi separati perché possono autorizzare azioni come utente. Manifest v3 non monta un socket grezzo per il bus di accessibilità.
 
 ## Notifiche
 
@@ -55,7 +56,7 @@ I callback URI seguono il percorso opposto. Il desktop host avvia la voce esport
 
 ## Selettori di file nativi
 
-`filePicker` consente a un'applicazione di richiedere file, cartelle e salvare destinazioni senza un montaggio home permanente. Le chiamate GTK e GIO utilizzano un adattatore bus desktop limitato che gestisce il protocollo di selezione file anche quando `socketSessionBus` è disabilitato. Il proxy rifiuta destinazioni bus non correlate a meno che manifest non conceda il bus di sessione completo.
+`filePicker` consente a un'applicazione di richiedere file, cartelle e destinazioni di salvataggio senza un montaggio home permanente. Le chiamate GTK e GIO utilizzano un adattatore bus desktop limitato senza un permesso generale per il bus di sessione. Il proxy rifiuta le destinazioni non correlate a meno che una regola `sessionBus` esatta non le consenta.
 
 host presenta il selettore e cpak allega l'oggetto accettato allo spazio dei nomi del pacchetto. Le conferme dell'ambito e della durata utilizzano il backend della finestra di dialogo desktop configurato. Vedere [Accesso alla selezione file](/docs/file-access) per la politica del pacchetto e [Adattatori di dialogo desktop](/docs/desktop-dialogs) per la configurazione della distribuzione.
 
@@ -73,7 +74,7 @@ cpak crea un catalogo privato da voci desktop attendibili e fornisce al pacchett
 
 Utilizzare `hostActions` per i servizi dell'host supportati, esposti come capacità del broker. Ogni provider pubblica un set di capacità fisse. Vedere [Azioni host](/docs/host-actions) per il provider containers e i relativi shim di compatibilità.
 
-Durante la migrazione v1, `allowedHostCommands` mappa la vecchia notifica, l'URI e gli shim dell'applicazione host suli permessi digitate. Manifest v2 rifiuta i nomi degli eseguibili in questo campo.
+Durante la migrazione v1, `allowedHostCommands` mappa la vecchia notifica, l'URI e gli shim dell'applicazione host sui permessi tipizzati. I nuovi manifest dichiarano direttamente i permessi tipizzati.
 
 ## Voci e icone del desktop
 

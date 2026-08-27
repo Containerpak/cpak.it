@@ -31,16 +31,16 @@ Run VS Code through cpak after changing the addon selection. Its integrated term
 
 ## Create an SDK package
 
-An SDK is a manifest v2 package. Its image contains the toolchain while editor state stays with the parent application. Declare every command that other tools may call:
+An SDK is a manifest v3 package. Its image contains the toolchain while editor state stays with the parent application. Declare every command that other tools may call:
 
 ```json
 {
-  "$schema": "https://raw.githubusercontent.com/Containerpak/cpak/v2/schema/manifest-v2.json",
-  "manifest_version": "2.0",
+  "$schema": "https://raw.githubusercontent.com/Containerpak/cpak/v2/schema/manifest-v3.json",
+  "manifest_version": "3.0",
   "name": "Example SDK",
   "description": "Example language tools for cpak development environments.",
   "version": "1.0.0",
-  "image": "ghcr.io/example/sdk-example:main",
+  "image": "ghcr.io/example/sdk-example@sha256:0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef",
   "binaries": ["/usr/local/bin/example", "/usr/local/bin/examplefmt"],
   "desktop_entries": [],
   "dependencies": [],

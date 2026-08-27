@@ -5,6 +5,7 @@ tags: [basics, architecture]
 section: start
 order: 30
 ---
+
 # Concetti di cpak
 
 cpak separa l'identità del pacchetto dal contenuto del pacchetto. Un repository Git descrive il pacchetto e un registro OCI memorizza i suoi layer di image.
@@ -17,7 +18,7 @@ Un alias è un collegamento locale per un'origine installata. Gli aggiornamenti 
 
 ## Manifest
 
-`cpak.json` è il contratto a pacchetto. Manifest v2 dichiara:
+`cpak.json` è il contratto del pacchetto. Manifest v3 dichiara:
 
 - Metadati del pacchetto e image OCI
 - binari esportati e voci desktop

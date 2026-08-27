@@ -5,6 +5,7 @@ tags: [permissions, files, desktop]
 section: runtime
 order: 30
 ---
+
 # Accesso al selettore file
 
 Un'applicazione cpak ha una home persistente privata a meno che il suo manifest non monti esplicitamente la home host. L'permesso di selezione file consente all'utente di portare singoli file o cartelle host in quell'ambiente quando sono necessari.
@@ -29,12 +30,12 @@ Abilita solo le operazioni utilizzate dall'applicazione:
 }
 ```
 
-| Campo | Effetto |
-| ------------------ | ------------------------------------------------------------------ |
-| `openFile` | Seleziona uno o più file esistenti.                                 |
-| `openFolder` | Seleziona una cartella esistente.                                         |
-| `saveFile` | Seleziona una destinazione scrivibile per un nuovo file.                      |
-| `persistent` | Offri un accesso che può essere ripristinato negli avvii successivi.               |
+| Campo              | Effetto                                                                    |
+| ------------------ | -------------------------------------------------------------------------- |
+| `openFile`         | Seleziona uno o più file esistenti.                                        |
+| `openFolder`       | Seleziona una cartella esistente.                                          |
+| `saveFile`         | Seleziona una destinazione scrivibile per un nuovo file.                   |
+| `persistent`       | Offri un accesso che può essere ripristinato negli avvii successivi.       |
 | `containingFolder` | Offri la cartella contenente il file selezionato come contesto aggiuntivo. |
 
 La selezione di un file garantisce la sola lettura del file per impostazione predefinita. L'accesso alla cartella contenente è una decisione separata dell'utente e viene visualizzato solo quando manifest lo consente. È utile per gli eseguibili che caricano file oltre a se stessi, mentre i documenti e i caricamenti possono rimanere isolati in un file.
@@ -102,7 +103,7 @@ Utilizzare `--multiple` per più file, `open-folder` per una directory o `save-f
 
 Lo broker trasporta richieste strutturate su un Unix socket privato. Gli oggetti selezionati vengono passati allo spazio dei nomi di montaggio in esecuzione tramite descrittori di file, quindi il montaggio rimane collegato all'oggetto approvato dall'utente anche se il suo percorso host cambia. L'adattatore desktop può utilizzare i servizi disponibili nella sessione corrente, ma il protocollo di grant e runtime headless non dipendono da D-Bus.
 
-L'adattatore bus desktop limitato inoltra il traffico ordinario del bus di sessione solo quando `socketSessionBus` è abilitato. Le chiamate del selettore file rimangono disponibili solo con `filePicker`. Ciò fornisce alle applicazioni GTK e GIO l'API prevista senza esporre servizi bus non correlati.
+L'adattatore bus desktop limitato inoltra solo le chiamate accettate dalla politica `sessionBus` del manifest. Le chiamate del selettore file rimangono disponibili con il solo `filePicker`. Le applicazioni GTK e GIO ricevono così l'API prevista senza esporre servizi bus non correlati.
 
 Le conferme di runtime utilizzano il backend selezionato dall'utente o dalla distribuzione. Consulta [Adattatori di dialogo desktop](/docs/desktop-dialogs) per la corrispondenza automatica del desktop, i file di configurazione, i tag di build e le posizioni degli helper esterni.
 

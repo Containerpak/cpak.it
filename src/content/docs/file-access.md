@@ -103,7 +103,7 @@ Use `--multiple` for several files, `open-folder` for a directory, or `save-file
 
 The broker carries structured requests over a private Unix socket. Selected objects are passed to the running mount namespace through file descriptors, so the mount remains attached to the object approved by the user even if its host path changes. The desktop adapter may use the services available in the current session, but the grant protocol and headless runtime do not depend on D-Bus.
 
-The restricted desktop-bus adapter forwards ordinary session-bus traffic only when `socketSessionBus` is enabled. File chooser calls remain available with `filePicker` alone. This gives GTK and GIO applications their expected API without exposing unrelated bus services.
+The restricted desktop-bus adapter forwards only calls accepted by the manifest's `sessionBus` policy. File chooser calls remain available with `filePicker` alone. This gives GTK and GIO applications their expected API without exposing unrelated bus services.
 
 Runtime confirmations use the backend selected by the user or distribution. See [Desktop dialog adapters](/docs/desktop-dialogs) for automatic desktop matching, configuration files, build tags, and external helper locations.
 

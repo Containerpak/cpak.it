@@ -1,22 +1,23 @@
 ---
-title: Referencia del manifest v2
+title: Referencia del manifest v3
 description: Cada campo de nivel superior en cpak.json, con validación estricta y ejemplos portátiles.
 tags: [manifest, reference]
 section: packages
 order: 20
 ---
-# Referencia del manifest v2
 
-Manifest v2 es un contrato JSON estricto. Agregue la URL del esquema para recibir la finalización y validación del editor desde la definición versionada en el repositorio cpak.
+# Referencia del manifest v3
+
+Manifest v3 es el contrato JSON estricto actual. Fija la imagen OCI mediante un digest y sustituye los sockets de escritorio sin filtrar por operaciones tipadas y reglas exactas para el bus de sesión. Agregue la URL del esquema para recibir autocompletado y validación en el editor.
 
 ```json
 {
-  "$schema": "https://raw.githubusercontent.com/Containerpak/cpak/v2/schema/manifest-v2.json",
-  "manifest_version": "2.0",
+  "$schema": "https://raw.githubusercontent.com/Containerpak/cpak/v2/schema/manifest-v3.json",
+  "manifest_version": "3.0",
   "name": "Example",
   "description": "Example desktop application.",
   "version": "1.0.0",
-  "image": "ghcr.io/example/example:main",
+  "image": "ghcr.io/example/example@sha256:0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef",
   "binaries": ["/usr/bin/example"],
   "desktop_entries": ["/usr/share/applications/example.desktop"],
   "dependencies": [],
@@ -24,7 +25,6 @@ Manifest v2 es un contrato JSON estricto. Agregue la URL del esquema para recibi
   "idle_time": 0,
   "override": {
     "socketWayland": true,
-    "socketX11": true,
     "deviceDri": true,
     "filesystem": [{ "path": "home", "access": "read-write" }],
     "network": true
@@ -34,25 +34,29 @@ Manifest v2 es un contrato JSON estricto. Agregue la URL del esquema para recibi
 
 ## Campos de paquete
 
-| Campo | Requerido | Significado |
-| ------------------ | -------- | ---------------------------------------------------------------- |
-| `$schema` | No | JSON URI de esquema utilizado por los editores. |
-| `manifest_version` | Sí | Debe ser `2.0`. |
-| `name` | Sí | Nombre de la aplicación legible por humanos. |
-| `description` | Sí | Breve descripción del paquete. |
-| `version` | No | La release de la aplicación se muestra con cpak. |
-| `image` | Sí | OCI referencia de imagen o resumen. |
-| `binaries` | Sí | Una o más paths ejecutables absolutas. |
-| `desktop_entries` | No | paths absolutas a `.desktop` archivos en la imagen. |
-| `sessions` | No | Sesiones de escritorio o quiosco ofrecidas a un administrador de pantalla. |
-| `dependencies` | No | Requerido cpak orígenes del paquete. |
-| `addons` | No | Orígenes de complementos opcionales admitidos por este paquete. |
-| `addon_provider` | No | Exportaciones de capacidad y runtime proporcionadas cuando se utilizan como complemento. |
-| `idle_time` | Sí | Minutos antes de que se detenga un container inactivo. Zero desactiva el temporizador. |
-| `override` | Sí | Permisos de host predeterminados y límites de recursos. |
-| `runtime_sources` | No | Artefactos HTTPS verificados instalados en un layer administrada. |
+| Campo              | Requerido | Significado                                                                              |
+| ------------------ | --------- | ---------------------------------------------------------------------------------------- |
+| `$schema`          | No        | JSON URI de esquema utilizado por los editores.                                          |
+| `manifest_version` | Sí        | Debe ser `3.0`.                                                                          |
+| `name`             | Sí        | Nombre de la aplicación legible por humanos.                                             |
+| `description`      | Sí        | Breve descripción del paquete.                                                           |
+| `version`          | No        | La release de la aplicación se muestra con cpak.                                         |
+| `image`            | Sí        | Referencia de imagen OCI fijada con `@sha256:`.                                          |
+| `binaries`         | Sí        | Una o más paths ejecutables absolutas.                                                   |
+| `desktop_entries`  | No        | paths absolutas a `.desktop` archivos en la imagen.                                      |
+| `sessions`         | No        | Sesiones de escritorio o quiosco ofrecidas a un administrador de pantalla.               |
+| `dependencies`     | No        | Requerido cpak orígenes del paquete.                                                     |
+| `addons`           | No        | Orígenes de complementos opcionales admitidos por este paquete.                          |
+| `addon_provider`   | No        | Exportaciones de capacidad y runtime proporcionadas cuando se utilizan como complemento. |
+| `idle_time`        | Sí        | Minutos antes de que se detenga un container inactivo. Zero desactiva el temporizador.   |
+| `override`         | Sí        | Permisos de host predeterminados y límites de recursos.                                  |
+| `runtime_sources`  | No        | Artefactos HTTPS verificados instalados en un layer administrada.                        |
 
 Los campos anidados y de nivel superior desconocidos no superan la validación.
+
+## Imagen inmutable
+
+El campo `image` debe indicar un repositorio OCI y un digest. Las etiquetas como `main` y `latest` se rechazan, y `image_ref` no forma parte de v3. Escriba en `cpak.json` el digest devuelto por la compilación antes de firmar el estado del paquete.
 
 ## Dependencias
 
@@ -120,6 +124,10 @@ Establezca `installer` en `dpkg`, `deb-extract`, `rpm`, `tar` o `file`. `dpkg` v
 
 El objeto `override` declara los valores predeterminados del paquete para sockets, dispositivos, paths del filesystem, operaciones de selección de archivos, redes, procesos compartidos, espacios de nombres de usuarios anidados, límites de recursos y acciones del agente del sistema. Consulte [Permisos](/docs/permissions) para conocer cada campo y su efecto.
 
+Manifest v3 elimina `socketX11`, `socketSessionBus`, `socketSystemBus`, `socketAtSpiBus` y `socketBluetooth`. Las notificaciones, URI externos, selección de archivos y apertura de aplicaciones del host usan permisos tipados. No existe un permiso para el bus de sistema sin filtrar.
+
+Una aplicación que necesite un método del bus de sesión puede declarar el destino, la ruta del objeto, la interfaz y los métodos aceptados mediante `sessionBus`. La lista `own` indica los nombres conocidos que puede adquirir el paquete.
+
 ### Política de selección de archivos
 
 `filePicker` otorga operaciones, no paths de host. Cada campo está deshabilitado de forma predeterminada:
@@ -146,8 +154,8 @@ La matriz `sessions` opcional convierte un binario exportado en una opción de e
 
 ```bash
 cpak validate cpak.json
-cpak gen-schema --output manifest-v2.json
+cpak gen-schema --manifest-version 3.0 --output manifest-v3.json
 cpak migrate-manifest old-cpak.json --output cpak.json
 ```
 
-La migración convierte los campos v1 admitidos a su representación v2. Revisa el resultado y ejecuta `cpak validate`; Los indicadores del filesystem amplio heredado deben reemplazarse por entradas `filesystem` explícitas.
+`migrate-manifest` convierte los campos v1 admitidos a su representación v2. Para pasar de v2 a v3, fije el digest OCI, elimine `image_ref`, sustituya los sockets retirados por permisos tipados o reglas `sessionBus`, establezca `manifest_version` en `3.0` y ejecute `cpak validate`.

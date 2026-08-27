@@ -14,7 +14,7 @@ The Store is a discovery layer. Packages are also installable directly from a va
 
 Before catalog submission, the package repository should contain:
 
-- a valid manifest v2 file at `cpak.json`
+- a valid manifest v3 file at `cpak.json`, with the image pinned to its OCI digest
 - a published OCI image for every advertised architecture
 - a concise README with install and test commands
 - a CI workflow that builds the image and checks its exported binaries
@@ -49,7 +49,7 @@ Do not edit generated catalog indexes by hand. The Store validation workflow reb
 
 ## Review package permissions
 
-The Store displays effective manifest permissions to users. Broad filesystem access, all-device access, system bus access, root execution, process sharing, and host service capabilities need a concrete package reason.
+The Store displays effective manifest permissions to users. Broad filesystem access, all-device access, root execution, process sharing, session bus rules, and host service capabilities need a concrete package reason.
 
 Runtime permissions come from the installed manifest and the user's local overrides. Catalog metadata is used for discovery and installer presentation.
 

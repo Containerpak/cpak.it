@@ -5,6 +5,7 @@ tags: [store, publishing, catalog]
 section: packages
 order: 80
 ---
+
 # Pubblica nello Store
 
 Lo Store è un layer di scoperta. I pacchetti sono anche installabili direttamente da un'origine Git valida.
@@ -13,7 +14,7 @@ Lo Store è un layer di scoperta. I pacchetti sono anche installabili direttamen
 
 Prima dell'invio del catalogo, il repository del pacchetto dovrebbe contenere:
 
-- un file manifest v2 valido su `cpak.json`
+- un file manifest v3 valido in `cpak.json`, con l'immagine fissata al digest OCI
 - a ha pubblicato un'image OCI per ogni architettura pubblicizzata
 - un README conciso con comandi di installazione e test
 - un flusso di lavoro CI che crea l'image e controlla i relativi file binari esportati

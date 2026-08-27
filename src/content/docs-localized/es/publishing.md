@@ -5,6 +5,7 @@ tags: [store, publishing, catalog]
 section: packages
 order: 80
 ---
+
 # Publicar en la Store
 
 La Tienda es un layer de descubrimiento. Los paquetes también se pueden instalar directamente desde un origen Git válido.
@@ -13,7 +14,7 @@ La Tienda es un layer de descubrimiento. Los paquetes también se pueden instala
 
 Antes del envío del catálogo, el repositorio de paquetes debe contener:
 
-- un archivo de manifest v2 válido en `cpak.json`
+- un archivo de manifest v3 válido en `cpak.json`, con la imagen fijada a su digest OCI
 - una imagen OCI publicada para cada arquitectura anunciada
 - un README conciso con comandos de instalación y prueba
 - un workflow de CI que crea la imagen y verifica sus archivos binarios exportados

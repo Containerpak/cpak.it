@@ -14,18 +14,13 @@ Un permesso che il manifest non dichiara non viene concesso. Non esistono campi 
 
 ## Socket del desktop
 
-| Campo | Accesso |
-| --- | --- |
-| `socketWayland` | Socket del display Wayland attivo. |
-| `socketX11` | Directory dei socket X11 dell'host. |
+| Campo              | Accesso                                  |
+| ------------------ | ---------------------------------------- |
+| `socketWayland`    | Socket del display Wayland attivo.       |
 | `socketPulseAudio` | Socket audio compatibile con PulseAudio. |
-| `socketSessionBus` | Socket D-Bus della sessione desktop. |
-| `socketSystemBus` | Socket D-Bus di sistema. Usalo solo se serve un accesso diretto al bus. |
-| `socketCups` | Socket di stampa CUPS. |
-| `socketAtSpiBus` | Socket del bus di accessibilità. |
-| `socketSshAgent` | Socket dell'agente SSH dell'utente. |
-| `socketGpgAgent` | Socket dell'agente GPG dell'utente. |
-| `socketBluetooth` | Socket Bluetooth. |
+| `socketCups`       | Socket di stampa CUPS.                   |
+| `socketSshAgent`   | Socket dell'agente SSH dell'utente.      |
+| `socketGpgAgent`   | Socket dell'agente GPG dell'utente.      |
 
 Usa il system broker per notifiche e URI esterni. Ogni permesso espone al pacchetto una sola operazione.
 
@@ -39,7 +34,7 @@ Quando il passthrough della GPU è attivo, le librerie userspace NVIDIA vengono 
 
 ## Filesystem
 
-Il manifest v2 usa voci strutturate per il filesystem:
+Il manifest v3 usa voci strutturate per il filesystem:
 
 ```json
 "filesystem": [
@@ -50,7 +45,11 @@ Il manifest v2 usa voci strutturate per il filesystem:
 
 L'ambito portabile `home` punta alla directory home dell'utente. `host` punta alla root dell'host. Un path assoluto seleziona una posizione specifica. L'accesso deve essere `read-only` o `read-write`.
 
-Nei nuovi pacchetti evita i campi legacy `fsHost`, `fsHostHome`, `fsHostEtc` e `fsExtra`. Esistono solo per la migrazione da v1 e lo schema v2 rigoroso li rifiuta.
+I campi legacy `fsHost`, `fsHostHome`, `fsHostEtc` e `fsExtra` vengono rifiutati dallo schema v3 rigoroso.
+
+## Bus di sessione
+
+`sessionBus` concede chiamate esatte sul bus di sessione desktop. Ogni voce `talk` indica destinazione, percorso dell'oggetto, interfaccia e metodi. L'elenco opzionale `own` indica i nomi noti che il pacchetto può acquisire. Manifest v3 non espone socket grezzi per X11, bus di sessione, bus di sistema, AT-SPI o Bluetooth.
 
 ## File scelti dall'utente
 
@@ -64,11 +63,11 @@ Nei nuovi pacchetti evita i campi legacy `fsHost`, `fsHostHome`, `fsHostEtc` e `
 
 ## Limiti delle risorse
 
-| Campo | Unità | Zero significa |
-| --- | --- | --- |
-| `memoryMaxMB` | MiB | nessun limite richiesto |
-| `cpuQuota` | percentuale di una CPU | nessun limite richiesto |
-| `pidsMax` | numero di processi | nessun limite richiesto |
+| Campo         | Unità                  | Zero significa          |
+| ------------- | ---------------------- | ----------------------- |
+| `memoryMaxMB` | MiB                    | nessun limite richiesto |
+| `cpuQuota`    | percentuale di una CPU | nessun limite richiesto |
+| `pidsMax`     | numero di processi     | nessun limite richiesto |
 
 I limiti usano controller cgroup v2 delegati. Se l'host non può applicare un limite richiesto, il lancio fallisce.
 
@@ -99,4 +98,4 @@ Gli override sono salvati per versione dell'applicazione. Riesaminali dopo un ca
 Un override locale sostituisce i valori predefiniti del manifest e può rimuovere oppure aggiungere accessi. Su una macchina gestita, il ceiling di sistema viene applicato in seguito e nessun override utente può superare il massimo scelto dall'amministratore. Consulta [Distribuzione gestita](/docs/managed-deployment).
 
 > [!WARNING] Accesso ampio
-> `deviceAll`, `socketSystemBus`, `process`, `asRoot` e l'accesso `host` al filesystem attraversano ampie parti del confine del sandbox. Documenta perché il pacchetto ne ha bisogno.
+> `deviceAll`, `process`, `asRoot`, regole ampie per il bus di sessione e l'accesso `host` al filesystem attraversano ampie parti del confine del sandbox. Documenta perché il pacchetto ne ha bisogno.

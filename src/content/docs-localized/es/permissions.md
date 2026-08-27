@@ -14,18 +14,13 @@ Un permiso que el manifest no declara no se concede. No existen campos activos p
 
 ## Sockets del escritorio
 
-| Campo | Acceso |
-| --- | --- |
-| `socketWayland` | Socket del display Wayland activo. |
-| `socketX11` | Directorio de sockets X11 del host. |
+| Campo              | Acceso                                     |
+| ------------------ | ------------------------------------------ |
+| `socketWayland`    | Socket del display Wayland activo.         |
 | `socketPulseAudio` | Socket de audio compatible con PulseAudio. |
-| `socketSessionBus` | Socket D-Bus de la sesión de escritorio. |
-| `socketSystemBus` | Socket D-Bus del sistema. Úselo solo si se necesita acceso directo al bus. |
-| `socketCups` | Socket de impresión CUPS. |
-| `socketAtSpiBus` | Socket del bus de accesibilidad. |
-| `socketSshAgent` | Socket del agente SSH del usuario. |
-| `socketGpgAgent` | Socket del agente GPG del usuario. |
-| `socketBluetooth` | Socket Bluetooth. |
+| `socketCups`       | Socket de impresión CUPS.                  |
+| `socketSshAgent`   | Socket del agente SSH del usuario.         |
+| `socketGpgAgent`   | Socket del agente GPG del usuario.         |
 
 Use el system broker para notificaciones y URI externos. Cada permiso expone una sola operación al paquete.
 
@@ -39,7 +34,7 @@ Cuando el passthrough de GPU está activo, las librerías NVIDIA de userspace se
 
 ## Sistema de archivos
 
-El manifest v2 usa entradas estructuradas:
+El manifest v3 usa entradas estructuradas:
 
 ```json
 "filesystem": [
@@ -50,7 +45,11 @@ El manifest v2 usa entradas estructuradas:
 
 El scope portátil `home` apunta al directorio personal del usuario. `host` apunta a la raíz del host. Una ruta absoluta selecciona una ubicación específica. El acceso debe ser `read-only` o `read-write`.
 
-En paquetes nuevos evite los campos heredados `fsHost`, `fsHostHome`, `fsHostEtc` y `fsExtra`. Solo existen para la migración desde v1 y el esquema estricto de v2 los rechaza.
+El esquema estricto de v3 rechaza los campos heredados `fsHost`, `fsHostHome`, `fsHostEtc` y `fsExtra`.
+
+## Bus de sesión
+
+`sessionBus` concede llamadas exactas en el bus de sesión del escritorio. Cada entrada `talk` indica el destino, la ruta del objeto, la interfaz y los métodos. La lista opcional `own` indica los nombres conocidos que puede adquirir el paquete. Manifest v3 no expone sockets sin filtrar para X11, el bus de sesión, el bus del sistema, AT-SPI o Bluetooth.
 
 ## Archivos seleccionados por el usuario
 
@@ -64,11 +63,11 @@ En paquetes nuevos evite los campos heredados `fsHost`, `fsHostHome`, `fsHostEtc
 
 ## Límites de recursos
 
-| Campo | Unidad | Cero significa |
-| --- | --- | --- |
-| `memoryMaxMB` | MiB | ningún límite solicitado |
-| `cpuQuota` | porcentaje de una CPU | ningún límite solicitado |
-| `pidsMax` | número de procesos | ningún límite solicitado |
+| Campo         | Unidad                | Cero significa           |
+| ------------- | --------------------- | ------------------------ |
+| `memoryMaxMB` | MiB                   | ningún límite solicitado |
+| `cpuQuota`    | porcentaje de una CPU | ningún límite solicitado |
+| `pidsMax`     | número de procesos    | ningún límite solicitado |
 
 Los límites usan controladores cgroup v2 delegados. Si el host no puede aplicar un límite solicitado, el inicio falla.
 
@@ -99,4 +98,4 @@ Los overrides se guardan por versión de la aplicación. Revíselos después de 
 Un override local sustituye los valores predeterminados del manifest y puede quitar o añadir accesos. En una máquina gestionada, el ceiling del sistema se aplica después y ningún override del usuario puede superar el máximo elegido por el administrador. Consulte [Implementación gestionada](/docs/managed-deployment).
 
 > [!WARNING] Acceso amplio
-> `deviceAll`, `socketSystemBus`, `process`, `asRoot` y el acceso `host` al sistema de archivos cruzan partes amplias de la sandbox. Documente por qué el paquete los necesita.
+> `deviceAll`, `process`, `asRoot`, las reglas amplias para el bus de sesión y el acceso `host` al sistema de archivos cruzan partes amplias de la sandbox. Documente por qué el paquete los necesita.
