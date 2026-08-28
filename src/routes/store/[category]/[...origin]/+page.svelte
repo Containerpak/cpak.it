@@ -20,6 +20,11 @@
 	};
 
 	const permissions: Record<string, PermissionInfo> = {
+		displayX11: {
+			label: 'Isolated X11 display',
+			description: 'Shows application windows through a private X11 compatibility display.',
+			icon: 'desktop_windows',
+		},
 		socketX11: {
 			label: 'X11 display',
 			description: 'Shows application windows through X11.',
@@ -69,6 +74,11 @@
 		socketBluetooth: {
 			label: 'Bluetooth',
 			description: 'Communicates with the host Bluetooth service.',
+			icon: 'bluetooth',
+		},
+		bluetooth: {
+			label: 'Bluetooth',
+			description: 'Communicates only with BlueZ through a private proxy.',
 			icon: 'bluetooth',
 		},
 		deviceDri: {

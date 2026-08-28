@@ -12,7 +12,7 @@ The manifest controls display, audio, devices, desktop services, and broker oper
 
 ## Display and input
 
-Wayland packages receive the active Wayland socket when `socketWayland` is enabled. GPU rendering normally also needs `deviceDri`. Manifest v3 does not expose the raw X11 socket.
+Wayland packages receive the active Wayland socket when `socketWayland` is enabled. GPU rendering normally also needs `deviceDri`. Set `displayX11` when the application needs X11 compatibility. cpak starts a nested Xwayland or Xephyr display and mounts only its private socket and authority file. The host X11 display remains outside the package.
 
 The runtime carries the display environment needed to address the mounted socket.
 
@@ -21,6 +21,20 @@ The runtime carries the display environment needed to address the mounted socket
 `socketPulseAudio` exposes the PulseAudio-compatible socket used by PulseAudio and PipeWire desktop sessions. Direct ALSA devices require `deviceAlsa`.
 
 Printing uses `socketCups`. Agent sockets for SSH and GPG are separate grants because they can authorize actions as the user. Manifest v3 does not mount a raw accessibility bus socket.
+
+## Bluetooth
+
+Set `bluetooth` when the application needs the BlueZ API:
+
+```json
+"bluetooth": true
+```
+
+cpak mounts a private bus socket at the conventional system bus path so normal
+BlueZ clients work without application changes. The native proxy permits only
+`org.bluez`, including exported agents and profiles, signals and file
+descriptors. It denies bus enumeration and every unrelated system service.
+The permission does not grant raw HCI sockets or Bluetooth device nodes.
 
 ## Notifications
 

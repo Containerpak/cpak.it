@@ -72,4 +72,4 @@ Run `cpak test` against the published image as part of package validation. This 
 
 ## Visual applications
 
-A desktop package needs a visual cpak launch in addition to a `--version` check. Confirm that windows render, check icons and desktop entries, and exercise the main workflows. Test Wayland and X11 paths when the manifest enables both.
+A desktop package needs a visual cpak launch in addition to a `--version` check. Confirm that windows render, check icons and desktop entries, and exercise the main workflows. Test `socketWayland` and `displayX11` separately when the manifest enables both. A Bluetooth package needs a BlueZ operation matching its real use, including a profile or GATT path when it exports one.

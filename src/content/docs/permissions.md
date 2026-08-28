@@ -47,11 +47,23 @@ The portable `home` scope maps to the user's home directory. The `host` scope ma
 
 The legacy `fsHost`, `fsHostHome`, `fsHostEtc`, and `fsExtra` fields are rejected by the strict v3 schema.
 
+## Displays and Bluetooth
+
+`socketWayland` mounts the active Wayland display. `displayX11` starts a nested
+X11 display for one container. On a Wayland desktop cpak uses Xwayland with a
+private socket. On an X11 desktop it uses Xephyr. The package does not receive
+the host X11 display or its authority file.
+
+`bluetooth` exposes the general BlueZ API through a private proxy. Discovery,
+pairing, GATT applications, agents, profiles, signals and file descriptor
+passing use this path. Calls to any other system bus service are denied, and
+raw HCI access is not included.
+
 ## Session bus
 
 `sessionBus` grants exact calls on the desktop session bus. Each `talk` entry names one destination, object path, interface, and list of methods. The optional `own` list names the well-known bus names the package may claim.
 
-Raw X11, session bus, system bus, AT-SPI, and Bluetooth socket fields are not available in manifest v3. Use typed broker permissions for notifications, external URIs, file selection, and host application launch. cpak has no raw system bus permission.
+Raw X11, session bus, system bus, AT-SPI, and Bluetooth socket fields are not available in manifest v3. Use `displayX11` for isolated X11 compatibility and `bluetooth` for the filtered BlueZ service. Typed broker permissions cover notifications, external URIs, file selection, and host application launch. cpak has no raw system bus permission.
 
 ## User-selected files
 

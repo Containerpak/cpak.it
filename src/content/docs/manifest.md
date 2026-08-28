@@ -135,6 +135,12 @@ The `override` object declares the package defaults for sockets, devices, filesy
 
 Manifest v3 removes `socketX11`, `socketSessionBus`, `socketSystemBus`, `socketAtSpiBus`, and `socketBluetooth`. Notifications, external URIs, file selection, and host application launches use their typed permissions. There is no raw system bus grant.
 
+Use `displayX11` for applications that still need X11. cpak starts an isolated
+display and mounts only that display socket and its authority file. Use
+`bluetooth` for general BlueZ access. Its private proxy accepts the BlueZ API,
+signals, callbacks and file descriptors while rejecting every other system bus
+destination. It does not grant raw HCI access.
+
 An application that needs a session bus method can declare the exact call surface:
 
 ```json

@@ -35,7 +35,7 @@ Network filesystems, existing FUSE mounts, and restricted user namespace configu
 
 ## Desktop sessions
 
-cpak can expose Wayland, X11, PulseAudio-compatible audio, accessibility, printing, and selected devices. The application manifest must enable the matching resource, and that resource must exist in the user session.
+cpak can expose Wayland, isolated X11 compatibility, PulseAudio-compatible audio, accessibility, printing, Bluetooth, and selected devices. The application manifest must enable the matching resource. `displayX11` needs Xwayland on a Wayland session or Xephyr on an X11 session. `bluetooth` needs the host BlueZ service and its system bus. Packages that request neither feature do not gain those host requirements.
 
 Headless packages can omit desktop sockets. Test desktop packages on each display path they declare.
 
