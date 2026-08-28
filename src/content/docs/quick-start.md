@@ -85,11 +85,21 @@ cpak rollback github.com/bottlesdevs/bottles
 ## Remove it
 
 ```bash
-cpak stop github.com/bottlesdevs/bottles
 cpak remove github.com/bottlesdevs/bottles
-cpak gc --apply
 ```
 
-Package removal retains layers referenced by another package. Garbage collection reports unreferenced data before deletion.
+The command finds the sole installed branch, release, or commit and stops its
+containers before removal. If more than one copy is installed, select one with
+`--branch`, `--release`, or `--commit`.
+
+Normal removal keeps the application's private home and persistent file grants.
+Use `cpak remove --purge github.com/bottlesdevs/bottles` when those should be
+deleted too. Host files exposed through filesystem permissions are never
+deleted. Garbage collection remains available for unused shared storage and
+download cache:
+
+```bash
+cpak gc --apply
+```
 
 Continue with [cpak concepts](/docs/concepts) to understand how origins, images, state, and permissions fit together.

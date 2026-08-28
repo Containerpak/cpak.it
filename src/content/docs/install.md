@@ -90,3 +90,19 @@ cpak list
 cpak remove github.com/containerpak/example
 cpak gc --apply
 ```
+
+When an origin has one installed copy, `cpak remove` reads its branch, release,
+or commit from the local package record. If several copies are installed, pass
+the matching `--branch`, `--release`, or `--commit` selector.
+
+Normal removal deletes the package record, containers, desktop integration, and
+unshared layers. It keeps the private application home and persistent file
+grants so a later reinstall can use them. Delete that state explicitly when it
+is no longer needed:
+
+```bash
+cpak remove --purge github.com/containerpak/example
+```
+
+`cpak gc --apply` reclaims unused shared storage and download cache. It is not
+required to finish package removal and does not delete a retained private home.

@@ -50,6 +50,6 @@ Your decision replaces the publisher's request on this installation. On a manage
 
 ## Where it goes
 
-Everything lands under your own home directory. There is no system-wide install, no root, nothing dropped into `/usr`. Removing a package removes the image and everything it wrote.
+Everything lands under your own home directory. There is no system-wide install, no root, nothing dropped into `/usr`. Removing a package removes its runtime files and desktop integration. Its private home remains available for a later reinstall unless you remove it with `cpak remove --purge`.
 
 That is the whole workflow: read a list, agree or narrow it, and remove it cleanly when you are done. The rest of this course is about reading the list well, because a permission's name is a poor guide to what it opens.

@@ -23,7 +23,11 @@ Run `cpak <command> --help` for the flags accepted by the installed build. The t
 | `extract`  | Export a resolved package as a tar archive.                      |
 | `alias`    | Set, remove, or list local origin aliases.                       |
 
-Install, run, remove, stop, and shell accept branch, release, or commit selectors where applicable.
+Install, run, remove, stop, and shell accept branch, release, or commit selectors where applicable. Without a selector, `remove` uses the source of the sole installed copy. It refuses to choose when several copies of the same origin are installed.
+
+`cpak remove` retains private application data and persistent file grants. Add
+`--purge` to delete them with the package. Host files mounted through filesystem
+permissions are outside the purge scope.
 
 ## Running instances
 

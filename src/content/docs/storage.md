@@ -82,14 +82,28 @@ FVS remains the authoritative layer store. Native checkouts are derived data and
 ## Remove an application
 
 ```bash
-cpak stop github.com/example/app
 cpak remove github.com/example/app
-cpak gc --apply
 ```
 
-Removal deletes the package record and its exported desktop integration. Shared layers remain until no installed package or retained version references them.
+Removal resolves the source selector from the local record when only one copy
+of the origin is installed. It stops and cleans the package containers, removes
+the package record and exported desktop integration, then deletes every layer
+that no other installed package or retained version references.
 
-The remove command stops and cleans containers owned by the selected package, then releases its layer metadata. Run `cpak gc --apply` to reclaim shared content blocks after their final reference disappears.
+The private application home, persistent machine identity, and persistent file
+grants remain available for a later reinstall. Delete them with the package
+when they are no longer needed:
+
+```bash
+cpak remove --purge github.com/example/app
+```
+
+The purge applies only to state inside the cpak store. It never deletes host
+files that the application accessed through filesystem permissions.
+
+Run `cpak gc --apply` separately to reclaim unused shared content and download
+cache. Garbage collection does not delete a private application home retained
+by normal removal.
 
 ## Back up writable state
 
