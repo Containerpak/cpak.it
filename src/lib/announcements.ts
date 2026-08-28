@@ -1,5 +1,14 @@
 export const announcements = [
   {
+    section: "cpak 2.9.5",
+    date: "August 28, 2026",
+    published: "2026-08-28",
+    title: "Manifest v3, with room for real desktop applications",
+    description:
+      "cpak 2.9.5 keeps the stricter manifest v3 boundary and gives X11 and Bluetooth applications a confined path to the host services they need.",
+    href: "/announcements/why-cpak-needs-manifest-v3",
+  },
+  {
     section: "cpak 2.6",
     date: "August 18, 2026",
     published: "2026-08-18",
