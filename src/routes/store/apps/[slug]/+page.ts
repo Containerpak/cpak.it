@@ -183,6 +183,7 @@ export const load: PageLoad = async ({ fetch, params, setHeaders }) => {
       name: match.entry.name,
       description,
       version: cpak.version,
+      architectures: match.entry.architectures ?? ["amd64", "arm64"],
       manifest: match.entry.manifest,
       cpak,
       icon,

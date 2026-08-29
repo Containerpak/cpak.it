@@ -252,11 +252,16 @@
 	let showTooltip = false,
 		copied = false,
 		directCopied = false,
-		installerArch = 'amd64';
+		installerArch = data.pkg.architectures[0] ?? 'amd64';
 	$: installerPath = `/install/${data.pkg.origin}?arch=${installerArch}`;
 	onMount(() => {
 		const agent = navigator.userAgent.toLowerCase();
-		if (agent.includes('aarch64') || agent.includes('arm64')) installerArch = 'arm64';
+		if (
+			data.pkg.architectures.includes('arm64') &&
+			(agent.includes('aarch64') || agent.includes('arm64'))
+		) {
+			installerArch = 'arm64';
+		}
 	});
 	async function copyInstall() {
 		await navigator.clipboard.writeText(cmd);

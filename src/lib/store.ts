@@ -50,6 +50,7 @@ export type StoreEntry = {
   version?: string;
   commit?: string;
   release?: string;
+  architectures?: Array<"amd64" | "arm64">;
   manifest: string;
 };
 
