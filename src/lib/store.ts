@@ -9,6 +9,8 @@ export const CATEGORY_DESCRIPTIONS: Record<string, string> = {
   Database: "Database clients, query tools and data explorers.",
   "Desktop Environments":
     "Complete desktop sessions installed and managed as cpak packages.",
+  Distributions:
+    "Complete Linux distributions for persistent development environments.",
   Development: "Editors, IDEs, SDKs and tools for building software.",
   DevOps: "Infrastructure and operations tools for local and remote systems.",
   Games: "Games, launchers, emulators and gaming utilities.",
@@ -26,6 +28,7 @@ export const CATEGORY_APPLICATION_TYPES: Record<string, string> = {
   "AI-ML": "UtilitiesApplication",
   Database: "DeveloperApplication",
   "Desktop Environments": "DesktopEnhancementApplication",
+  Distributions: "UtilitiesApplication",
   Development: "DeveloperApplication",
   DevOps: "DeveloperApplication",
   Games: "GameApplication",
