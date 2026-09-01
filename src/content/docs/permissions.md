@@ -73,7 +73,7 @@ Raw X11, session bus, system bus, AT-SPI, and Bluetooth socket fields are not av
 
 `network` controls network access in the package namespace. `process` shares the host process namespace and should remain false unless the application must inspect host processes.
 
-`userNamespaces` permits the application to create another user namespace. Browsers and tools with their own sandbox commonly need it. Leaving it false blocks nested user namespaces inside the package.
+`userNamespaces` permits the application to create another user namespace and perform the mount setup required by nested sandboxes such as bubblewrap. Landlock cannot coexist with that mount setup, so enabling this permission disables Landlock for the application. The cpak mount namespace still controls which host paths exist and whether each mount is read-only or writable, and the remaining seccomp policy stays active. Leaving it false blocks nested user namespaces and mounts inside the package.
 
 ## Resource limits
 

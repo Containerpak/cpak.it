@@ -4,7 +4,7 @@ The cpak sandbox has several independent boundaries. Calling all of them a conta
 
 The mount namespace starts with the composed package root. Process, IPC, hostname and cgroup namespaces separate runtime state from the host. A network namespace is used unless the manifest grants network access. User namespaces let this happen without making the application a host root process.
 
-Nested user namespaces are blocked by default. Browsers and similar programs can request `userNamespaces` when they need to build another sandbox inside cpak. That permission is specific; it does not grant a host filesystem or system bus.
+Nested user namespaces and mount setup are blocked by default. Browsers, Steam, and similar programs can request `userNamespaces` when they need to build another sandbox inside cpak. That permission is specific; it does not grant a host filesystem or system bus.
 
 ## Mounts choose which host objects exist
 
@@ -12,7 +12,9 @@ A filesystem grant is converted into a path inside the mount namespace with an e
 
 ## Landlock narrows path access after setup
 
-The runtime installs Landlock rules after the required paths are open and mounted. This gives the process a kernel-enforced list of readable and writable paths even inside its namespace. The available ABI depends on the host kernel, so `cpak doctor` reports it and a launch can require the sandbox when falling back would be unacceptable.
+The runtime installs Landlock rules after the required paths are open and mounted. This gives an ordinary process a kernel-enforced list of readable and writable paths even inside its namespace. The available ABI depends on the host kernel, so `cpak doctor` reports it and a launch can require the sandbox when falling back would be unacceptable.
+
+[Landlock forbids a confined process from changing filesystem topology](https://www.kernel.org/doc/html/latest/userspace-api/landlock.html#filesystem-topology-modification). A package granted `userNamespaces` therefore runs without Landlock so its nested sandbox can create mounts. The package still sees only the root and host paths exposed by cpak's mount namespace, each with its declared mount mode, and the remaining seccomp policy stays active. The permission prompt discloses this trade-off before installation.
 
 ## seccomp narrows the system call surface
 

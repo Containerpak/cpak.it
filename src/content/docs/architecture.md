@@ -40,7 +40,7 @@ The environment receives cpak runtime variables. `CPAK_CONTAINER_ID` contains an
 
 cpak creates user, mount, PID, IPC, UTS, cgroup, and optional network namespaces directly. A small PID 1 process owns the container lifecycle and reaps child processes. A private Unix socket accepts bounded execution requests for the running instance.
 
-Mounts are prepared from the package permission set and user overrides. The final process receives `no_new_privs`, a seccomp policy, and Landlock rules when the host kernel supports them.
+Mounts are prepared from the package permission set and user overrides. The final process receives `no_new_privs`, a seccomp policy, and Landlock rules when the host kernel supports them and the package does not request `userNamespaces`.
 
 ## Host integration
 

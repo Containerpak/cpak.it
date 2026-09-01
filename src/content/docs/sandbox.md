@@ -14,13 +14,13 @@ cpak starts applications as the current user. The sandbox exposes resources decl
 
 The runtime uses Linux namespaces for users, mounts, processes, IPC, hostname, cgroups, and optional networking. The process sees the assembled package root. The package PID 1 owns child cleanup and instance lifetime.
 
-Nested user namespaces are blocked by default. A package can request `userNamespaces` for applications such as browsers that create another sandbox inside cpak.
+Nested user namespaces and their mount setup are blocked by default. A package can request `userNamespaces` for applications such as browsers, Steam, and bubblewrap-based runtimes that create another sandbox inside cpak.
 
 ## Filesystem boundary
 
 Only the package root, runtime mounts, and declared host filesystem paths are present. Each host path has a read-only or read-write mode. Landlock narrows path access after mount setup when supported by the current kernel.
 
-Landlock adds path restrictions after mount isolation. `cpak doctor` reports when the host kernel cannot apply it.
+Landlock adds path restrictions after mount isolation. [The kernel does not allow a Landlock-confined process to change filesystem topology](https://www.kernel.org/doc/html/latest/userspace-api/landlock.html#filesystem-topology-modification), so cpak does not apply Landlock when the package explicitly grants `userNamespaces`. That permission keeps mount namespace isolation and seccomp, but removes Landlock's second path barrier so the nested sandbox can mount its own filesystems. `cpak doctor` reports whether the host can apply Landlock to ordinary launches.
 
 ## System call boundary
 

@@ -26,7 +26,7 @@ A nested dependency is not added to that root. It keeps its own environment and 
 
 ## Enter the boundary
 
-Namespaces establish the process, mount, IPC, hostname, cgroup and optional network views. Declared host paths and sockets are mounted, then Landlock and seccomp narrow what the process can do after setup. The package process runs as the current user and cannot gain privileges after `no_new_privs`.
+Namespaces establish the process, mount, IPC, hostname, cgroup and optional network views. Declared host paths and sockets are mounted, then seccomp and, for launches without `userNamespaces`, Landlock narrow what the process can do after setup. The package process runs as the current user and cannot gain privileges after `no_new_privs`.
 
 A typed broker handles the small set of host operations that cannot live inside that boundary. Logs and exit status return through the supervisor. When a launch fails, identify which of these stages refused it before changing the manifest.
 
