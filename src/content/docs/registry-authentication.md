@@ -1,16 +1,32 @@
 ---
-title: Private OCI registries
-description: Bind a registry credential to one package origin and repository without importing container-engine configuration.
+title: Private GitHub repositories and OCI registries
+description: Bind source and image credentials to one package origin without importing container-engine configuration.
 tags: [registry, authentication, security]
 section: operations
 order: 25
 ---
 
-# Private OCI registries
+# Private GitHub repositories and OCI registries
 
-cpak pulls public OCI images anonymously. A package whose manifest points to a private repository needs an explicit credential binding.
+Package source and OCI image access are separate. A private GitHub repository needs an authenticated source request for `cpak.json`. A private image needs registry authentication. cpak binds both forms to one exact package origin.
 
-## Store a credential
+## Private GitHub repositories
+
+Use the current GitHub CLI session when `cpak.json` belongs to a private repository:
+
+```bash
+cpak auth login github.com/example/private-app --github
+```
+
+cpak reads the token held by `gh auth`. If no GitHub session exists and the command is interactive, it starts `gh auth login` in the browser with repository and package-read scopes. The saved source credential is accepted only for the exact `github.com/owner/repository` origin.
+
+When that private manifest points to GHCR, the same GitHub credential is also bound to the exact OCI repository in the image reference. An image hosted by another registry still needs a separate registry login.
+
+`--github` cannot be combined with `--username`, `--token`, or `--token-host`.
+
+## Private OCI registries
+
+### Store a registry credential
 
 Basic authentication uses a username and a password:
 
@@ -23,6 +39,8 @@ Token authentication omits the username:
 ```bash
 cpak auth login github.com/example/private-app --token
 ```
+
+For GHCR, pass the GitHub username with `--username` and enter a personal access token as the password. The `--token` flag is for a registry-issued bearer token and cannot be combined with a username.
 
 The login command reads the package manifest, parses its image reference, and binds the credential to all three values below:
 
@@ -60,6 +78,12 @@ install -m 0600 /dev/null token.txt
 cpak auth login github.com/example/private-app --token --secret-file token.txt
 ```
 
+The same file can supply a GitHub token for private source access:
+
+```bash
+cpak auth login github.com/example/private-app --github --secret-file token.txt
+```
+
 cpak stores the absolute file path in the binding and reads the secret from that file for each registry request. Binding metadata contains the path only. Keep the file at that path with the same owner and mode. `cpak auth logout` removes the binding and leaves the user-owned file untouched.
 
 An automated runtime can inject `CPAK_REGISTRY_AUTH_FILE`. The JSON file must be owned by the current user and have mode `0600`:
@@ -69,15 +93,17 @@ An automated runtime can inject `CPAK_REGISTRY_AUTH_FILE`. The JSON file must be
   "records": [
     {
       "origin": "github.com/example/private-app",
+      "source_host": "github.com",
       "registry": "ghcr.io",
       "repository": "example/private-app",
-      "access_token": "TOKEN"
+      "username": "account",
+      "password": "TOKEN"
     }
   ]
 }
 ```
 
-Basic authentication uses `username` and `password` instead of `access_token`. A record that mixes both forms is rejected.
+Omit `registry`, `repository`, and `username` when the token is only for the private GitHub source. Registry bearer authentication uses `access_token` instead of `username` and `password`. A record that mixes both forms is rejected.
 
 ## Token services
 

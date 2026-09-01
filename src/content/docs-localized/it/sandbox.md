@@ -11,7 +11,9 @@ cpak avvia le applicazioni come utente corrente. sandbox espone le risorse dichi
 
 ## Confine dello spazio dei nomi
 
-runtime utilizza gli spazi dei nomi Linux per utenti, montaggi, processi, IPC, nome host, cgroup e rete opzionale. Il processo vede la radice del pacchetto assemblato. Il pacchetto PID 1 possiede la pulizia figlio e la durata dell'istanza.
+Il runtime utilizza namespace Linux per utenti, mount, processi, IPC, hostname, cgroup e rete. Il processo vede la root del pacchetto assemblato. Il PID 1 del pacchetto gestisce la pulizia dei processi figli e la durata dell'istanza.
+
+Senza `network`, il namespace di rete privato non ha una route verso l'esterno. Con `network`, `slirp4netns` aggiunge accesso a internet e LAN mentre il loopback dell'host resta bloccato. cpak aggiorna soltanto questo helper quando cambia il resolver dell'host, quindi il container sopravvive a un cambio Wi-Fi o VPN. Il permesso separato `hostNetwork` condivide invece il namespace di rete dell'host e localhost.
 
 Gli spazi dei nomi utente nidificati sono bloccati per impostazione predefinita. Un pacchetto può richiedere `userNamespaces` per applicazioni come browser che creano un altro sandbox all'interno di cpak.
 
@@ -19,7 +21,7 @@ Gli spazi dei nomi utente nidificati sono bloccati per impostazione predefinita.
 
 Sono presenti solo la root del pacchetto, i montaggi runtime e i percorsi dichiarati del filesystem host. Ogni percorso host ha una modalità di sola lettura o lettura-scrittura. Landlock restringe l'accesso al percorso dopo l'impostazione del montaggio quando supportato dal kernel corrente.
 
-Landlock aggiunge restrizioni al percorso dopo l'isolamento del montaggio. `cpak doctor` segnala quando il kernel host non può applicarlo.
+Landlock aggiunge restrizioni ai percorsi dopo l'isolamento dei mount. Il kernel non permette a un processo confinato da Landlock di cambiare la topologia del filesystem, quindi cpak non applica Landlock quando il pacchetto concede esplicitamente `userNamespaces`. Quel permesso conserva l'isolamento del namespace dei mount e seccomp, ma rimuove la seconda barriera sui percorsi affinché la sandbox annidata possa creare i propri mount. `cpak doctor` segnala se l'host può applicare Landlock agli avvii normali.
 
 ## Limite delle chiamate di sistema
 
@@ -39,8 +41,8 @@ Prese e dispositivi diretti sono campi manifest opt-in. Le operazioni di sistema
 
 - il sistema broker accetta solo tipi di azioni integrate
 - la convalida peer locale collega le richieste all'istanza del pacchetto in esecuzione
-I comandi di compatibilità -  vengono analizzati prima che venga creata la richiesta broker
-Le azioni - streamed preservano i canali di uscita, lo stato di uscita e l'annullamento
+- i comandi di compatibilità vengono analizzati prima di creare la richiesta al broker
+- le azioni in streaming conservano canali di output, stato di uscita e cancellazione
 
 Ogni spessore di compatibilità viene mappato a una richiesta digitata e alla relativa permesso effettiva del pacchetto.
 
@@ -54,7 +56,7 @@ manifest definisce le impostazioni predefinite del pacchetto. Gli utenti possono
 
 ## Limiti del confine
 
-Un pacchetto con accesso home in lettura e scrittura può modificare i file dell'utente. Un pacchetto con il bus di sessione può chiamare i servizi esposti su quel bus. I dispositivi completi, la condivisione dei processi, l'accesso al bus di sistema, i montaggi root dell'host e il root all'interno dell'ambiente espandono la superficie attendibile.
+Un pacchetto con accesso home in lettura e scrittura può modificare i file dell'utente. Regole ampie per il bus di sessione possono chiamare i servizi che esse consentono. Dispositivi completi, rete host, condivisione dei processi, mount della root host e root dentro l'ambiente ampliano la superficie attendibile.
 
 Esaminare manifest prima di eseguire un pacchetto non attendibile. Lo Store evidenzia i permessi ad alto rischio. manifest e override locale definiscono la politica autorevole.
 

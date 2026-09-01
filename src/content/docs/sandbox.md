@@ -12,7 +12,9 @@ cpak starts applications as the current user. The sandbox exposes resources decl
 
 ## Namespace boundary
 
-The runtime uses Linux namespaces for users, mounts, processes, IPC, hostname, cgroups, and optional networking. The process sees the assembled package root. The package PID 1 owns child cleanup and instance lifetime.
+The runtime uses Linux namespaces for users, mounts, processes, IPC, hostname, cgroups, and networking. The process sees the assembled package root. The package PID 1 owns child cleanup and instance lifetime.
+
+Without `network`, the private network namespace has no route outside the package. With `network`, `slirp4netns` adds internet and LAN access while host loopback stays blocked. cpak refreshes only that userspace helper when the host resolver changes, so a running container survives a Wi-Fi or VPN switch. `hostNetwork` is the separate explicit permission that shares the host network namespace and localhost.
 
 Nested user namespaces and their mount setup are blocked by default. A package can request `userNamespaces` for applications such as browsers, Steam, and bubblewrap-based runtimes that create another sandbox inside cpak.
 
@@ -55,7 +57,7 @@ The manifest defines package defaults. Users can remove access or add a local gr
 
 ## Limits of the boundary
 
-A package with read-write home access can modify user files. A package with the session bus can call services exposed on that bus. Full devices, process sharing, system bus access, host root mounts, and root inside the environment all expand the trusted surface.
+A package with read-write home access can modify user files. A package with broad session bus rules can call the services allowed by those rules. Full devices, host networking, process sharing, host root mounts, and root inside the environment all expand the trusted surface.
 
 Review the manifest before running an untrusted package. The Store highlights high-risk permissions. The manifest and local override define the authoritative policy.
 

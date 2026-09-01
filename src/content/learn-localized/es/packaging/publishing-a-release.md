@@ -2,7 +2,7 @@ Una release de package conecta una revisión Git, un manifest y el digest de ima
 
 ## Hacer que el código fuente y la imagen coincidan
 
-Construya la imagen desde el código etiquetado y publique todas las arquitecturas admitidas. `image_ref: source` puede seguir el branch, la release o el commit Git seleccionado, mientras que `cpak lock` registra los digest de imagen inmutables del grafo resuelto.
+Construya la imagen desde el código etiquetado y publique todas las arquitecturas admitidas. Registre el digest multiarquitectura inmutable en el campo `image` del manifest v3 antes de validar. `cpak lock` registra entonces el paquete y el grafo de dependencias resueltos sin seguir una etiqueta de imagen móvil.
 
 ```
 cpak validate cpak.json

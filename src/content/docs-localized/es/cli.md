@@ -82,6 +82,6 @@ Ejecute `cpak gc --json` antes de `cpak gc --apply` cuando automatice la limpiez
 | `auth`        | Vincula el acceso al registro a un origen de paquete y al repositorio OCI. |
 | `self-update` | Busque o instale un binario cpak oficial más nuevo.                        |
 
-Utilice `cpak auth login`, `logout`, `list` o `status` para administrar el acceso al registro privado. Lea [Registros privados OCI](/docs/registry-authentication) antes de agregar un host de token independiente.
+Utilice `cpak auth login`, `logout`, `list` o `status` para administrar el acceso privado al paquete. Lea [Repositorios privados de GitHub y registros OCI](/docs/registry-authentication) antes de agregar un host de token independiente.
 
 `cpak self-update --check` informa un release disponible y deja el binario instalado sin cambios. Las builds del administrador de paquetes mantienen el aviso de release y delegan el reemplazo al administrador de paquetes del sistema. Consulte [Actualizar el runtime cpak](/docs/runtime-updates).

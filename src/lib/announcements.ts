@@ -1,5 +1,14 @@
 export const announcements = [
   {
+    section: "cpak 2.11.1",
+    date: "September 1, 2026",
+    published: "2026-09-01",
+    title: "Change networks without restarting your cpak apps",
+    description:
+      "cpak refreshes isolated application networking after a resolver change without sharing the host network or restarting the container.",
+    href: "/announcements/change-networks-without-restarting-cpak-apps",
+  },
+  {
     section: "cpak 2.9.5",
     date: "August 28, 2026",
     published: "2026-08-28",

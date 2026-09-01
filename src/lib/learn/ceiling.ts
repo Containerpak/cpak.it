@@ -40,19 +40,33 @@ export type Case = {
 
 function manifest(override: Record<string, unknown>): string {
   return format({
-    manifest_version: "2.0",
+    $schema:
+      "https://raw.githubusercontent.com/Containerpak/cpak/v2/schema/manifest-v3.json",
+    manifest_version: "3.0",
     name: "Fotoritocco",
     description: "A photo editor",
-    image: "ghcr.io/example/fotoritocco:3.2",
+    version: "3.2",
+    image:
+      "ghcr.io/example/fotoritocco@sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
     binaries: ["/usr/bin/fotoritocco"],
+    idle_time: 5,
     override,
   });
 }
 
 const asks = {
   socketWayland: true,
-  socketSystemBus: true,
-  socketBluetooth: true,
+  bluetooth: true,
+  sessionBus: {
+    talk: [
+      {
+        name: "org.example.Documents",
+        path: "/org/example/Documents",
+        interface: "org.example.Documents",
+        members: ["List", "Open"],
+      },
+    ],
+  },
   deviceDri: true,
   network: true,
   openURI: true,
@@ -84,14 +98,25 @@ export const CASES: Case[] = [
     ceiling: "",
   },
   {
-    id: "same-door",
-    label: "One door, two names",
+    id: "exact-bus",
+    label: "One exact bus rule",
     lesson:
-      "socketBluetooth opens the socket socketSystemBus opens. Closing one and leaving the other would close nothing, so naming either one holds both.",
+      "The application asks for two methods on one session service. The ceiling keeps only List, so Open disappears without exposing the raw session bus.",
     machine: "wayland",
     manifest: manifest(asks),
     user: "",
-    ceiling: format({ socketSystemBus: false }),
+    ceiling: format({
+      sessionBus: {
+        talk: [
+          {
+            name: "org.example.Documents",
+            path: "/org/example/Documents",
+            interface: "org.example.Documents",
+            members: ["List"],
+          },
+        ],
+      },
+    }),
   },
   {
     id: "closes-nothing",

@@ -33,6 +33,6 @@ A useful shim still preserves standard input, output, error, exit status and can
 
 A nested dependency receives the capabilities allowed by both its own manifest and its parent. The dependency cannot expand the parent boundary. A local override can narrow the result again.
 
-Test a provider at three levels: request validation, backend ownership checks and a complete shim call with streams and cancellation. A successful happy path alone does not prove the boundary.
+Test request validation and backend ownership checks, then run a complete shim call with streams and cancellation. A successful happy path alone does not prove the boundary.
 
 [Host actions](/docs/host-actions) documents the current providers and capability sets.

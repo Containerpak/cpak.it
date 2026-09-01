@@ -73,7 +73,7 @@ export const EXAMS: Record<string, Exam> = {
         ],
       },
       {
-        asks: "A user runs cpak override --network=false on your package. What happens?",
+        asks: "A user runs cpak override ORIGIN --key network --value false on your package. What happens?",
         choices: [
           "Nothing: an override cannot narrow what the manifest asked for",
           "The application runs without the network, and can be given it back later",
@@ -100,12 +100,12 @@ export const EXAMS: Record<string, Exam> = {
         ],
       },
       {
-        asks: "What does socketX11 open, beyond a socket to draw through?",
+        asks: "A manifest asks for displayX11. What does cpak keep isolated?",
         choices: [
-          "Nothing else: it is one socket",
-          "The clipboard, the keystrokes and the pixels of every other window on that display",
-          "The display and the audio server, which share a socket directory",
-          "The display, and the network if the session is remote",
+          "Only the network route used by remote displays",
+          "The host X11 display, including other clients' clipboard, input and pixels",
+          "Nothing: displayX11 is an alias for socketWayland",
+          "No host path, because every display permission is brokered",
         ],
       },
       {
@@ -185,12 +185,12 @@ export const EXAMS: Record<string, Exam> = {
         ],
       },
       {
-        asks: "Your ceiling names socketSystemBus. What happens to socketBluetooth?",
+        asks: "An application asks for List and Open on one session service. Its ceiling allows only List. What survives?",
         choices: [
-          "Nothing, it was not named",
-          "It is held too, because it opens the same socket",
-          "It is granted, to keep the bus usable",
-          "The ceiling is refused as ambiguous",
+          "Both methods, because the destination is allowed",
+          "Only List",
+          "Neither method, because a ceiling cannot contain bus rules",
+          "Open only, because it changes state",
         ],
       },
       {

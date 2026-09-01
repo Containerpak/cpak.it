@@ -11,7 +11,9 @@ cpak inicia aplicaciones como el usuario actual. El sandbox expone los recursos 
 
 ## Límite del espacio de nombres
 
-El runtime utiliza espacios de nombres Linux para usuarios, montajes, procesos, IPC, nombre de host, cgroups y redes opcionales. El proceso ve la raíz del paquete ensamblado. El paquete PID 1 posee la limpieza secundaria y la vida útil de la instancia.
+El runtime utiliza namespaces Linux para usuarios, montajes, procesos, IPC, hostname, cgroups y red. El proceso ve la raíz del paquete ensamblado. El PID 1 del paquete controla la limpieza de procesos secundarios y la vida de la instancia.
+
+Sin `network`, el namespace de red privado no tiene una ruta fuera del paquete. Con `network`, `slirp4netns` agrega acceso a internet y LAN mientras el loopback del host sigue bloqueado. cpak actualiza solo ese helper cuando cambia el resolver del host, por lo que el contenedor sobrevive a un cambio de Wi-Fi o VPN. El permiso separado `hostNetwork` comparte el namespace de red del host y localhost.
 
 Los espacios de nombres de usuarios anidados están bloqueados de forma predeterminada. Un paquete puede solicitar `userNamespaces` para aplicaciones como navegadores que crean otra zona de pruebas dentro de cpak.
 
@@ -19,7 +21,7 @@ Los espacios de nombres de usuarios anidados están bloqueados de forma predeter
 
 Solo están presentes la raíz del paquete, los montajes en runtime y las paths declaradas del filesystem del host. Cada path de host tiene un modo de solo lectura o lectura-escritura. Landlock reduce el acceso a la path después de la configuración del montaje cuando lo admite el kernel actual.
 
-Landlock agrega restricciones de path después del aislamiento del montaje. `cpak doctor` informa cuando el kernel del host no puede aplicarlo.
+Landlock agrega restricciones de rutas después del aislamiento del montaje. El kernel no permite que un proceso confinado por Landlock cambie la topología del filesystem, por lo que cpak no aplica Landlock cuando el paquete concede `userNamespaces` de forma explícita. Ese permiso conserva el aislamiento del namespace de montaje y seccomp, pero elimina la segunda barrera de rutas para que el sandbox anidado pueda crear sus propios montajes. `cpak doctor` informa si el host puede aplicar Landlock a los inicios normales.
 
 ## Límite de llamada al sistema
 
@@ -54,7 +56,7 @@ El manifest define los valores predeterminados del paquete. Los usuarios pueden 
 
 ## Límites de la frontera
 
-Un paquete con acceso inicial de lectura y escritura puede modificar archivos de usuario. Un paquete con el bus de sesión puede llamar a servicios expuestos en ese bus. Los dispositivos completos, el uso compartido de procesos, el acceso al bus del sistema, los montajes de raíz del host y la raíz dentro del entorno amplían la superficie de confianza.
+Un paquete con acceso de lectura y escritura al directorio personal puede modificar archivos del usuario. Las reglas amplias del bus de sesión pueden llamar a los servicios permitidos por ellas. Los dispositivos completos, la red host, la compartición de procesos, los montajes de la raíz del host y root dentro del entorno amplían la superficie de confianza.
 
 Revise el manifest antes de ejecutar un paquete que no sea de confianza. La Tienda destaca los permisos de alto riesgo. El manifest y la override local definen la política autorizada.
 

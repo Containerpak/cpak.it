@@ -2,16 +2,6 @@ type Note = { match: RegExp; reach: string };
 
 const MOUNTS: Note[] = [
   {
-    match: /^\/run\/user\/\d+\/bus$/,
-    reach:
-      "The session bus. A package holding it can talk to everything your session publishes there, and one name along sits org.freedesktop.systemd1, which will start a transient unit: a process running as you, outside the sandbox.",
-  },
-  {
-    match: /^\/run\/dbus\/system_bus_socket$/,
-    reach:
-      "The system bus. The services listening on it run as root, and what a package may ask them for is decided by their own policy rather than by cpak. The Bluetooth permission binds this same socket, so it is the whole system bus either way.",
-  },
-  {
     match: /^\/run\/user\/\d+\/wayland-[^/]+\.lock$/,
     reach:
       "The lock beside the compositor socket, carried when the compositor keeps one.",
@@ -20,34 +10,6 @@ const MOUNTS: Note[] = [
     match: /^\/run\/user\/\d+\/[^/]*wayland[^/]*$/i,
     reach:
       "The compositor socket. This is the window itself: the application draws through it and gets the keyboard and pointer input the compositor sends it.",
-  },
-  {
-    match: /Xwaylandauth/,
-    reach:
-      "The Xwayland cookie, found by name because XAUTHORITY is unset. It is here only because X11 and Wayland are both on.",
-  },
-  {
-    match: /^\/tmp\/\.X11-unix\/$/,
-    reach:
-      "The X11 socket directory. X11 does not separate its clients: anything on the display can read the clipboard, watch what is typed into other windows and copy their pixels.",
-  },
-  {
-    match: /^\/tmp\/\.ICE-unix\/$/,
-    reach: "The ICE sockets, which X11 session management uses.",
-  },
-  {
-    match: /^\/tmp\/\.XIM-unix\/$/,
-    reach:
-      "The X input method sockets, which is how an input method reaches an X11 client.",
-  },
-  {
-    match: /^\/tmp\/\.font-unix\/$/,
-    reach: "The X font server socket directory.",
-  },
-  {
-    match: /^\/run\/user\/\d+\/ICEauthority$/,
-    reach:
-      "The ICE authority file, which holds the cookies for those session connections.",
   },
   {
     match: /^\/run\/user\/\d+\/pulse\/native$/,
@@ -151,7 +113,7 @@ const SHIMS: Record<string, string> = {
 
 const QUIET: Record<string, string> = {
   network:
-    "No path is bound. Without it the container gets a network namespace of its own, with no route off the machine.",
+    "No path is bound. It adds internet and LAN access to a private network namespace while host loopback stays blocked. Without it that namespace has no route off the machine.",
   process:
     "No path is bound. It shares the host process namespace, so the package sees processes that are not in the sandbox.",
   userNamespaces:
@@ -160,12 +122,18 @@ const QUIET: Record<string, string> = {
 };
 
 export const DECIDING: Record<string, string> = {
-  socketSessionBus:
-    "One name along the bus is org.freedesktop.systemd1, which starts a process for you outside the sandbox.",
+  sessionBus:
+    "Only the destinations, paths, interfaces and methods written in the policy pass through the private bus proxy.",
+  bluetooth:
+    "The general BlueZ API passes through a private proxy without exposing unrelated system bus services.",
+  displayX11:
+    "A private compatibility display replaces access to the raw host X11 socket.",
   deviceAll:
     "Every device node on the machine, and it swallows the separate device permissions.",
   process:
     "The host process namespace. What is inside the sandbox can see, and signal, what is outside it.",
+  hostNetwork:
+    "The host network namespace, including localhost services and host ports.",
   userNamespaces:
     "Nested user namespaces, which is what a browser needs to build its own sandbox inside this one.",
   asRoot:

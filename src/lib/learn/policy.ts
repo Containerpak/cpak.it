@@ -19,6 +19,7 @@ export type Permission = {
   kind: string;
   description: string;
   stated: boolean;
+  manifestV3: boolean;
 };
 
 export type AliasFamily = { WhenAnyOf: string[]; AlsoHold: string[] };

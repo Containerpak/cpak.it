@@ -2,7 +2,7 @@ Il sandbox di cpak usa confini indipendenti. Chiamarli tutti container nasconde 
 
 ## I namespace scelgono ciò che vede il processo
 
-Il namespace dei mount inizia dalla rootfs composta del pacchetto. I namespace di processi, IPC, hostname e cgroup separano lo stato del runtime dall'host. Il namespace di rete viene usato salvo quando il manifest concede l'accesso alla rete. I namespace utente permettono tutto questo senza rendere l'applicazione un processo root dell'host.
+Il namespace dei mount inizia dalla rootfs composta del pacchetto. I namespace di processi, IPC, hostname e cgroup separano lo stato del runtime dall'host. La rete resta in un namespace privato sia con sia senza il permesso `network`. Il permesso aggiunge accesso a internet e LAN tramite un helper userspace, mentre il loopback dell'host resta bloccato. Soltanto `hostNetwork` sostituisce quel confine con il namespace di rete dell'host. I namespace utente permettono tutto questo senza rendere l'applicazione un processo root dell'host.
 
 I namespace utente annidati sono bloccati per impostazione predefinita. Browser e programmi simili possono richiedere `userNamespaces` quando devono creare un altro sandbox dentro cpak. Il permesso è specifico: non concede il filesystem o il bus di sistema dell'host.
 
@@ -13,6 +13,8 @@ Un grant al filesystem diventa un path nel namespace dei mount, con modalità es
 ## Landlock restringe l'accesso ai path dopo la configurazione
 
 Il runtime installa le regole Landlock dopo aver aperto e montato i path richiesti. Il processo riceve quindi un elenco di path leggibili e scrivibili imposto dal kernel, anche nel suo namespace. L'ABI disponibile dipende dal kernel dell'host: `cpak doctor` la segnala e un avvio può richiedere Landlock quando il fallback non è accettabile.
+
+Landlock impedisce a un processo confinato di cambiare la topologia del filesystem. Un pacchetto che concede `userNamespaces` viene quindi eseguito senza Landlock affinché la sandbox annidata possa creare i propri mount. Il pacchetto continua a vedere soltanto la root e i path host esposti dal namespace dei mount di cpak, ciascuno con la modalità dichiarata, e la restante policy seccomp rimane attiva.
 
 ## seccomp restringe le chiamate di sistema
 

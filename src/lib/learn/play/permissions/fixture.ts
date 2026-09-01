@@ -26,7 +26,6 @@ export const FIXTURE: Fixture = {
     sockets: ["/run/user/1000/wayland-0", "/run/user/1000/at-spi/bus_0"],
     paths: [
       "/run/user/1000/wayland-0.lock",
-      "/run/user/1000/.mutter-Xwaylandauth.4A2B1C",
       "/dev/dri/card0",
       "/dev/dri/renderD128",
       "/dev/video0",
@@ -36,7 +35,7 @@ export const FIXTURE: Fixture = {
   notes: [
     "The compositor keeps a lock beside its socket, so the Wayland permission carries both.",
     "There is no NVIDIA card on it, so the graphics permission adds the render nodes and nothing else.",
-    "XAUTHORITY is unset, which is why X11 and Wayland together find the Xwayland cookie by name.",
+    "The isolated X11 compatibility display uses a private endpoint, so no host Xauthority file is part of this fixture.",
     "One webcam and one serial device are attached. A device permission mounts what is there when the container is built.",
   ],
 };
@@ -49,11 +48,16 @@ export type Manifest = {
 export type Ticks = Record<string, boolean>;
 
 const PACKAGE: Manifest = {
-  manifest_version: "2.0",
+  $schema:
+    "https://raw.githubusercontent.com/Containerpak/cpak/v2/schema/manifest-v3.json",
+  manifest_version: "3.0",
   name: "notes",
   description: "An example package for permission inspection.",
-  image: "ghcr.io/example/notes:2",
+  version: "3.0",
+  image:
+    "ghcr.io/example/notes@sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
   binaries: ["/usr/bin/notes"],
+  idle_time: 5,
 };
 
 export function manifestFor(

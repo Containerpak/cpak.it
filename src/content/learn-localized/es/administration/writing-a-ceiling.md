@@ -20,11 +20,11 @@ Seleccione _Un ceiling que no cierra nada_. El ceiling contiene `"deviceAll": fa
 
 Ahora añada `"deviceDri": true` al ceiling. El resultado no cambia. El valor true solo indica que el host no limita ese permiso, igual que cuando la clave no está presente. El permiso debe proceder del manifest o de un override local guardado.
 
-## Un recurso con dos nombres sigue siendo un solo recurso
+## Un servicio tipado puede restringirse llamada por llamada
 
-Seleccione _Una puerta, dos nombres_. El ceiling limita `socketSystemBus` y, con él, `socketBluetooth`, porque ambos exponen el mismo socket. Limitar un nombre y dejar libre el otro no protegería el recurso, así que cpak trata ambas claves como un único acceso.
+Seleccione _Una regla de bus exacta_. La aplicación solicita `List` y `Open` sobre un servicio de sesión. El ceiling permite únicamente `List`, por lo que `Open` desaparece. El paquete recibe un bus de sesión filtrado y nunca obtiene el socket directo del host.
 
-La misma regla se aplica al filesystem. Cuando el ceiling contiene `filesystem`, también limita los campos legacy que alcanzan los mismos directorios con nombres diferentes. El panel del playground enumera todos los recursos controlados por las claves del archivo.
+La misma intersección se aplica dentro de los permisos tipados. Un ceiling del filesystem puede reducir lectura y escritura a solo lectura, y un ceiling del bus puede reducir los métodos permitidos para un destino, una ruta y una interfaz exactos. El panel del playground enumera todos los recursos controlados por las claves del archivo.
 
 ## Restringir no significa únicamente eliminar
 

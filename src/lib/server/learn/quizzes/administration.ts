@@ -20,20 +20,20 @@ export const QUESTIONS: QuizQuestion[] = [
     ],
   },
   {
-    asks: "Your ceiling names socketSystemBus and nothing else on the bus. What happens to socketBluetooth?",
+    asks: "An application asks for List and Open on one session service. Its ceiling allows only List. What survives?",
     choices: [
       {
-        text: "Nothing. It was not named, so it is left to the manifest",
-        why: "They open the same socket. Closing one and leaving the other would close nothing, so naming either holds both.",
+        text: "Both methods, because the destination is allowed",
+        why: "The policy intersects exact methods as well as the destination, path and interface.",
       },
       {
-        text: "It is held too, because it opens the same socket",
+        text: "Only List",
         correct: true,
-        why: "The playground lists what each key you wrote actually holds, which is worth reading before deciding a ceiling is finished.",
+        why: "Typed bus rules are narrowed call by call. The package never receives the raw session bus socket.",
       },
       {
-        text: "The manifest is refused as ambiguous",
-        why: "Nothing is ambiguous. The two names reach one thing and the ceiling holds that thing.",
+        text: "Neither method, because a ceiling cannot contain bus rules",
+        why: "A manifest v3 ceiling can restrict an exact sessionBus policy.",
       },
     ],
   },

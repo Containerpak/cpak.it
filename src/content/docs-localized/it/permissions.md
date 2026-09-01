@@ -47,9 +47,17 @@ L'ambito portabile `home` punta alla directory home dell'utente. `host` punta al
 
 I campi legacy `fsHost`, `fsHostHome`, `fsHostEtc` e `fsExtra` vengono rifiutati dallo schema v3 rigoroso.
 
+## Display e Bluetooth
+
+`socketWayland` monta il display Wayland attivo. `displayX11` avvia un display X11 annidato per un solo container: Xwayland privato su Wayland oppure Xephyr su X11. Il pacchetto non riceve il display X11 dell'host né il suo file di autorizzazione.
+
+`bluetooth` espone l'API BlueZ tramite un proxy privato. Discovery, pairing, applicazioni GATT, agenti, profili, segnali e passaggio di file descriptor usano questo percorso. Le chiamate agli altri servizi del bus di sistema vengono negate e l'accesso HCI diretto non è incluso.
+
 ## Bus di sessione
 
-`sessionBus` concede chiamate esatte sul bus di sessione desktop. Ogni voce `talk` indica destinazione, percorso dell'oggetto, interfaccia e metodi. L'elenco opzionale `own` indica i nomi noti che il pacchetto può acquisire. Manifest v3 non espone socket grezzi per X11, bus di sessione, bus di sistema, AT-SPI o Bluetooth.
+`sessionBus` concede chiamate esatte sul bus di sessione desktop. Ogni voce `talk` indica destinazione, percorso dell'oggetto, interfaccia e metodi. L'elenco opzionale `own` indica i nomi noti che il pacchetto può acquisire.
+
+Manifest v3 non espone socket diretti per X11, bus di sessione, bus di sistema, AT-SPI o Bluetooth. Usa `displayX11` per la compatibilità X11 isolata e `bluetooth` per il servizio BlueZ filtrato. I permessi tipizzati del broker coprono notifiche, URI esterni, selezione file e avvio di applicazioni host. cpak non offre un permesso per il bus di sistema diretto.
 
 ## File scelti dall'utente
 
@@ -57,9 +65,13 @@ I campi legacy `fsHost`, `fsHostHome`, `fsHostEtc` e `fsExtra` vengono rifiutati
 
 ## Rete e processi
 
-`network` controlla la rete nel namespace del pacchetto. `process` condivide il namespace dei processi dell'host e deve rimanere falso salvo quando l'applicazione deve ispezionare i processi dell'host.
+`network` aggiunge accesso a internet e LAN in un namespace di rete privato tramite `slirp4netns`. Non espone il loopback dell'host o il gateway `10.0.2.2`. cpak controlla il resolver dell'host e aggiorna il solo helper di rete dopo un cambio Wi-Fi, VPN o DNS senza ricreare il container.
 
-`userNamespaces` consente all'applicazione di creare un ulteriore namespace utente. Browser e strumenti con un sandbox proprio ne hanno spesso bisogno. Se resta falso, i namespace utente annidati vengono bloccati nel pacchetto.
+`hostNetwork` richiede `network` e sostituisce il confine privato con il namespace di rete dell'host, inclusi localhost e le porte host. Riservalo alle applicazioni che devono raggiungere un servizio in ascolto soltanto sul loopback dell'host. Un servizio in ascolto sull'indirizzo LAN resta raggiungibile con il normale permesso `network`.
+
+`process` condivide il namespace dei processi dell'host e deve rimanere falso salvo quando l'applicazione deve ispezionare i processi dell'host.
+
+`userNamespaces` consente all'applicazione di creare un ulteriore namespace utente e preparare i mount necessari a sandbox annidate come bubblewrap. Landlock non può convivere con quella configurazione dei mount, quindi questo permesso disattiva Landlock per l'applicazione. Il namespace dei mount di cpak continua a controllare quali percorsi host esistono e con quale modalità, mentre la restante policy seccomp rimane attiva. Se resta falso, i namespace utente annidati vengono bloccati nel pacchetto.
 
 ## Limiti delle risorse
 
@@ -77,7 +89,7 @@ Imposta `notification` per esporre lo shim delle notifiche e `openURI` per conse
 
 Imposta `hostApplications` quando un desktop environment deve usare il catalogo delle applicazioni dell'host. Le richieste di avvio usano identificatori opachi e il broker seleziona la desktop entry affidabile.
 
-`hostActions` concede capacità di un provider integrato. Il provider `containers` offre `read`, `manage-owned` ed `exec-owned`. Durante un aggiornamento, un nuovo provider o una nuova capacità è trattata come un'aggiunta di permessi. Consulta [Host actions](/docs/host-actions) per il confine esatto.
+`hostActions` concede capacità di un provider integrato. Il provider `containers` offre `read`, `manage-owned` ed `exec-owned`; il provider `cpak` offre `read`, `manage` ed `exec` per il rilevamento limitato e le operazioni sugli ambienti persistenti. Durante un aggiornamento, un nuovo provider o una nuova capacità viene trattata come un'aggiunta di permessi. Consulta [Host actions](/docs/host-actions) per il confine esatto.
 
 ## Ambiente
 
@@ -98,4 +110,4 @@ Gli override sono salvati per versione dell'applicazione. Riesaminali dopo un ca
 Un override locale sostituisce i valori predefiniti del manifest e può rimuovere oppure aggiungere accessi. Su una macchina gestita, il ceiling di sistema viene applicato in seguito e nessun override utente può superare il massimo scelto dall'amministratore. Consulta [Distribuzione gestita](/docs/managed-deployment).
 
 > [!WARNING] Accesso ampio
-> `deviceAll`, `process`, `asRoot`, regole ampie per il bus di sessione e l'accesso `host` al filesystem attraversano ampie parti del confine del sandbox. Documenta perché il pacchetto ne ha bisogno.
+> `deviceAll`, `hostNetwork`, `process`, `asRoot`, regole ampie per il bus di sessione e l'accesso `host` al filesystem attraversano ampie parti del confine del sandbox. Documenta perché il pacchetto ne ha bisogno.

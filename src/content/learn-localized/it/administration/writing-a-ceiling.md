@@ -20,11 +20,11 @@ Seleziona _Un ceiling che non chiude nulla_. Il ceiling contiene `"deviceAll": f
 
 Ora aggiungi `"deviceDri": true` al ceiling. Il risultato non cambia. Il valore true indica soltanto che l'host non limita quel permesso, esattamente come accade quando la chiave è assente. Il permesso deve essere richiesto dal manifest o da un override locale salvato.
 
-## Una risorsa con due nomi resta una sola risorsa
+## Un servizio tipizzato può essere ristretto chiamata per chiamata
 
-Seleziona _Una porta, due nomi_. Il ceiling limita `socketSystemBus` e, insieme a esso, `socketBluetooth`, perché entrambi espongono lo stesso socket. Limitare un nome lasciando libero l'altro non proteggerebbe la risorsa, quindi cpak tratta le due chiavi come un unico accesso.
+Seleziona _Una regola bus esatta_. L'applicazione richiede `List` e `Open` su un servizio di sessione. Il ceiling consente soltanto `List`, quindi `Open` scompare. Il pacchetto riceve un bus di sessione filtrato e non ottiene mai il socket raw dell'host.
 
-La stessa regola vale per il filesystem. Quando il ceiling contiene `filesystem`, limita anche i campi legacy che raggiungono le stesse directory con nomi differenti. Il pannello del playground elenca ogni risorsa controllata dalle chiavi presenti nel file.
+La stessa intersezione si applica all'interno dei permessi tipizzati. Un ceiling del filesystem può ridurre lettura e scrittura alla sola lettura, mentre un ceiling del bus può ridurre i metodi ammessi per una destinazione, un percorso e un'interfaccia esatti. Il pannello del playground elenca ogni risorsa controllata dalle chiavi presenti nel file.
 
 ## Restringere non significa soltanto rimuovere
 

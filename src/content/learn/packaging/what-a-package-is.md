@@ -12,11 +12,14 @@ A short JSON file beside the image. It names the application, the binaries and d
 
 ```
 {
-  "manifest_version": "2.0",
+  "$schema": "https://raw.githubusercontent.com/Containerpak/cpak/v2/schema/manifest-v3.json",
+  "manifest_version": "3.0",
   "name": "Fotoritocco",
   "description": "A photo editor",
-  "image": "ghcr.io/example/fotoritocco:3.2",
+  "version": "3.2.0",
+  "image": "ghcr.io/example/fotoritocco@sha256:0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef",
   "binaries": ["/usr/bin/fotoritocco"],
+  "idle_time": 0,
   "override": {
     "socketWayland": true,
     "filesystem": [{ "path": "xdg-pictures", "access": "read-write" }]

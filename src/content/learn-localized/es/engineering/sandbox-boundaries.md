@@ -2,7 +2,7 @@ El sandbox de cpak tiene varios límites independientes. Llamarlos a todos conta
 
 ## Los namespaces deciden el mundo que ve el proceso
 
-El namespace de montaje empieza con el root compuesto del package. Los namespaces de proceso, IPC, hostname y cgroup separan el estado de runtime del host. Se usa un namespace de red salvo que el manifest conceda acceso a la red. Los namespaces de usuario permiten esto sin convertir la aplicación en un proceso root del host.
+El namespace de montaje empieza con la raíz compuesta del paquete. Los namespaces de proceso, IPC, hostname y cgroup separan el estado del runtime del host. La red permanece en un namespace privado con o sin el permiso `network`. El permiso agrega acceso a internet y LAN mediante un helper de espacio de usuario, mientras el loopback del host sigue bloqueado. Solo `hostNetwork` sustituye ese límite por el namespace de red del host. Los namespaces de usuario permiten esto sin convertir la aplicación en un proceso root del host.
 
 Los namespaces de usuario anidados están bloqueados de forma predeterminada. Navegadores y programas similares pueden pedir `userNamespaces` cuando necesitan crear otro sandbox dentro de cpak. Ese permiso es específico: no concede el filesystem del host ni el bus del sistema.
 
@@ -13,6 +13,8 @@ Un grant de filesystem se convierte en un path dentro del namespace de montaje, 
 ## Landlock restringe los paths después de preparar el entorno
 
 El runtime instala reglas Landlock después de abrir y montar los paths necesarios. Así el proceso recibe del kernel una lista de paths legibles y escribibles incluso dentro de su namespace. La ABI disponible depende del kernel del host; `cpak doctor` la informa, y un inicio puede requerir el sandbox cuando un fallback no sea aceptable.
+
+Landlock impide que un proceso confinado cambie la topología del filesystem. Un paquete que concede `userNamespaces` se ejecuta sin Landlock para que el sandbox anidado pueda crear sus propios montajes. El paquete sigue viendo solo la raíz y las rutas del host expuestas por el namespace de montaje de cpak, cada una con su modo declarado, y la política seccomp restante sigue activa.
 
 ## seccomp restringe las llamadas al sistema
 

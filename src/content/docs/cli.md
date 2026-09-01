@@ -86,9 +86,9 @@ Run `cpak gc --json` before `cpak gc --apply` when automating cleanup.
 
 | Command       | Purpose                                                        |
 | ------------- | -------------------------------------------------------------- |
-| `auth`        | Bind registry access to one package origin and OCI repository. |
+| `auth`        | Bind private source and registry access to one package origin. |
 | `self-update` | Check for or install a newer official cpak binary.             |
 
-Use `cpak auth login`, `logout`, `list`, or `status` to manage private registry access. Read [Private OCI registries](/docs/registry-authentication) before adding a separate token host.
+Use `cpak auth login`, `logout`, `list`, or `status` to manage private package access. Read [Private GitHub repositories and OCI registries](/docs/registry-authentication) before adding a separate token host.
 
 `cpak self-update --check` reports an available release and leaves the installed binary unchanged. Package-manager builds keep the version notice and delegate replacement to the system package manager. See [Update the cpak runtime](/docs/runtime-updates).

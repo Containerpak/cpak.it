@@ -1,7 +1,7 @@
 export const CORE_MODULE = {
   url: "/learn/cpak-core/cpak-core.wasm",
-  digest: "1fab396f112bc29d01350373bdeeb550726d4c0c27c77be694a7afde71c38dc8",
-  bytes: 4626186,
+  digest: "a97ade20c11810567ed98ff17d32aa7f5756082f935ba862b8c047cb2f7e0445",
+  bytes: 16773220,
 };
 
 export const CORE_RUNTIME = {
@@ -68,9 +68,17 @@ async function start(): Promise<Core> {
   const module = await download(CORE_MODULE.url, CORE_MODULE.digest);
 
   try {
+    const webKit =
+      navigator.userAgent.includes("AppleWebKit") &&
+      !navigator.userAgent.includes("Chrome");
+    const compiled = webKit
+      ? new WebAssembly.Module(module)
+      : await WebAssembly.compile(module);
     new Function(new TextDecoder().decode(runtime))();
     const go = new (globalThis as unknown as { Go: new () => GoRuntime }).Go();
-    const { instance } = await WebAssembly.instantiate(module, go.importObject);
+    const instance = webKit
+      ? new WebAssembly.Instance(compiled, go.importObject)
+      : await WebAssembly.instantiate(compiled, go.importObject);
     void go.run(instance);
   } catch (error) {
     throw new CoreError("start", `The module did not start: ${reason(error)}`);

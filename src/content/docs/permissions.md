@@ -71,7 +71,11 @@ Raw X11, session bus, system bus, AT-SPI, and Bluetooth socket fields are not av
 
 ## Network and processes
 
-`network` controls network access in the package namespace. `process` shares the host process namespace and should remain false unless the application must inspect host processes.
+`network` adds internet and LAN access to a private package network namespace through `slirp4netns`. It does not expose the host loopback interface or the `10.0.2.2` gateway. cpak watches the host resolver and refreshes the userspace network helper after a Wi-Fi, VPN, or other resolver change without rebuilding the container.
+
+`hostNetwork` requires `network` and replaces that private network boundary with the host network namespace, including localhost and host ports. Reserve it for an application that must reach a service bound only to host loopback. A service bound to the host LAN address remains reachable with ordinary `network` access.
+
+`process` shares the host process namespace and should remain false unless the application must inspect host processes.
 
 `userNamespaces` permits the application to create another user namespace and perform the mount setup required by nested sandboxes such as bubblewrap. Landlock cannot coexist with that mount setup, so enabling this permission disables Landlock for the application. The cpak mount namespace still controls which host paths exist and whether each mount is read-only or writable, and the remaining seccomp policy stays active. Leaving it false blocks nested user namespaces and mounts inside the package.
 
@@ -112,4 +116,4 @@ Overrides are stored per application version. Review them after a major package 
 A local override replaces the manifest defaults and may either remove or add access. On a managed machine the system ceiling is applied afterwards, so no user override can exceed the maximum selected by the administrator. See [Managed deployment](/docs/managed-deployment).
 
 > [!WARNING] Broad access
-> `deviceAll`, `process`, `asRoot`, broad session bus rules, and `host` filesystem access cross large parts of the sandbox boundary. Document why a package needs them.
+> `deviceAll`, `hostNetwork`, `process`, `asRoot`, broad session bus rules, and `host` filesystem access cross large parts of the sandbox boundary. Document why a package needs them.

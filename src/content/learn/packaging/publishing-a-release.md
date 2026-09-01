@@ -2,7 +2,7 @@ A package release connects a Git revision, one manifest and the image digest pro
 
 ## Make the source and image agree
 
-Build the image from the tagged source and publish every supported architecture. `image_ref: source` can follow the selected Git branch, release or commit while `cpak lock` records immutable image digests for the resolved graph.
+Build the image from the tagged source and publish every supported architecture. Record the immutable multi-architecture digest in the manifest v3 `image` field before validation. `cpak lock` then records the resolved package and dependency graph without following a moving image tag.
 
 ```
 cpak validate cpak.json

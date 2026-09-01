@@ -32,7 +32,7 @@ cpak verifica los resúmenes de manifests y layers antes de publicar contenido e
 | [Distribución CNCF](https://distribution.github.io/distribution/about/deploying/) | Un pequeño registro privado o público con una superficie de servicio estrecha | Suministre TLS, autenticación, almacenamiento, monitoreo, copias de seguridad y recolección de basura. |
 | Otro registro OCI | Infraestructura existente que ya sirve imágenes conformes OCI | Verifique los manifests, las redirecciones, la autenticación y el comportamiento del rango de bytes antes del inicio |
 
-Los paquetes públicos funcionan mejor con acceso a blobs anónimos. Los repositorios privados necesitan un enlace de credenciales para cada origen de paquete y repositorio de registro exacto. Lea [Registros privados OCI](/docs/registry-authentication) para conocer el modelo vinculante.
+Los paquetes públicos funcionan mejor con acceso anónimo a blobs. Los repositorios privados necesitan un enlace de credenciales para cada origen de paquete y repositorio de registro exacto. Lea [Repositorios privados de GitHub y registros OCI](/docs/registry-authentication) para conocer el modelo de vinculación.
 
 ## Publicar layers OCI regulares
 

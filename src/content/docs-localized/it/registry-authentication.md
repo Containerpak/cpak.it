@@ -1,15 +1,31 @@
 ---
-title: Registri OCI privati
-description: Associa una credenziale del registro a un'origine e a un repository del pacchetto senza importare la configurazione del motore del container.
+title: Repository GitHub e registri OCI privati
+description: Associa le credenziali di sorgente e immagine a una sola origine senza importare la configurazione del motore container.
 tags: [registry, authentication, security]
 section: operations
 order: 25
 ---
-# Registri privati OCI
+# Repository GitHub e registri OCI privati
 
-cpak estrae le image pubbliche OCI in modo anonimo. Un pacchetto il cui manifest punta a un repository privato necessita di un'associazione esplicita di credenziali.
+L'accesso al sorgente del pacchetto e all'immagine OCI usa credenziali separate. Un repository GitHub privato richiede una richiesta autenticata per leggere `cpak.json`. Un'immagine privata richiede l'autenticazione al registro. cpak associa entrambe le forme a una sola origine esatta.
 
-## Memorizza una credenziale
+## Repository GitHub privati
+
+Usa la sessione GitHub CLI corrente quando `cpak.json` si trova in un repository privato:
+
+```bash
+cpak auth login github.com/example/private-app --github
+```
+
+cpak legge il token conservato da `gh auth`. Se non esiste una sessione GitHub e il comando è interattivo, avvia `gh auth login` nel browser con gli scope per repository e pacchetti. La credenziale sorgente viene accettata soltanto per l'origine esatta `github.com/owner/repository`.
+
+Quando il manifest privato punta a GHCR, la stessa credenziale GitHub viene associata anche al repository OCI esatto indicato nell'immagine. Un'immagine ospitata su un altro registro richiede comunque un login separato.
+
+`--github` non può essere combinato con `--username`, `--token` o `--token-host`.
+
+## Registri OCI privati
+
+### Memorizza una credenziale del registro
 
 L'autenticazione di base utilizza un nome utente e una password:
 
@@ -22,6 +38,8 @@ L'autenticazione del token omette il nome utente:
 ```bash
 cpak auth login github.com/example/private-app --token
 ```
+
+Per GHCR, passa il nome utente GitHub con `--username` e inserisci un personal access token come password. Il flag `--token` è destinato ai bearer token emessi dal registro e non può essere combinato con un nome utente.
 
 Il comando login legge il pacchetto manifest, analizza il riferimento all'image e associa la credenziale a tutti e tre i valori seguenti:
 
@@ -59,6 +77,12 @@ install -m 0600 /dev/null token.txt
 cpak auth login github.com/example/private-app --token --secret-file token.txt
 ```
 
+Lo stesso file può fornire un token GitHub per il sorgente privato:
+
+```bash
+cpak auth login github.com/example/private-app --github --secret-file token.txt
+```
+
 cpak memorizza il percorso assoluto del file nell'associazione e legge il segreto da quel file per ogni richiesta di registro. I metadati di associazione contengono solo il percorso. Mantieni il file in quel percorso con lo stesso proprietario e modalità. `cpak auth logout` rimuove l'associazione e lascia intatto il file di proprietà dell'utente.
 
 Uno runtime automatizzato può iniettare `CPAK_REGISTRY_AUTH_FILE`. Il file JSON deve essere di proprietà dell'utente corrente e avere la modalità `0600`:
@@ -68,15 +92,17 @@ Uno runtime automatizzato può iniettare `CPAK_REGISTRY_AUTH_FILE`. Il file JSON
   "records": [
     {
       "origin": "github.com/example/private-app",
+      "source_host": "github.com",
       "registry": "ghcr.io",
       "repository": "example/private-app",
-      "access_token": "TOKEN"
+      "username": "account",
+      "password": "TOKEN"
     }
   ]
 }
 ```
 
-L'autenticazione di base utilizza `username` e `password` invece di `access_token`. Un record che mescola entrambe le forme viene rifiutato.
+Ometti `registry`, `repository` e `username` quando il token serve soltanto per il sorgente GitHub privato. L'autenticazione bearer del registro usa `access_token` invece di `username` e `password`. Un record che mescola entrambe le forme viene rifiutato.
 
 ## Servizi token
 

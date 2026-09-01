@@ -19,20 +19,16 @@ The following will be exported:
   - (desktop entry) /usr/share/applications/vlc.desktop
 
 The following permissions will be granted:
-  - socket-x11: true
-  - socket-wayland: true
-  - socket-pulse-audio: true
-  - socket-session-bus: true
-  - socket-system-bus: false
-  - socket-ssh-agent: false
-  - device-dri: true
-  - device-kvm: false
-  ... twenty more, each one true or false
+  - Display: isolated X11 compatibility display, Wayland display and compositor-mediated clipboard
+  - Audio: PulseAudio
+  - Devices: graphics, shared memory
+  - Files: xdg-videos, read only
+  - Network: internet and local network
 
 Do you want to continue? [y/N]
 ```
 
-Every line is either true or false, and the false ones are printed too. A permission missing from the list is not a permission you have to guess about: there are no missing ones.
+The prompt lists only the access the package asks for. A capability that is not listed is not granted. Typed permissions include their scope, such as the exact filesystem path, access mode or session service call.
 
 This is the moment the decision happens. Afterwards the application has what the list said and nothing else, and you will not be asked again.
 
@@ -43,7 +39,7 @@ Read the list against what the thing claims to be. A video player asking for the
 You can change a package after installing it. Remove a permission you do not accept, restore one the application needs or add access the manifest did not request:
 
 ```
-cpak override --socketSessionBus=false github.com/containerpak/vlc
+cpak override github.com/containerpak/vlc --key network --value false
 ```
 
 Your decision replaces the publisher's request on this installation. On a managed machine it still cannot exceed the system ceiling set by the administrator. If the application stops working after you remove a permission, you can put it back.

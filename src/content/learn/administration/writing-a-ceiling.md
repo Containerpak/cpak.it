@@ -20,11 +20,11 @@ Press _A ceiling that closes nothing_. The ceiling says `"deviceAll": false` and
 
 Now try writing `"deviceDri": true` into the ceiling yourself. Nothing changes. A ceiling is met by intersection: writing true says this host will not stand in the way, which is exactly what leaving the key out already said. If you find yourself writing true in a ceiling to give something to a package, stop: the grant has to come from its manifest or a saved local override.
 
-## One door with two names is one door
+## A typed service can be narrowed call by call
 
-Press _One door, two names_. The ceiling closes `socketSystemBus`, and `socketBluetooth` closes with it, because they open the same socket. Closing one and leaving the other would close nothing at all, so naming either holds both.
+Press _One exact bus rule_. The application asks for `List` and `Open` on one session service. The ceiling allows only `List`, so `Open` disappears. The package receives a filtered session bus and never gets the raw host bus socket.
 
-The same is true of the filesystem: name `filesystem` and you also hold the legacy fields that reach the same directories under older names. The panel on the right lists what each key you wrote actually holds. Read it before you decide the ceiling is finished.
+The same intersection applies inside typed permissions. A filesystem ceiling can reduce read-write to read-only and a bus ceiling can reduce the methods allowed on one exact destination, path and interface. The panel on the right lists what each key you wrote actually holds. Read it before you decide the ceiling is finished.
 
 ## Narrowing is not only removing
 

@@ -2,7 +2,7 @@ The cpak sandbox has several independent boundaries. Calling all of them a conta
 
 ## Namespaces choose the world the process sees
 
-The mount namespace starts with the composed package root. Process, IPC, hostname and cgroup namespaces separate runtime state from the host. A network namespace is used unless the manifest grants network access. User namespaces let this happen without making the application a host root process.
+The mount namespace starts with the composed package root. Process, IPC, hostname and cgroup namespaces separate runtime state from the host. Networking stays in a private namespace both with and without the `network` permission. The permission adds internet and LAN access through a userspace helper while host loopback stays blocked. Only `hostNetwork` replaces that boundary with the host network namespace. User namespaces let this happen without making the application a host root process.
 
 Nested user namespaces and mount setup are blocked by default. Browsers, Steam, and similar programs can request `userNamespaces` when they need to build another sandbox inside cpak. That permission is specific; it does not grant a host filesystem or system bus.
 

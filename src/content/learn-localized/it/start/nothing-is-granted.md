@@ -4,24 +4,24 @@ Apri `cpak.json` nel playground e sostituisci l'intero oggetto `override` con un
 
 Aggiungi `"socketWayland": true`. Appaiono due percorsi: il socket del compositor e il lock associato. Il socket permette all'applicazione di creare una finestra. Esegui `cpak validate` nel terminale sotto il file per controllare il manifest.
 
-## Leggere un permesso attraverso i percorsi che apre
+## Leggere un permesso attraverso il confine che apre
 
-Aggiungi anche `"socketX11": true`. I due percorsi diventano otto. Quattro dei nuovi percorsi sono le directory dei socket X11, il quinto è il file di autorizzazione necessario al client e il sesto appare soltanto quando Wayland e X11 sono attivi insieme: il cookie scritto da Xwayland.
+Aggiungi anche `"displayX11": true`. Non appare alcun socket X11 dell'host. cpak avvia un display X11 di compatibilità privato e indirizza il pacchetto a quell'endpoint invece che al display host.
 
-Leggi la nota sotto la directory dei socket. X11 non separa i propri client, quindi qualsiasi programma sullo stesso display può leggere gli appunti, osservare ciò che viene digitato nelle altre finestre e copiarne i pixel. Wayland non concede automaticamente questi accessi.
+La differenza è intenzionale. Il manifest v3 ha rimosso l'accesso X11 raw perché i client sullo stesso display host possono osservare appunti, input e pixel degli altri client. Il permesso sostitutivo esegue ancora le applicazioni X11 senza concedere loro il display host.
 
-Entrambi i permessi occupano una sola riga nel manifest. Il nome dice poco; i percorsi mostrano cosa può realmente raggiungere l'applicazione.
+Entrambi i permessi occupano una sola riga, ma soltanto uno monta un percorso host. Leggi insieme la funzionalità richiesta, i percorsi e i servizi mediati dal broker.
 
-## Otto permessi aprono più di quanto suggerisca il nome
+## Alcuni permessi aprono più di quanto suggerisca il nome
 
-La maggior parte dei permessi apre un socket o una directory. Otto controllano un insieme più ampio di risorse. La guida sotto il workspace elenca tutte le chiavi accettate dalla build corrente, mentre il risultato accanto al manifest mostra l'effetto di ogni modifica.
+La maggior parte dei permessi espone una sola risorsa. Alcuni modificano un intero namespace oppure concedono un servizio host tipizzato. La guida sotto il workspace elenca tutte le chiavi del manifest v3 accettate dalla build corrente, mentre il risultato accanto al manifest mostra l'effetto di ogni modifica.
 
-Tre permessi aprono un bus, non un singolo servizio: `socketSessionBus`, `socketSystemBus` e `socketBluetooth`. L'ultimo espone lo stesso socket del bus di sistema con un nome più specifico. Un'applicazione può raggiungere attraverso il bus qualsiasi servizio che l'host abbia collegato a quel socket.
+`sessionBus` indica destinazioni, percorsi oggetto, interfacce e metodi esatti. `bluetooth` espone BlueZ tramite un bus privato filtrato. Nessuno dei due consegna al pacchetto un socket raw dell'host. Anche `notification`, `openURI`, `filePicker`, `hostApplications` e `hostActions` attraversano il confine tramite richieste tipizzate invece che con mount ampi.
 
 `deviceAll` espone l'intera directory `/dev/`. Quando è attivo, gli undici permessi dedicati ai singoli dispositivi non restringono più nulla.
 
-Gli ultimi quattro non espongono percorsi e per questo sono facili da ignorare. `network` fornisce una connessione esterna al posto di un namespace di rete isolato. `process` condivide il namespace dei processi dell'host. `userNamespaces` permette di creare sandbox annidate, necessarie soprattutto ai browser. `asRoot` esegue il processo come uid 0 all'interno del container.
+Altri cinque permessi non espongono percorsi e per questo sono facili da ignorare. `network` aggiunge accesso a internet e LAN in un namespace privato, mentre il loopback dell'host resta bloccato. `hostNetwork` condivide il namespace di rete dell'host, incluso localhost, e richiede `network`. `process` condivide il namespace dei processi dell'host. `userNamespaces` permette di creare sandbox annidate, necessarie ai browser. `asRoot` esegue il processo come uid 0 all'interno del container.
 
-Quando prepari un pacchetto, chiediti senza quali di questi otto permessi l'applicazione non possa funzionare. È il punto centrale di una revisione del manifest.
+Quando prepari un pacchetto, chiediti senza quali funzionalità l'applicazione non possa funzionare e concedi la forma più ristretta disponibile. È il punto centrale di una revisione del manifest.
 
 [Permessi](/docs/permissions) è la guida di riferimento usata in questa lezione.

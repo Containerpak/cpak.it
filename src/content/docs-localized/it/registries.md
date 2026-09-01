@@ -21,7 +21,7 @@ Download di manifest e BLOB -  tramite tag o digest SHA-256
 - HTTPS, ad eccezione di un registro associato all'interfaccia di loopback locale
 - Pull anonimi o autenticazione Basic/Bearer
 
-cpak verifica manifest e i digest dei layer prima di pubblicare il contenuto nel proprio archivio locale. Un reindirizzamento del registro può puntare all'storage di oggetti HTTPS o a una rete CDN. Le credenziali del registro non vengono mai inoltrate a quell'host. Un'autenticazione separata host deve essere approvata esplicitamente tramite `cpak auth login`.
+cpak verifica manifest e digest dei layer prima di pubblicare il contenuto nel proprio archivio locale. Un reindirizzamento del registro può puntare a uno storage di oggetti HTTPS o a una CDN. Le credenziali del registro non vengono mai inoltrate a quell'host. Un host di autenticazione separato deve essere approvato esplicitamente tramite `cpak auth login`.
 
 ## Scegli un servizio
 
@@ -32,7 +32,7 @@ cpak verifica manifest e i digest dei layer prima di pubblicare il contenuto nel
 | [Distribuzione CNCF](https://distribution.github.io/distribution/about/deploying/) | Un piccolo registro privato o pubblico con una superficie di servizio ristretta | Fornire TLS, autenticazione, storage, monitoraggio, backup e garbage collection |
 | Un altro registro OCI | Infrastruttura esistente che già serve image OCI conformi | Verifica i manifesti, i reindirizzamenti, l'autenticazione e il comportamento dell'intervallo di byte prima del rilascio |
 
-I pacchetti pubblici funzionano meglio con l'accesso BLOB anonimo. I repository privati necessitano di un'associazione di credenziali per ogni origine del pacchetto e per l'esatto repository del registro. Leggi [Registri privati OCI](/docs/registry-authentication) per il modello di associazione.
+I pacchetti pubblici funzionano meglio con l'accesso anonimo ai blob. I repository privati necessitano di un'associazione di credenziali per ogni origine del pacchetto e per l'esatto repository del registro. Leggi [Repository GitHub e registri OCI privati](/docs/registry-authentication) per il modello di associazione.
 
 ## Pubblica layer OCI regolari
 

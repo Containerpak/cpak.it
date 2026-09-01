@@ -33,25 +33,25 @@ export const QUESTIONS: QuizQuestion[] = [
       },
       {
         text: "Whatever the person installing it allows at the prompt",
-        why: "The installation prompt shows what the publisher requested and lets you narrow it. After installation, a saved local override may add access on an unmanaged host.",
+        why: "The installation prompt shows what the publisher requested and lets you accept or cancel. After installation, a saved local override can replace that request on an unmanaged host.",
       },
     ],
   },
   {
-    asks: "A manifest asks for socketX11. What does that one line open?",
+    asks: "A manifest asks for displayX11. What does cpak keep isolated?",
     choices: [
       {
-        text: "One socket, for drawing a window",
-        why: "Six paths, in fact, and rather more than drawing. The playground in lesson 3 lists every one of them.",
+        text: "Only the network route used by remote displays",
+        why: "The permission is about the display boundary, not the package network namespace.",
       },
       {
-        text: "The display, and with it the clipboard, the keystrokes and the pixels of every other window on it",
+        text: "The host X11 display, including other clients' clipboard, input and pixels",
         correct: true,
-        why: "X11 does not separate its clients. This is the clearest case of a permission whose name is a poor guide to what it opens.",
+        why: "cpak starts a private compatibility display instead of handing the package the raw host X11 socket.",
       },
       {
-        text: "Nothing on its own: it needs socketWayland too",
-        why: "They are alternatives, not a pair. Asking for both is how a package works under either session.",
+        text: "Nothing: displayX11 is an alias for socketWayland",
+        why: "The two permissions serve different display protocols and may be requested independently.",
       },
     ],
   },
@@ -68,8 +68,8 @@ export const QUESTIONS: QuizQuestion[] = [
         why: "One permission, two paths. This is why the list under a permission is worth reading and its name is not.",
       },
       {
-        text: "Six, once the display is counted",
-        why: "Six is what socketX11 binds. Replace the key and compare the two answers.",
+        text: "No host path, because every display permission is brokered",
+        why: "displayX11 uses a private bridge. socketWayland still binds the compositor socket and its lock.",
       },
     ],
   },

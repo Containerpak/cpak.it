@@ -1,15 +1,31 @@
 ---
-title: Registros privados OCI
-description: Vincule una credencial de registro a un origen y repositorio de paquete sin importar la configuración del motor de container.
+title: Repositorios privados de GitHub y registros OCI
+description: Vincule credenciales de origen e imagen a un solo origen de paquete sin importar la configuración del motor de contenedores.
 tags: [registry, authentication, security]
 section: operations
 order: 25
 ---
-# Registros privados OCI
+# Repositorios privados de GitHub y registros OCI
 
-cpak extrae imágenes públicas OCI de forma anónima. Un paquete cuyo manifest apunta a un repositorio privado necesita un enlace de credenciales explícito.
+El acceso al código fuente del paquete y a la imagen OCI usa credenciales separadas. Un repositorio privado de GitHub necesita una solicitud autenticada para leer `cpak.json`. Una imagen privada necesita autenticación con el registro. cpak vincula ambas formas a un origen de paquete exacto.
 
-## Almacenar una credencial
+## Repositorios privados de GitHub
+
+Use la sesión actual de GitHub CLI cuando `cpak.json` se encuentre en un repositorio privado:
+
+```bash
+cpak auth login github.com/example/private-app --github
+```
+
+cpak lee el token guardado por `gh auth`. Si no existe una sesión de GitHub y el comando es interactivo, inicia `gh auth login` en el navegador con scopes de repositorio y lectura de paquetes. La credencial de origen solo se acepta para el origen exacto `github.com/owner/repository`.
+
+Cuando ese manifest privado apunta a GHCR, la misma credencial de GitHub también se vincula al repositorio OCI exacto de la referencia de imagen. Una imagen alojada en otro registro sigue necesitando un inicio de sesión separado.
+
+`--github` no se puede combinar con `--username`, `--token` ni `--token-host`.
+
+## Registros privados OCI
+
+### Almacenar una credencial de registro
 
 La autenticación básica utiliza un nombre de usuario y una contraseña:
 
@@ -22,6 +38,8 @@ La autenticación de token omite el nombre de usuario:
 ```bash
 cpak auth login github.com/example/private-app --token
 ```
+
+Para GHCR, pase el nombre de usuario de GitHub con `--username` e introduzca un personal access token como contraseña. El flag `--token` sirve para un bearer token emitido por el registro y no se puede combinar con un nombre de usuario.
 
 El comando de inicio de sesión lee el manifest del paquete, analiza su referencia de imagen y vincula la credencial a los tres valores siguientes:
 
@@ -59,6 +77,12 @@ install -m 0600 /dev/null token.txt
 cpak auth login github.com/example/private-app --token --secret-file token.txt
 ```
 
+El mismo archivo puede proporcionar un token de GitHub para el origen privado:
+
+```bash
+cpak auth login github.com/example/private-app --github --secret-file token.txt
+```
+
 cpak almacena la path absoluta del archivo en el enlace y lee el secreto de ese archivo para cada solicitud de registro. Los metadatos vinculantes contienen solo la path. Mantenga el archivo en esa path con el mismo propietario y modo. `cpak auth logout` elimina el enlace y deja intacto el archivo propiedad del usuario.
 
 Un runtime automatizado puede inyectar `CPAK_REGISTRY_AUTH_FILE`. El archivo JSON debe ser propiedad del usuario actual y tener el modo `0600`:
@@ -68,15 +92,17 @@ Un runtime automatizado puede inyectar `CPAK_REGISTRY_AUTH_FILE`. El archivo JSO
   "records": [
     {
       "origin": "github.com/example/private-app",
+      "source_host": "github.com",
       "registry": "ghcr.io",
       "repository": "example/private-app",
-      "access_token": "TOKEN"
+      "username": "account",
+      "password": "TOKEN"
     }
   ]
 }
 ```
 
-La autenticación básica utiliza `username` y `password` en lugar de `access_token`. Se rechaza un registro que combine ambas formas.
+Omita `registry`, `repository` y `username` cuando el token solo sirva para el origen privado de GitHub. La autenticación bearer del registro usa `access_token` en lugar de `username` y `password`. Se rechaza un registro que combine ambas formas.
 
 ## Servicios de tokens
 

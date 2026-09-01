@@ -33,7 +33,7 @@ cpak verifies manifest and layer digests before publishing content into its loca
 | [CNCF Distribution](https://distribution.github.io/distribution/about/deploying/)                                                            | A small private or public registry with a narrow service surface                 | Supply TLS, authentication, storage, monitoring, backups, and garbage collection     |
 | Another OCI registry                                                                                                                         | Existing infrastructure that already serves conforming OCI images                | Verify manifests, redirects, authentication, and byte-range behavior before release  |
 
-Public packages work best with anonymous blob access. Private repositories need one credential binding for each package origin and exact registry repository. Read [Private OCI registries](/docs/registry-authentication) for the binding model.
+Public packages work best with anonymous blob access. Private repositories need one credential binding for each package origin and exact registry repository. Read [Private GitHub repositories and OCI registries](/docs/registry-authentication) for the binding model.
 
 ## Publish regular OCI layers
 

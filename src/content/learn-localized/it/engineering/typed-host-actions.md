@@ -15,6 +15,8 @@ Il provider dei container è un buon esempio:
 
 `read` elenca e ispeziona. `manage-owned` crea e modifica soltanto container che portano l'etichetta di proprietà del pacchetto richiedente. `exec-owned` esegue processi all'interno di quei container. Nessuna capacità significa "inoltra qualsiasi comando a Podman".
 
+L'altro provider integrato è `cpak`. Le capacità `read`, `manage` ed `exec` coprono il rilevamento limitato e le operazioni sugli ambienti persistenti tramite lo shim `cpak-host`. Non espongono l'intera CLI cpak o una shell host. La guida [Host actions](/docs/host-actions) elenca ogni operazione accettata.
+
 ## Definisci una richiesta finita
 
 Un provider deve avere un insieme finito di operazioni e uno schema per ognuna. Valida nomi, identificatori, percorsi e opzioni prima di scegliere il backend. Rifiuta i campi sconosciuti. Risolvi i link simbolici prima di confrontare un mount richiesto con la policy filesystem del pacchetto.
@@ -31,6 +33,6 @@ Uno shim utile conserva standard input, output, error, codice di uscita e cancel
 
 Una dipendenza nested riceve soltanto le capacità consentite dal proprio manifest e dal pacchetto principale. Non può ampliare il limite del padre. Un override locale può restringere ancora il risultato.
 
-Verifica un provider su tre livelli: validazione della richiesta, controllo della proprietà nel backend e chiamata completa allo shim con stream e cancellazione. Un solo caso positivo non dimostra la tenuta del limite.
+Verifica la validazione della richiesta e il controllo della proprietà nel backend, quindi esegui una chiamata completa allo shim con stream e cancellazione. Un solo caso positivo non dimostra la tenuta del limite.
 
 [Host action](/docs/host-actions) documenta i provider e le capacità disponibili.

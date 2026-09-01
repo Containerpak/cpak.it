@@ -9,6 +9,7 @@
     Policy,
     Validation,
   } from "$lib/learn/policy";
+  import { granted } from "$lib/learn/policy";
   import {
     FIXTURE,
     format,
@@ -35,6 +36,7 @@
   let core = $state<Core | null>(null);
   let status = $state<"loading" | "ready" | "failed">("loading");
   let failure = $state("");
+  let catalog = $state<Catalog>({ permissions: [], aliases: [] });
   let permissions = $state<Permission[]>([]);
   let command = $state("");
   let text = $state(startingManifest());
@@ -53,8 +55,9 @@
       const answer = loaded.ask<Catalog>("permissionCatalog", {});
       if (!answer.ok) throw new CoreError("start", answer.error);
       core = loaded;
+      catalog = answer.result;
       permissions = answer.result.permissions.filter(
-        (permission) => permission.stated,
+        (permission) => permission.manifestV3,
       );
       status = "ready";
       transcript = [
@@ -173,9 +176,7 @@
 
   const requested = $derived.by(() => {
     if (!policy) return [];
-    return permissions
-      .filter((permission) => policy.requested[permission.key] === true)
-      .map((permission) => permission.key);
+    return granted(policy.requested, catalog);
   });
 
   function submit(event: SubmitEvent) {
