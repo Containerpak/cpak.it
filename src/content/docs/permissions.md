@@ -91,7 +91,7 @@ Set `notification` to expose the notification shim and `openURI` to allow openin
 
 Set `hostApplications` when a desktop environment needs the host application catalog. Launch requests use opaque catalog identifiers and the broker selects the trusted desktop entry.
 
-`hostActions` grants capabilities from a built-in provider. The `containers` provider offers `read`, `manage-owned`, and `exec-owned`. Package updates treat a new provider or capability as a permission addition. See [Host actions](/docs/host-actions) for the exact boundary.
+`hostActions` grants capabilities from a built-in provider. The `containers` provider offers `read`, `manage-owned`, and `exec-owned`; the `cpak` provider offers `read`, `manage`, and `exec` for bounded package discovery and persistent environment operations. Package updates treat a new provider or capability as a permission addition. See [Host actions](/docs/host-actions) for the exact command boundary.
 
 ## Environment
 

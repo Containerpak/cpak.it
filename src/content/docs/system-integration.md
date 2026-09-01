@@ -86,7 +86,7 @@ cpak builds a private catalog from trusted desktop entries and gives the package
 
 ## Typed host services
 
-Use `hostActions` for supported host services represented by broker capabilities. Each provider publishes a fixed capability set. See [Host actions](/docs/host-actions) for the container provider and its compatibility shims.
+Use `hostActions` for supported host services represented by broker capabilities. The `containers` provider exposes a restricted Podman or Docker interface. The `cpak` provider exposes bounded discovery and persistent environment operations through `cpak-host`. See [Host actions](/docs/host-actions) for both capability sets and their accepted commands.
 
 During v1 migration, `allowedHostCommands` maps the old notification, URI, and host application shims to typed permissions. New manifests declare the typed permissions directly.
 

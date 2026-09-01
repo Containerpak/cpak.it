@@ -15,6 +15,8 @@ The container provider is a useful example:
 
 `read` lists and inspects. `manage-owned` creates and changes only containers carrying the requesting package ownership label. `exec-owned` runs inside those owned containers. None means "forward anything to Podman".
 
+The other built-in provider is `cpak`. Its `read`, `manage` and `exec` capabilities cover fixed discovery and persistent environment operations through the `cpak-host` shim. They do not expose the full cpak CLI or a host shell. The [Host actions](/docs/host-actions) reference lists every accepted operation.
+
 ## Define a finite request
 
 A provider needs an operation enum and a schema for each operation. Validate names, identifiers, paths and option values before selecting a backend. Reject unknown fields. Resolve symlinks before comparing a requested mount with the package filesystem policy.
