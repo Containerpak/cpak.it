@@ -94,7 +94,7 @@ starts the package without Bluetooth instead of failing its launch.
 
 ## Session bus
 
-`sessionBus` grants exact calls on the desktop session bus. Each `talk` entry names one destination, object path, interface, and list of methods. The optional `own` list names the well-known bus names the package may claim. Undeclared services appear unavailable to the application. Calls that try to control the bus itself remain denied.
+`sessionBus` grants exact calls on the desktop session bus. Each `talk` entry names one destination, object path, interface, and list of methods. The optional `own` list accepts exact well-known names and namespace patterns ending in `.*`. A pattern matches only names below that namespace, for example a service name with a runtime instance suffix. Undeclared services appear unavailable to the application. Calls that try to control the bus itself remain denied.
 
 Raw X11, session bus, system bus, AT-SPI, and Bluetooth socket fields are not available in manifest v3. Use `displayX11` for isolated X11 compatibility and `bluetooth` for the filtered BlueZ service. Typed broker permissions cover notifications, external URIs, file selection, and host application launch. cpak has no raw system bus permission.
 
@@ -148,7 +148,7 @@ Users can replace one permission key for an installed application:
 cpak override github.com/example/app --key network --value false
 cpak override github.com/example/app --key filesystem --value '[{"path":"home","access":"read-only"}]'
 cpak override github.com/example/app --key filePicker --value '{"openFile":true}'
-cpak override github.com/example/app --key sessionBus.own --value '["org.example.Application"]'
+cpak override github.com/example/app --key sessionBus.own --value '["org.example.Application.*"]'
 ```
 
 Nested keys accept JSON values. A JSON array also avoids separator ambiguity in
