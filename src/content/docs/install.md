@@ -25,6 +25,19 @@ Replace both `amd64` asset names with their `arm64` variants on ARM64.
 
 Keep both binaries in the same directory. cpak discovers its storage service beside the active command before checking the user `PATH`. A system-wide installation is optional. The graphical installer and `cpak self-update` replace both files together and prepare existing application storage before returning.
 
+## NixOS
+
+Add the cpak flake module to install the runtime and system authority declaratively:
+
+```nix
+inputs.cpak.url = "github:Containerpak/cpak/v2";
+
+imports = [ inputs.cpak.nixosModules.default ];
+services.cpak.enable = true;
+```
+
+The module package includes `slirp4netns` for applications that request isolated network access. `cpak system setup` checks the module-managed integration and does not write to `/etc`.
+
 ## Install an application from the Store
 
 Each application page in the [cpak Store](/store) provides a signed graphical installer, the equivalent terminal command, and a direct installer URL. The downloaded file installs cpak, its matching storage service, and the selected application.
