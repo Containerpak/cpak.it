@@ -1,5 +1,14 @@
 export const announcements = [
   {
+    section: "cpak 2.12.0",
+    date: "September 2, 2026",
+    published: "2026-09-02",
+    title: "Keep cpak services running after reboot",
+    description:
+      "cpak keeps application services running, restores them after reboot and reports process, health and listener state in one place.",
+    href: "/announcements/keep-cpak-services-running",
+  },
+  {
     section: "cpak 2.11.1",
     date: "September 1, 2026",
     published: "2026-09-01",

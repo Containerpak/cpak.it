@@ -36,7 +36,6 @@
   let core = $state<Core | null>(null);
   let status = $state<"loading" | "ready" | "failed">("loading");
   let failure = $state("");
-  let catalog = $state<Catalog>({ permissions: [], aliases: [] });
   let permissions = $state<Permission[]>([]);
   let command = $state("");
   let text = $state(startingManifest());
@@ -55,7 +54,6 @@
       const answer = loaded.ask<Catalog>("permissionCatalog", {});
       if (!answer.ok) throw new CoreError("start", answer.error);
       core = loaded;
-      catalog = answer.result;
       permissions = answer.result.permissions.filter(
         (permission) => permission.manifestV3,
       );
@@ -83,16 +81,13 @@
 
   function permissionDescription(permission: Permission) {
     switch (permission.key) {
-      case "socketX11": return m.permission_socket_x11();
+      case "displayX11": return m.permission_display_x11();
       case "socketWayland": return m.permission_socket_wayland();
       case "socketPulseAudio": return m.permission_socket_pulse_audio();
-      case "socketSessionBus": return m.permission_socket_session_bus();
-      case "socketSystemBus": return m.permission_socket_system_bus();
       case "socketSshAgent": return m.permission_socket_ssh_agent();
       case "socketCups": return m.permission_socket_cups();
       case "socketGpgAgent": return m.permission_socket_gpg_agent();
-      case "socketAtSpiBus": return m.permission_socket_at_spi_bus();
-      case "socketBluetooth": return m.permission_socket_bluetooth();
+      case "bluetooth": return m.permission_bluetooth();
       case "deviceDri": return m.permission_device_dri();
       case "deviceKvm": return m.permission_device_kvm();
       case "deviceShm": return m.permission_device_shm();
@@ -108,9 +103,18 @@
       case "notification": return m.permission_notification();
       case "openURI": return m.permission_open_uri();
       case "hostApplications": return m.permission_host_applications();
+      case "hostActions": return m.permission_host_actions();
+      case "filePicker": return m.permission_file_picker();
+      case "sessionBus": return m.permission_session_bus();
+      case "filesystem": return m.permission_filesystem();
+      case "env": return m.permission_env();
       case "network": return m.permission_network();
+      case "hostNetwork": return m.permission_host_network();
       case "process": return m.permission_process();
       case "userNamespaces": return m.permission_user_namespaces();
+      case "memoryMaxMB": return m.permission_memory_max();
+      case "cpuQuota": return m.permission_cpu_quota();
+      case "pidsMax": return m.permission_pids_max();
       case "asRoot": return m.permission_as_root();
       default: return permission.description;
     }
@@ -176,7 +180,7 @@
 
   const requested = $derived.by(() => {
     if (!policy) return [];
-    return granted(policy.requested, catalog);
+    return granted(policy.requested, { permissions, aliases: [] });
   });
 
   function submit(event: SubmitEvent) {

@@ -12,7 +12,7 @@ Los controles de manifest muestran audio, dispositivos, servicios de escritorio 
 
 ## Visualización y entrada
 
-Los paquetes Wayland reciben el socket Wayland activo cuando `socketWayland` está habilitado. La GPU suele necesitar también `deviceDri`. Manifest v3 no expone el socket X11 sin filtrar.
+Los paquetes Wayland reciben el socket Wayland activo cuando `socketWayland` está habilitado. El renderizado con GPU suele necesitar también `deviceDri`. Active `displayX11` cuando la aplicación necesite compatibilidad X11. cpak inicia un display Xwayland o Xephyr anidado y monta únicamente su socket privado y su archivo de autorización. El display X11 del host queda fuera del paquete.
 
 El runtime transporta el entorno de visualización necesario para abordar el zócalo montado. Pruebe ambas paths de visualización cuando un paquete anuncie ambas.
 
@@ -21,6 +21,16 @@ El runtime transporta el entorno de visualización necesario para abordar el zó
 `socketPulseAudio` expone el socket compatible con PulseAudio utilizado por las sesiones de escritorio PulseAudio y PipeWire. Los dispositivos ALSA directos requieren `deviceAlsa`.
 
 La impresión utiliza `socketCups`. Los sockets de los agentes SSH y GPG son permisos separados porque pueden autorizar acciones como usuario. Manifest v3 no monta un socket sin filtrar para el bus de accesibilidad.
+
+## Bluetooth
+
+Active `bluetooth` cuando la aplicación necesite la API de BlueZ:
+
+```json
+"bluetooth": true
+```
+
+cpak monta un socket de bus privado en la ruta convencional del bus del sistema para que los clientes BlueZ normales funcionen sin cambios. El proxy nativo solo permite `org.bluez`, incluidos los agentes y perfiles exportados, las señales y los file descriptors. Rechaza la enumeración del bus y todos los servicios del sistema no relacionados. El permiso no concede sockets HCI directos ni dispositivos Bluetooth.
 
 ## Notificaciones
 

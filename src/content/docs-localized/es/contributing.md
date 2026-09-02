@@ -5,6 +5,7 @@ tags: [contributing, development, go]
 section: project
 order: 10
 ---
+
 # Contribuyendo a cpak
 
 El proyecto cpak se divide en runtime, bibliotecas reutilizables, imágenes de paquetes, la Tienda y este sitio web. Comience en el repositorio propietario del comportamiento que desea cambiar.
@@ -28,8 +29,8 @@ make all
 ```bash
 go test -race ./...
 go vet ./...
-go run . gen-schema --output /tmp/manifest-v2.json
-diff -u schema/manifest-v2.json /tmp/manifest-v2.json
+go run . gen-schema --output /tmp/manifest-v3.json
+diff -u schema/manifest-v3.json /tmp/manifest-v3.json
 ```
 
 El esquema generado debe coincidir con el esquema confirmado. Agregue pruebas junto al comportamiento modificado. Los cambios en runtime deben cubrir los comandos exitosos, las paths de falla y la recuperación del almacén.
@@ -42,13 +43,13 @@ El esquema generado debe coincidir con el esquema confirmado. Agregue pruebas ju
 
 Inspeccionar cada capacidad reportada. El comportamiento del espacio de nombres, montaje, Landlock, seccomp, cgroup, display, audio, init y host bridge depende del host. Siga las pruebas unitarias con una verificación del runtime en un host compatible.
 
-Para un cambio de inicio, instale o pruebe un paquete real a través del binario cpak creado localmente. Para un cambio de paquete, cree la imagen en su workflow GitHub y pruebe el resultado publicado mediante cpak.
+Para un cambio de inicio, instale o pruebe un paquete real con el binario cpak creado localmente. Para un cambio de manifest, valide y pruebe el repositorio del paquete. Para un cambio de imagen, créela mediante el workflow de `Containerpak/images` y pruebe el resultado publicado con cpak.
 
 ## trabajar en paquetes
 
-Cada paquete oficial tiene su propio repositorio bajo la organización Containerpak. El repositorio de paquetes posee `cpak.json`, su receta de imágenes, pruebas e integración específica de la aplicación.
+Cada paquete oficial tiene su propio repositorio bajo la organización Containerpak. El repositorio del paquete contiene `cpak.json`, la documentación del paquete y de la Store, el workflow de firma y las pruebas específicas del manifest. `Containerpak/images` contiene las recetas y publica las imágenes OCI compartidas.
 
-Las soluciones alternativas específicas de la aplicación pertenecen al repositorio de paquetes. El contenido compartido ABI pertenece a una imagen base o dependencia cuando varios paquetes lo usan.
+Los metadatos y permisos de la aplicación pertenecen al repositorio del paquete. Los archivos de runtime y los ajustes de build pertenecen a `Containerpak/images`. El contenido ABI compartido pertenece a una imagen base o a una dependencia cuando lo usan varios paquetes.
 
 ## Trabajar en el sitio web
 
@@ -61,7 +62,7 @@ pnpm build
 pnpm dev
 ```
 
-Verifique los diseños de escritorio y móviles para detectar cualquier cambio visual. Los ejemplos de código de documentación deben coincidir con el esquema y la CLI v2 actuales.
+Verifique los diseños de escritorio y móvil para cada cambio visual. Los ejemplos de código de la documentación deben coincidir con la CLI actual y el esquema del manifest v3.
 
 ## Mantenga los cambios enfocados
 

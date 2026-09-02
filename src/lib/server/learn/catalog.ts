@@ -289,7 +289,7 @@ export const COURSES = [
     course: {
       slug: "engineering",
       title: "Engineering cpak integrations",
-      minutes: 110,
+      minutes: 125,
       href: "/learn/engineering",
       modules: [
         {
@@ -304,6 +304,11 @@ export const COURSES = [
               slug: "sandbox-boundaries",
               title: "Build the sandbox in layers",
               href: "/learn/engineering/sandbox-boundaries",
+            },
+            {
+              slug: "persistent-services",
+              title: "Keep an application service running",
+              href: "/learn/engineering/persistent-services",
             },
           ],
         },
@@ -357,7 +362,7 @@ export const COURSES = [
           lessons: [
             {
               slug: "check-what-you-know",
-              title: "Ten questions",
+              title: "Eleven questions",
               href: "/learn/engineering/check-what-you-know",
               kind: "test",
             },
@@ -366,9 +371,9 @@ export const COURSES = [
       ],
     },
     description:
-      "Trace a cpak launch, understand its sandbox, design typed host actions, implement storage drivers, verify runtime sources and compose addon provider slots.",
+      "Trace a cpak launch, operate persistent services, understand its sandbox, design typed host actions, implement storage drivers, verify runtime sources and compose addon provider slots.",
     summary:
-      "Trace a launch until every boundary is visible, then extend cpak without replacing those boundaries with arbitrary commands. You will work through sandbox construction, typed host actions, the storage driver protocol, verified runtime sources and addon provider slots.",
+      "Trace a launch until every boundary is visible, operate it as a persistent service, then extend cpak without replacing those boundaries with arbitrary commands. The course covers sandbox construction, typed host actions, the storage driver protocol, verified runtime sources and addon provider slots.",
     audience:
       "For developers integrating a package, runtime or storage backend. You should already know how a cpak manifest describes an application.",
     exam: {
@@ -379,7 +384,7 @@ export const COURSES = [
       eyebrow: "Developers",
       title: "Engineering cpak integrations",
       sentence:
-        "Trace the runtime, design typed host operations, implement storage drivers and compose optional providers without widening the sandbox.",
+        "Trace the runtime, operate persistent services, design typed host operations, implement storage drivers and compose optional providers without widening the sandbox.",
       action: "Start the course",
       icon: "developer_board",
       art: "course-engineering",
@@ -524,6 +529,12 @@ const LESSONS: Record<
     content: "/src/content/learn/engineering/sandbox-boundaries.md",
     quiz: null,
   },
+  "engineering/persistent-services": {
+    description:
+      "Declare an application command, keep it running through a portable boot adapter, pass deployment configuration safely and inspect its health.",
+    content: "/src/content/learn/engineering/persistent-services.md",
+    quiz: null,
+  },
   "engineering/typed-host-actions": {
     description:
       "Design a finite broker provider, preserve command semantics through a compatibility shim and keep host operations inside package policy.",
@@ -562,7 +573,7 @@ const LESSONS: Record<
   },
   "engineering/check-what-you-know": {
     description:
-      "Ten questions on cpak launch boundaries, typed host actions, nested packages, storage drivers, runtime sources, integrity and addon provider slots.",
+      "Eleven questions on cpak launch boundaries, persistent services, typed host actions, nested packages, storage drivers, runtime sources, integrity and addon provider slots.",
     content: null,
     quiz: "engineering",
   },
@@ -601,7 +612,9 @@ export function findLesson(
               "/src/content/learn/",
               `/src/content/learn-localized/${locale}/`,
             )
-          ] ?? CONTENT[detail.content] ?? "")
+          ] ??
+          CONTENT[detail.content] ??
+          "")
       : "",
     quiz: detail.quiz,
     playground: detail.playground,

@@ -22,7 +22,7 @@ Ahora añada `"deviceDri": true` al ceiling. El resultado no cambia. El valor tr
 
 ## Un servicio tipado puede restringirse llamada por llamada
 
-Seleccione _Una regla de bus exacta_. La aplicación solicita `List` y `Open` sobre un servicio de sesión. El ceiling permite únicamente `List`, por lo que `Open` desaparece. El paquete recibe un bus de sesión filtrado y nunca obtiene el socket directo del host.
+Seleccione _Una regla de bus exacta_. La aplicación solicita `List` y `Open` sobre un servicio de sesión. El ceiling permite únicamente `List`, por lo que `Open` desaparece. El package recibe un bus de sesión filtrado y nunca obtiene el socket raw del host.
 
 La misma intersección se aplica dentro de los permisos tipados. Un ceiling del filesystem puede reducir lectura y escritura a solo lectura, y un ceiling del bus puede reducir los métodos permitidos para un destino, una ruta y una interfaz exactos. El panel del playground enumera todos los recursos controlados por las claves del archivo.
 

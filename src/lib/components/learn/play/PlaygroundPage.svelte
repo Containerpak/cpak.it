@@ -62,12 +62,12 @@
       </div>
       <a
         href={reference.href}
-        class="inline-flex shrink-0 items-center gap-2 rounded-full border border-white/20 px-4 py-2 text-sm font-medium text-slate-200 hover:bg-white/10 hover:text-white focus-visible:ring-2 focus-visible:ring-[#8aa8ff] focus-visible:outline-none"
+        class="inline-flex max-w-full min-w-0 shrink-0 items-center gap-2 rounded-full border border-white/20 px-4 py-2 text-sm font-medium text-slate-200 hover:bg-white/10 hover:text-white focus-visible:ring-2 focus-visible:ring-[#8aa8ff] focus-visible:outline-none"
       >
         <span class="material-symbols-outlined text-[18px]" aria-hidden="true"
           >menu_book</span
         >
-        {m.documentation()}: {reference.label}
+        <span class="min-w-0 truncate">{m.documentation()}: {reference.label}</span>
       </a>
     </div>
 

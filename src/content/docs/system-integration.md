@@ -14,6 +14,8 @@ The manifest controls display, audio, devices, desktop services, and broker oper
 
 Wayland packages receive the active Wayland socket when `socketWayland` is enabled. GPU rendering normally also needs `deviceDri`. Set `displayX11` when the application needs X11 compatibility. cpak starts a nested Xwayland or Xephyr display and mounts only its private socket and authority file. The host X11 display remains outside the package.
 
+On an X11 desktop, cpak also mediates declared clipboard directions, mirrors the application title, icon and fullscreen state to Xephyr, and follows host window resizes. Closing the last application window stops the cpak instance. The broker is part of cpak and does not use D-Bus or require a helper inside the package image.
+
 The runtime carries the display environment needed to address the mounted socket.
 
 ## Audio and accessibility

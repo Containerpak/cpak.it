@@ -1,10 +1,11 @@
 ---
 title: Instalar cpak
-description: Instale el comando v2, verifique el host y comprenda dónde guarda cpak sus datos.
+description: Instale el runtime cpak actual, verifique el host y comprenda dónde guarda cpak sus datos.
 tags: [install, host]
 section: start
 order: 10
 ---
+
 # Instalar cpak
 
 cpak se distribuye como dos archivos binarios estáticos de Go y extrae el contenido de OCI a través de la API de distribución. El comando `cpak` posee el ciclo de vida del paquete y la aplicación. `cpak-storaged` prepara y verifica las comprobaciones del layer nativa durante la instalación, actualización o mantenimiento y luego sale. Una aplicación preparada se inicia directamente desde su índice de ejecución.

@@ -1,10 +1,11 @@
 ---
 title: Tu primer paquete
-description: Cree un repositorio de paquetes v2, cree su imagen y pruébelo en un almacén aislado.
+description: Cree un paquete con manifest v3, construya su imagen y pruébelo en un almacén aislado.
 tags: [packaging, tutorial]
 section: packages
 order: 10
 ---
+
 # Tu primer paquete
 
 Un repositorio de paquetes necesita una imagen OCI y `cpak.json`. Comience con una aplicación de línea de comandos para que se pueda verificar cada parte del paquete antes de agregar la integración de escritorio.
@@ -36,12 +37,12 @@ Cree y publique la imagen con cualquier workflow de registro OCI.
 cpak init \
   --name "Hello cpak" \
   --description "Small package used to verify a cpak setup." \
-  --version 1.0.0 \
-  --image ghcr.io/your-name/hello-cpak:main \
+  -v 1.0.0 \
+  --image ghcr.io/your-name/hello-cpak@sha256:0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef \
   --binary /usr/bin/hello-cpak
 ```
 
-El manifest generado usa la release `2.0` e incluye la URL del esquema actual. Este ejemplo de línea de comandos utiliza un `override` vacío porque no necesita recursos de host.
+Sustituya el digest de ejemplo por el que devuelve el registro después de publicar la imagen. El manifest generado usa la versión `3.0`, incluye la URL del esquema actual y deja `override` vacío porque el comando no necesita recursos del host.
 
 ## Validar antes de ejecutar
 

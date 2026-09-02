@@ -20,7 +20,7 @@ La maggior parte dei permessi espone una sola risorsa. Alcuni modificano un inte
 
 `deviceAll` espone l'intera directory `/dev/`. Quando è attivo, gli undici permessi dedicati ai singoli dispositivi non restringono più nulla.
 
-Altri cinque permessi non espongono percorsi e per questo sono facili da ignorare. `network` aggiunge accesso a internet e LAN in un namespace privato, mentre il loopback dell'host resta bloccato. `hostNetwork` condivide il namespace di rete dell'host, incluso localhost, e richiede `network`. `process` condivide il namespace dei processi dell'host. `userNamespaces` permette di creare sandbox annidate, necessarie ai browser. `asRoot` esegue il processo come uid 0 all'interno del container.
+Altri quattro permessi non espongono percorsi e per questo sono facili da ignorare. `hostNetwork` condivide il namespace di rete dell'host, incluso localhost, e richiede `network`. `process` condivide il namespace dei processi dell'host. `userNamespaces` permette di creare sandbox annidate, necessarie ai browser. `asRoot` esegue il processo come uid 0 all'interno del container.
 
 Quando prepari un pacchetto, chiediti senza quali funzionalità l'applicazione non possa funzionare e concedi la forma più ristretta disponibile. È il punto centrale di una revisione del manifest.
 

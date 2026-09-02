@@ -50,7 +50,7 @@
   function caseLabel(id: string) {
     if (id === "one-directory") return m.policy_case_one_directory();
     if (id === "unmanaged") return m.policy_case_unmanaged();
-    if (id === "same-door") return m.policy_case_same_door();
+    if (id === "exact-bus") return m.policy_case_exact_bus();
     if (id === "closes-nothing") return m.policy_case_closes_nothing();
     if (id === "owner") return m.policy_case_owner();
     return m.play_custom();

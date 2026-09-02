@@ -16,12 +16,12 @@ Package testing covers the manifest, image, exported files, runtime behavior, an
 cpak validate cpak.json
 ```
 
-This rejects unknown fields, invalid manifest versions, malformed permission entries, missing required fields, and values outside the v2 schema.
+This rejects unknown fields, invalid manifest versions, malformed permission entries, missing required fields, and values outside the v3 schema.
 
 Generate the current schema directly from the runtime when comparing editor or CI validation:
 
 ```bash
-cpak gen-schema --output manifest-v2.json
+cpak gen-schema --output manifest-v3.json
 ```
 
 ## Reproducible resolution
@@ -72,4 +72,4 @@ Run `cpak test` against the published image as part of package validation. This 
 
 ## Visual applications
 
-A desktop package needs a visual cpak launch in addition to a `--version` check. Confirm that windows render, check icons and desktop entries, and exercise the main workflows. Test `socketWayland` and `displayX11` separately when the manifest enables both. A Bluetooth package needs a BlueZ operation matching its real use, including a profile or GATT path when it exports one.
+A desktop package needs a visual cpak launch in addition to a `--version` check. Confirm that windows render, check icons and desktop entries, and exercise the main workflows. Test `socketWayland` and `displayX11` separately when the manifest enables both. For `displayX11`, verify each declared clipboard direction, resize and fullscreen the host window, then close the last application window and confirm the instance stops. A Bluetooth package needs a BlueZ operation matching its real use, including a profile or GATT path when it exports one. Also confirm that the package still starts when BlueZ is unavailable.

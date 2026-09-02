@@ -1,10 +1,11 @@
 ---
 title: Compatibilità dell'host
-description: Linux, architettura, kernel, filesystem, desktop, init e requisiti GPU per runtime v2.
+description: Requisiti Linux, architettura, kernel, filesystem, desktop, init e GPU del runtime corrente.
 tags: [host, compatibility, requirements]
 section: start
 order: 40
 ---
+
 # Compatibilità host
 
 cpak funziona su Linux e utilizza direttamente le funzionalità del kernel. Il binario statico runtime è pubblicato per `amd64` e `arm64`. Il supporto dell'architettura dell'applicazione dipende anche dall'image OCI pubblicata da ciascun pacchetto.
@@ -34,7 +35,7 @@ I filesystem di rete, i montaggi FUSE esistenti e le configurazioni dello spazio
 
 ## Sessioni desktop
 
-cpak può esporre audio, accessibilità, stampa e dispositivi selezionati compatibili con Wayland, X11, PulseAudio. L'applicazione manifest deve abilitare la risorsa corrispondente e tale risorsa deve esistere nella sessione utente.
+cpak può esporre Wayland, compatibilità X11 isolata, audio compatibile con PulseAudio, accessibilità, stampa, Bluetooth e dispositivi selezionati. Il manifest dell'applicazione deve abilitare la risorsa corrispondente. `displayX11` richiede Xwayland in una sessione Wayland oppure Xephyr in una sessione X11. `bluetooth` richiede BlueZ e il bus di sistema dell'host. I pacchetti che non richiedono queste funzioni non ricevono i relativi accessi.
 
 I pacchetti headless possono omettere i socket desktop. Testare i pacchetti desktop su ogni percorso di visualizzazione dichiarato.
 
@@ -52,5 +53,5 @@ Seccomp è richiesto dalla policy runtime. Landlock aggiunge restrizioni sul per
 
 I dispositivi DRI coprono i comuni stack grafici basati su Mesa. Il supporto NVIDIA risolve i file driver dello spazio utente host all'avvio. Testare il passthrough driver sull'hardware di destinazione e sulla versione host driver.
 
-> [!NOTE] Versione sperimentale
-> cpak v2 viene lanciato come opzione di distribuzione sperimentale. Il rapporto di compatibilità ti dice cosa può dimostrare localmente il runtime; la copertura hardware specifica del pacchetto è documentata da ciascun pacchetto.
+> [!NOTE] Copertura specifica del pacchetto
+> cpak 2.10 è l'attuale serie stabile. Il report di compatibilità indica ciò che il runtime può verificare localmente; ogni pacchetto documenta i propri requisiti hardware e le architetture provate.

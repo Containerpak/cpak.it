@@ -19,7 +19,7 @@ The following will be exported:
   - (desktop entry) /usr/share/applications/vlc.desktop
 
 The following permissions will be granted:
-  - Display: isolated X11 compatibility display, Wayland display and compositor-mediated clipboard
+  - Display: isolated X11 compatibility display, Wayland
   - Audio: PulseAudio
   - Devices: graphics, shared memory
   - Files: xdg-videos, read only

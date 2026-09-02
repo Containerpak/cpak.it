@@ -19,6 +19,12 @@ Manifest v3 è il contratto JSON rigoroso attuale. Fissa l'immagine OCI tramite 
   "version": "1.0.0",
   "image": "ghcr.io/example/example@sha256:0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef",
   "binaries": ["/usr/bin/example"],
+  "services": {
+    "server": {
+      "binary": "/usr/bin/example",
+      "arguments": ["serve", "--port", "3000"]
+    }
+  },
   "desktop_entries": ["/usr/share/applications/example.desktop"],
   "dependencies": [],
   "addons": [],
@@ -43,6 +49,7 @@ Manifest v3 è il contratto JSON rigoroso attuale. Fissa l'immagine OCI tramite 
 | `version`          | No           | Versione dell'applicazione mostrata da cpak.                                           |
 | `image`            | Sì           | Riferimento immagine OCI fissato con `@sha256:`.                                       |
 | `binaries`         | Sì           | Uno o più percorsi eseguibili assoluti.                                                |
+| `services`         | No           | Comandi applicativi con nome basati su binari esportati.                               |
 | `desktop_entries`  | No           | Percorsi assoluti dei file `.desktop` nell'image.                                      |
 | `sessions`         | No           | Sessioni desktop o kiosk offerte a un display manager.                                 |
 | `dependencies`     | No           | Origini del pacchetto cpak richieste.                                                  |
@@ -72,6 +79,21 @@ Ogni dipendenza necessita di un'origine. Un ramo, rilascio o commit può selezio
 ```
 
 Utilizza un solo selettore di origine per dipendenza. Il file di blocco registra la dipendenza risolta manifest, il relativo hash e il digest dell'image immutabile OCI.
+
+## Servizi applicativi
+
+L'oggetto opzionale `services` assegna un nome stabile a un comando applicativo:
+
+```json
+"services": {
+  "server": {
+    "binary": "/usr/bin/example",
+    "arguments": ["serve", "--port", "3000"]
+  }
+}
+```
+
+Ogni `binary` deve comparire anche nell'array `binaries` principale. Gli argomenti vengono passati come valori separati senza interpretazione da parte di una shell. Avvia un comando dichiarato con `cpak run --service server github.com/example/app` oppure mantienilo attivo con `cpak service enable`. Consulta [Servizi applicativi persistenti](/docs/services) per riavvio, dipendenze, boot, environment, secret e osservabilità.
 
 ## Componenti aggiuntivi
 

@@ -556,5 +556,19 @@
   "Typed bus rules are narrowed call by call. The package never receives the raw session bus socket.": "Le regole tipizzate del bus vengono ristrette chiamata per chiamata. Il pacchetto non riceve mai il socket raw del bus di sessione.",
   "Neither method, because a ceiling cannot contain bus rules": "Nessun metodo, perché un ceiling non può contenere regole del bus",
   "A manifest v3 ceiling can restrict an exact sessionBus policy.": "Un ceiling del manifest v3 può restringere una policy sessionBus esatta.",
-  "Open only, because it changes state": "Soltanto Open, perché modifica lo stato"
+  "Open only, because it changes state": "Soltanto Open, perché modifica lo stato",
+  "Keep an application service running": "Mantieni in esecuzione un servizio applicativo",
+  "Eleven questions": "Undici domande",
+  "Declare an application command, keep it running through a portable boot adapter, pass deployment configuration safely and inspect its health.": "Dichiara un comando applicativo, mantienilo in esecuzione con un adattatore di boot portabile, passa la configurazione del deploy in sicurezza e controllane l'integrità.",
+  "Eleven questions on cpak launch boundaries, persistent services, typed host actions, nested packages, storage drivers, runtime sources, integrity and addon provider slots.": "Undici domande sui confini di lancio di cpak, i servizi persistenti, le azioni host tipizzate, i pacchetti nested, gli storage driver, le sorgenti runtime, l'integrità e i provider slot degli addon.",
+  "Trace a cpak launch, operate persistent services, understand its sandbox, design typed host actions, implement storage drivers, verify runtime sources and compose addon provider slots.": "Segui un lancio cpak, gestisci servizi persistenti, comprendi la sandbox, progetta azioni host tipizzate, implementa storage driver, verifica le sorgenti runtime e combina gli addon tramite provider slot.",
+  "Trace a launch until every boundary is visible, operate it as a persistent service, then extend cpak without replacing those boundaries with arbitrary commands. The course covers sandbox construction, typed host actions, the storage driver protocol, verified runtime sources and addon provider slots.": "Segui un lancio fino a rendere visibile ogni confine, gestiscilo come servizio persistente, poi estendi cpak senza sostituire quei confini con comandi arbitrari. Il corso copre sandbox, azioni host tipizzate, protocollo degli storage driver, sorgenti runtime verificate e provider slot per gli addon.",
+  "Trace the runtime, operate persistent services, design typed host operations, implement storage drivers and compose optional providers without widening the sandbox.": "Segui il runtime, gestisci servizi persistenti, progetta operazioni host tipizzate, implementa storage driver e combina provider opzionali senza ampliare la sandbox.",
+  "A host has no usable systemd user manager. What happens to an enabled cpak application service?": "Un host non dispone di un gestore systemd utente utilizzabile. Cosa accade a un servizio applicativo cpak abilitato?",
+  "cpak selects cron or XDG autostart and keeps the same service definition": "cpak seleziona cron o XDG autostart e conserva la stessa definizione del servizio",
+  "Boot activation is an adapter. The cpak service manager and application launch path do not depend on systemd or D-Bus.": "L'attivazione al boot è un adattatore. Il service manager e il percorso di avvio delle applicazioni cpak non dipendono da systemd o D-Bus.",
+  "The service is rejected because persistence requires systemd": "Il servizio viene rifiutato perché la persistenza richiede systemd",
+  "systemd is one available boot adapter, not a runtime dependency.": "systemd è uno degli adattatori di boot disponibili, non una dipendenza runtime.",
+  "The package must request hostNetwork before it can restart": "Il pacchetto deve richiedere hostNetwork prima di potersi riavviare",
+  "Network permissions do not select or enable a boot adapter.": "I permessi di rete non selezionano né abilitano un adattatore di boot."
 }

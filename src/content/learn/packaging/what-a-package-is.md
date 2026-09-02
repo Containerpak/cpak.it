@@ -19,6 +19,9 @@ A short JSON file beside the image. It names the application, the binaries and d
   "version": "3.2.0",
   "image": "ghcr.io/example/fotoritocco@sha256:0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef",
   "binaries": ["/usr/bin/fotoritocco"],
+  "services": {
+    "server": { "binary": "/usr/bin/fotoritocco", "arguments": ["serve"] }
+  },
   "idle_time": 0,
   "override": {
     "socketWayland": true,
@@ -26,6 +29,8 @@ A short JSON file beside the image. It names the application, the binaries and d
   }
 }
 ```
+
+`binaries` lists commands a person or desktop entry may launch. `services` can give one of those binaries a named argument vector for `cpak run --service` and persistent service management. It does not make the command persistent by itself; the person operating the machine decides that with `cpak service enable`.
 
 Read that override as a promise rather than a configuration. It is printed to the person installing your package, line by line, before anything is downloaded. Every line you add is a line somebody reads and weighs, and a line they can refuse.
 

@@ -26,7 +26,22 @@ Usa il system broker per notifiche e URI esterni. Ogni permesso espone al pacche
 
 ## Dispositivi
 
-`deviceDri` concede l'accesso ai dispositivi grafici sotto `/dev/dri`. Gli altri booleani riguardano KVM, memoria condivisa, ALSA, acquisizione video, FUSE, TUN/TAP e USB. `deviceAll` espone tutti i dispositivi dell'host e va riservato ai pacchetti che non possono funzionare con permessi più stretti.
+| Campo          | Accesso                                       |
+| -------------- | --------------------------------------------- |
+| `deviceDri`    | Dispositivi grafici sotto `/dev/dri`.         |
+| `deviceKvm`    | Virtualizzazione hardware tramite `/dev/kvm`. |
+| `deviceShm`    | Memoria condivisa tramite `/dev/shm`.         |
+| `deviceAlsa`   | Dispositivi audio ALSA.                       |
+| `deviceVideo`  | Dispositivi di acquisizione video.            |
+| `deviceFuse`   | FUSE tramite `/dev/fuse`.                     |
+| `deviceTun`    | TUN/TAP tramite `/dev/net/tun`.               |
+| `deviceUsb`    | Dispositivi USB.                              |
+| `deviceSerial` | Porte seriali USB e CDC.                      |
+| `deviceInput`  | Dispositivi di input.                         |
+| `deviceTTY`    | Terminale di controllo.                       |
+| `deviceAll`    | L'intero albero `/dev` dell'host.             |
+
+`deviceAll` concede un accesso molto ampio e va riservato ai pacchetti che non possono funzionare con permessi più stretti.
 
 `deviceSerial` copre `/dev/ttyUSB*` e `/dev/ttyACM*`, usati da schede, stampanti, radio e strumenti di misura. Usalo al posto di `deviceAll` quando basta una porta seriale. I glob dei dispositivi vengono risolti durante la creazione del container: una porta collegata dopo l'avvio non sarà visibile al processo già in esecuzione.
 
@@ -49,15 +64,15 @@ I campi legacy `fsHost`, `fsHostHome`, `fsHostEtc` e `fsExtra` vengono rifiutati
 
 ## Display e Bluetooth
 
-`socketWayland` monta il display Wayland attivo. `displayX11` avvia un display X11 annidato per un solo container: Xwayland privato su Wayland oppure Xephyr su X11. Il pacchetto non riceve il display X11 dell'host né il suo file di autorizzazione.
+`socketWayland` monta il display Wayland attivo. `displayX11` avvia un display X11 isolato per un solo container. Su un desktop Wayland cpak usa Xwayland con un socket privato. Su X11 usa Xephyr. Il pacchetto non riceve il display X11 dell'host né il relativo file di autorizzazione.
 
-`bluetooth` espone l'API BlueZ tramite un proxy privato. Discovery, pairing, applicazioni GATT, agenti, profili, segnali e passaggio di file descriptor usano questo percorso. Le chiamate agli altri servizi del bus di sistema vengono negate e l'accesso HCI diretto non è incluso.
+`bluetooth` espone l'API generale BlueZ tramite un proxy privato e filtrato. Discovery, pairing, applicazioni GATT, agenti, profili, segnali e passaggio di file descriptor usano questo percorso. Le chiamate agli altri servizi del bus di sistema vengono negate e l'accesso HCI grezzo non è incluso.
 
 ## Bus di sessione
 
 `sessionBus` concede chiamate esatte sul bus di sessione desktop. Ogni voce `talk` indica destinazione, percorso dell'oggetto, interfaccia e metodi. L'elenco opzionale `own` indica i nomi noti che il pacchetto può acquisire.
 
-Manifest v3 non espone socket diretti per X11, bus di sessione, bus di sistema, AT-SPI o Bluetooth. Usa `displayX11` per la compatibilità X11 isolata e `bluetooth` per il servizio BlueZ filtrato. I permessi tipizzati del broker coprono notifiche, URI esterni, selezione file e avvio di applicazioni host. cpak non offre un permesso per il bus di sistema diretto.
+Il manifest v3 non espone socket grezzi per X11, bus di sessione, bus di sistema, AT-SPI o Bluetooth. Usa `displayX11` per la compatibilità X11 isolata e `bluetooth` per il servizio BlueZ filtrato. I permessi tipizzati del broker coprono notifiche, URI esterni, selezione di file e avvio di applicazioni host. cpak non offre un permesso grezzo per il bus di sistema.
 
 ## File scelti dall'utente
 
@@ -65,13 +80,15 @@ Manifest v3 non espone socket diretti per X11, bus di sessione, bus di sistema, 
 
 ## Rete e processi
 
-`network` aggiunge accesso a internet e LAN in un namespace di rete privato tramite `slirp4netns`. Non espone il loopback dell'host o il gateway `10.0.2.2`. cpak controlla il resolver dell'host e aggiorna il solo helper di rete dopo un cambio Wi-Fi, VPN o DNS senza ricreare il container.
-
-`hostNetwork` richiede `network` e sostituisce il confine privato con il namespace di rete dell'host, inclusi localhost e le porte host. Riservalo alle applicazioni che devono raggiungere un servizio in ascolto soltanto sul loopback dell'host. Un servizio in ascolto sull'indirizzo LAN resta raggiungibile con il normale permesso `network`.
+`network` abilita un namespace di rete isolato. Il loopback dell'host non è raggiungibile da quel namespace. Imposta `hostNetwork` insieme a `network` solo quando il pacchetto deve condividere il namespace di rete dell'host, inclusi i servizi localhost e le porte dell'host.
 
 `process` condivide il namespace dei processi dell'host e deve rimanere falso salvo quando l'applicazione deve ispezionare i processi dell'host.
 
-`userNamespaces` consente all'applicazione di creare un ulteriore namespace utente e preparare i mount necessari a sandbox annidate come bubblewrap. Landlock non può convivere con quella configurazione dei mount, quindi questo permesso disattiva Landlock per l'applicazione. Il namespace dei mount di cpak continua a controllare quali percorsi host esistono e con quale modalità, mentre la restante policy seccomp rimane attiva. Se resta falso, i namespace utente annidati vengono bloccati nel pacchetto.
+`userNamespaces` consente all'applicazione di creare un ulteriore namespace utente. Browser e strumenti con un sandbox proprio ne hanno spesso bisogno. Se resta falso, i namespace utente annidati vengono bloccati nel pacchetto.
+
+## Identità nel runtime
+
+`asRoot` esegue l'applicazione come UID 0 nel namespace utente del pacchetto. Non concede root sull'host né capability nel namespace utente padre.
 
 ## Limiti delle risorse
 
@@ -89,11 +106,15 @@ Imposta `notification` per esporre lo shim delle notifiche e `openURI` per conse
 
 Imposta `hostApplications` quando un desktop environment deve usare il catalogo delle applicazioni dell'host. Le richieste di avvio usano identificatori opachi e il broker seleziona la desktop entry affidabile.
 
-`hostActions` concede capacità di un provider integrato. Il provider `containers` offre `read`, `manage-owned` ed `exec-owned`; il provider `cpak` offre `read`, `manage` ed `exec` per il rilevamento limitato e le operazioni sugli ambienti persistenti. Durante un aggiornamento, un nuovo provider o una nuova capacità viene trattata come un'aggiunta di permessi. Consulta [Host actions](/docs/host-actions) per il confine esatto.
+`hostActions` concede capacità di un provider integrato. Il provider `containers` offre `read`, `manage-owned` ed `exec-owned`. Durante un aggiornamento, un nuovo provider o una nuova capacità è trattata come un'aggiunta di permessi. Consulta [Host actions](/docs/host-actions) per il confine esatto.
+
+`allowedHostCommands` è un input legacy mantenuto per compatibilità. cpak converte soltanto `notify-send`, `xdg-open` e `cpak-launch-app` in `notification`, `openURI` e `hostApplications`. I nuovi manifest v3 devono usare direttamente questi permessi tipizzati. Ogni altro comando viene rifiutato.
 
 ## Ambiente
 
-L'array `env` accetta voci `NAME=value`. Usalo per valori predefiniti stabili del pacchetto, non per segreti dell'utente. I segreti devono passare dal meccanismo supportato dall'applicazione o da un mount controllato dall'utente.
+L'array `env` del manifest accetta voci `NAME=value` per valori predefiniti stabili del pacchetto. L'utente può aggiungere valori per singola esecuzione o servizio con i flag ripetibili `--env` e `--env-file`. I valori diretti sostituiscono i nomi corrispondenti provenienti dai file.
+
+Usa `--secret NAME=/absolute/path` per secret basati su file. cpak controlla proprietario e permessi del file, lo monta in sola lettura in `/run/secrets/NAME` e non ne memorizza il contenuto. Consulta [Servizi applicativi persistenti](/docs/services) per regole ed esempi.
 
 ## Override locali
 
@@ -110,4 +131,4 @@ Gli override sono salvati per versione dell'applicazione. Riesaminali dopo un ca
 Un override locale sostituisce i valori predefiniti del manifest e può rimuovere oppure aggiungere accessi. Su una macchina gestita, il ceiling di sistema viene applicato in seguito e nessun override utente può superare il massimo scelto dall'amministratore. Consulta [Distribuzione gestita](/docs/managed-deployment).
 
 > [!WARNING] Accesso ampio
-> `deviceAll`, `hostNetwork`, `process`, `asRoot`, regole ampie per il bus di sessione e l'accesso `host` al filesystem attraversano ampie parti del confine del sandbox. Documenta perché il pacchetto ne ha bisogno.
+> `deviceAll`, `process`, `asRoot`, regole ampie per il bus di sessione e l'accesso `host` al filesystem attraversano ampie parti del confine del sandbox. Documenta perché il pacchetto ne ha bisogno.

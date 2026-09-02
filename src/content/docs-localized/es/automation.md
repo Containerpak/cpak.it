@@ -5,6 +5,7 @@ tags: [automation, services, ci]
 section: operations
 order: 50
 ---
+
 # Automatización y servicios
 
 Los comandos cpak devuelven un estado de salida fallido cuando falla la operación solicitada. Los scripts deben inspeccionar primero el estado de salida y usar la salida JSON cuando un comando la proporcione.
@@ -45,9 +46,27 @@ Agregue `--health` cuando cada aplicación iniciada pueda responder a un comando
 
 ## Ciclo de vida del servicio
 
-`cpak service` inicia el servicio cpak local. Ejecútelo en el administrador de servicios disponible en la sesión del usuario.
+`cpak service enable` registra un comando de aplicación, lo inicia e instala el mejor adaptador de arranque disponible:
 
-Mantenga el servicio en el mismo entorno de usuario que las aplicaciones de escritorio para que la visualización, el audio, las paths XDG y el agente del sistema resuelvan la sesión deseada.
+```bash
+cpak service enable api github.com/example/app \
+  --service server \
+  --restart on-failure \
+  --health "/usr/bin/example health"
+```
+
+El gestor de servicios de cpak no requiere systemd ni D-Bus. Usa servicios systemd de usuario, cron o XDG autostart según las capacidades del host y avisa cuando la restauración solo está disponible después del login. Lea [Servicios de aplicación persistentes](/docs/services) para conocer el arranque, las dependencias, los archivos environment, los secretos y los comandos del ciclo de vida.
+
+Use los comandos de estado de ejecución en scripts:
+
+```bash
+cpak ps --json
+cpak status github.com/example/app --instance api --json
+cpak inspect github.com/example/app --instance api
+cpak health github.com/example/app --instance api --json
+```
+
+`cpak health` devuelve un estado de error cuando la ejecución seleccionada está detenida, no está sana o todavía se está iniciando.
 
 ## Registros e instancias
 

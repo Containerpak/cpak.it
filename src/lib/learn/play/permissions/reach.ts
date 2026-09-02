@@ -122,6 +122,8 @@ const QUIET: Record<string, string> = {
 };
 
 export const DECIDING: Record<string, string> = {
+  clipboard:
+    "Only the declared clipboard directions cross the private X11 display, and file list targets stay blocked.",
   sessionBus:
     "Only the destinations, paths, interfaces and methods written in the policy pass through the private bus proxy.",
   bluetooth:

@@ -19,6 +19,12 @@ Manifest v3 is the current strict JSON contract. It pins the OCI image by digest
   "version": "1.0.0",
   "image": "ghcr.io/example/example@sha256:0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef",
   "binaries": ["/usr/bin/example"],
+  "services": {
+    "server": {
+      "binary": "/usr/bin/example",
+      "arguments": ["serve", "--port", "3000"]
+    }
+  },
   "desktop_entries": ["/usr/share/applications/example.desktop"],
   "dependencies": [],
   "addons": [],
@@ -43,6 +49,7 @@ Manifest v3 is the current strict JSON contract. It pins the OCI image by digest
 | `version`          | No       | Application version shown by cpak.                               |
 | `image`            | Yes      | OCI image reference pinned with `@sha256:`.                      |
 | `binaries`         | Yes      | One or more absolute executable paths.                           |
+| `services`         | No       | Named application commands built from exported binaries.         |
 | `desktop_entries`  | No       | Absolute paths to `.desktop` files in the image.                 |
 | `sessions`         | No       | Desktop or kiosk sessions offered to a display manager.          |
 | `dependencies`     | No       | Required cpak package origins.                                   |
@@ -74,6 +81,21 @@ Each dependency needs an origin. A branch, release, or commit can select its sou
 ```
 
 Use only one source selector per dependency. The lock file records the resolved dependency manifest, its hash, and immutable OCI image digest.
+
+## Application services
+
+The optional `services` object gives an application command a stable name:
+
+```json
+"services": {
+  "server": {
+    "binary": "/usr/bin/example",
+    "arguments": ["serve", "--port", "3000"]
+  }
+}
+```
+
+Each `binary` must also appear in the top-level `binaries` array. Arguments are passed as separate values without shell parsing. Run a declared command with `cpak run --service server github.com/example/app`, or keep it active with `cpak service enable`. See [Persistent application services](/docs/services) for restart, dependency, boot, environment, secret, and observability options.
 
 ## Addons
 
@@ -136,10 +158,22 @@ The `override` object declares the package defaults for sockets, devices, filesy
 Manifest v3 removes `socketX11`, `socketSessionBus`, `socketSystemBus`, `socketAtSpiBus`, and `socketBluetooth`. Notifications, external URIs, file selection, and host application launches use their typed permissions. There is no raw system bus grant.
 
 Use `displayX11` for applications that still need X11. cpak starts an isolated
-display and mounts only that display socket and its authority file. Use
-`bluetooth` for general BlueZ access. Its private proxy accepts the BlueZ API,
-signals, callbacks and file descriptors while rejecting every other system bus
-destination. It does not grant raw HCI access.
+display and mounts only that display socket and its authority file. Declare the
+clipboard directions separately when the application needs them:
+
+```json
+"displayX11": true,
+"clipboard": {
+  "hostToApp": true,
+  "appToHost": true
+}
+```
+
+Clipboard mediation copies text and image targets, not host file lists. A
+Wayland launch requires both directions because Xwayland connects through the
+compositor. Use `bluetooth` for general BlueZ access. Its private proxy accepts
+the BlueZ API, signals, callbacks and file descriptors while rejecting every
+other system bus destination. It does not grant raw HCI access.
 
 An application that needs a session bus method can declare the exact call surface:
 

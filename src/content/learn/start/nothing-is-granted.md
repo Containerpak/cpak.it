@@ -10,6 +10,8 @@ Add `"displayX11": true` as well. No host X11 socket appears. cpak starts a priv
 
 That difference is deliberate. Manifest v3 removed raw X11 access because clients on one host display can observe each other's clipboard, input and pixels. The replacement still runs X11 applications without giving them the host display.
 
+Clipboard access is a separate choice. `clipboard.hostToApp` lets the package read approved text and image targets, while `clipboard.appToHost` lets it write them back. File and URI list targets do not cross this bridge. The package image needs no clipboard utility.
+
 Both permissions occupy one line, but only one binds a host path. Read the requested capability, the paths and the brokered services together.
 
 ## Some permissions are wider than their name
@@ -20,7 +22,7 @@ Most permissions expose one resource. A few change a whole namespace or grant a 
 
 `deviceAll` binds `/dev/` whole, and eleven device permissions below it stop meaning anything while it is on.
 
-Five other permissions bind no path at all, which makes them easy to skip over. `network` adds internet and LAN access to a private namespace while host loopback stays blocked. `hostNetwork` shares the host network namespace, including localhost, and requires `network`. `process` shares the host process namespace, so the package sees processes outside the sandbox. `userNamespaces` lets the application build a nested sandbox, which browsers need. `asRoot` runs the process as uid 0 inside the container.
+Four other permissions bind no path at all, which makes them easy to skip over. `hostNetwork` shares the host network namespace, including localhost, and requires `network`. `process` shares the host process namespace, so the package sees processes outside the sandbox. `userNamespaces` lets the application build a nested sandbox, which browsers need. `asRoot` runs the process as uid 0 inside the container.
 
 Take the package you want to ship and ask which capabilities it cannot work without, then grant the narrowest form available. That question is what a manifest review is made of.
 

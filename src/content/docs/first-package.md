@@ -1,6 +1,6 @@
 ---
 title: Your first package
-description: Create a v2 package repository, build its image, and test it in an isolated store.
+description: Create a manifest v3 package, build its image, and test it in an isolated store.
 tags: [packaging, tutorial]
 section: packages
 order: 10
@@ -37,12 +37,12 @@ Build and publish the image with any OCI registry workflow.
 cpak init \
   --name "Hello cpak" \
   --description "Small package used to verify a cpak setup." \
-  --version 1.0.0 \
-  --image ghcr.io/your-name/hello-cpak:main \
+  -v 1.0.0 \
+  --image ghcr.io/your-name/hello-cpak@sha256:0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef \
   --binary /usr/bin/hello-cpak
 ```
 
-The generated manifest uses version `2.0` and includes the current schema URL. This command-line example uses an empty `override` because it needs no host resources.
+Replace the example digest with the digest returned after publishing the image. The generated manifest uses version `3.0`, includes the current schema URL, and leaves `override` empty because the command needs no host resources.
 
 ## Validate before running
 

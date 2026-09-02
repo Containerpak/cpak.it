@@ -1,10 +1,11 @@
 ---
 title: Compatibilidad de host
-description: Linux, arquitectura, kernel, filesystem, escritorio, inicio y GPU requisitos para el runtime v2.
+description: Requisitos de Linux, arquitectura, kernel, filesystem, escritorio, init y GPU del runtime actual.
 tags: [host, compatibility, requirements]
 section: start
 order: 40
 ---
+
 # Compatibilidad de host
 
 cpak se ejecuta en Linux y utiliza las instalaciones del kernel directamente. El binario de runtime estático se publica para `amd64` y `arm64`. El soporte de la arquitectura de la aplicación también depende de la imagen OCI publicada por cada paquete.
@@ -34,7 +35,7 @@ Los sistemas de archivos de red, los montajes FUSE existentes y las configuracio
 
 ## Sesiones de escritorio
 
-cpak puede exponer audio, accesibilidad, impresión y dispositivos seleccionados compatibles con Wayland, X11, PulseAudio. El manifest de la aplicación debe habilitar el recurso coincidente y ese recurso debe existir en la sesión del usuario.
+cpak puede exponer Wayland, compatibilidad X11 aislada, audio compatible con PulseAudio, accesibilidad, impresión, Bluetooth y dispositivos seleccionados. El manifest de la aplicación debe habilitar el recurso correspondiente. `displayX11` requiere Xwayland en una sesión Wayland o Xephyr en una sesión X11. `bluetooth` requiere BlueZ y el bus del sistema del host. Los paquetes que no solicitan estas funciones no reciben los accesos correspondientes.
 
 Los paquetes sin cabeza pueden omitir los sockets de escritorio. Pruebe los paquetes de escritorio en cada path de visualización que declaren.
 
@@ -52,4 +53,5 @@ Seccomp es requerido por la política de runtime. Landlock agrega restricciones 
 
 Los dispositivos DRI cubren pilas de gráficos comunes basadas en Mesa. NVIDIA el soporte resuelve los archivos del driver del espacio de usuario del host en el inicio. Pruebe la transferencia del driver en el hardware de destino y la release del driver del host.
 
-> [!NOTE] Lanzamiento experimental > cpak v2 se lanza como una opción de distribución experimental. El informe de compatibilidad le indica lo que el runtime puede demostrar localmente; La cobertura de hardware específica del paquete está documentada en cada paquete.
+> [!NOTE] Cobertura específica del paquete
+> cpak 2.10 es la serie estable actual. El informe de compatibilidad indica lo que el runtime puede verificar localmente; cada paquete documenta sus propios requisitos de hardware y arquitecturas probadas.

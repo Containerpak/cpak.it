@@ -20,14 +20,14 @@ Un alias è un collegamento locale per un'origine installata. Gli aggiornamenti 
 
 `cpak.json` è il contratto del pacchetto. Manifest v3 dichiara:
 
-- Metadati del pacchetto e image OCI
+- Metadati del pacchetto e un'immagine OCI fissata a digest
 - binari esportati e voci desktop
 - dipendenze cpak richieste e componenti aggiuntivi opzionali
 - Comportamento del ciclo di vita, incluso idle
-- Permessi per filesystem, dispositivi, socket, broker, rete e risorse
+- Permessi per filesystem, dispositivi, servizi desktop, broker, rete e risorse
 - Artefatti verificati da installare durante l'installazione del pacchetto
 
-I campi sconosciuti e le funzionalità v2 non supportate non superano la convalida manifest.
+La validazione rifiuta campi sconosciuti, tag immagine modificabili e socket host grezzi rimossi.
 
 ## Immagine e layer
 

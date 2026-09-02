@@ -19,6 +19,12 @@ Manifest v3 es el contrato JSON estricto actual. Fija la imagen OCI mediante un 
   "version": "1.0.0",
   "image": "ghcr.io/example/example@sha256:0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef",
   "binaries": ["/usr/bin/example"],
+  "services": {
+    "server": {
+      "binary": "/usr/bin/example",
+      "arguments": ["serve", "--port", "3000"]
+    }
+  },
   "desktop_entries": ["/usr/share/applications/example.desktop"],
   "dependencies": [],
   "addons": [],
@@ -43,6 +49,7 @@ Manifest v3 es el contrato JSON estricto actual. Fija la imagen OCI mediante un 
 | `version`          | No        | La release de la aplicación se muestra con cpak.                                         |
 | `image`            | Sí        | Referencia de imagen OCI fijada con `@sha256:`.                                          |
 | `binaries`         | Sí        | Una o más paths ejecutables absolutas.                                                   |
+| `services`         | No        | Comandos de aplicación con nombre basados en binarios exportados.                        |
 | `desktop_entries`  | No        | paths absolutas a `.desktop` archivos en la imagen.                                      |
 | `sessions`         | No        | Sesiones de escritorio o quiosco ofrecidas a un administrador de pantalla.               |
 | `dependencies`     | No        | Requerido cpak orígenes del paquete.                                                     |
@@ -72,6 +79,21 @@ Cada dependencia necesita un origen. Un branch, un release o un commit puede sel
 ```
 
 Utilice solo un selector de fuente por dependencia. El archivo de bloqueo registra el manifest de dependencia resuelto, su hash y el resumen de imagen OCI inmutable.
+
+## Servicios de aplicación
+
+El objeto opcional `services` asigna un nombre estable a un comando de aplicación:
+
+```json
+"services": {
+  "server": {
+    "binary": "/usr/bin/example",
+    "arguments": ["serve", "--port", "3000"]
+  }
+}
+```
+
+Cada `binary` también debe aparecer en la matriz `binaries` principal. Los argumentos se pasan como valores independientes sin interpretación de shell. Ejecute un comando declarado con `cpak run --service server github.com/example/app` o manténgalo activo con `cpak service enable`. Consulte [Servicios de aplicación persistentes](/docs/services) para reinicio, dependencias, arranque, environment, secretos y observabilidad.
 
 ## Complementos
 

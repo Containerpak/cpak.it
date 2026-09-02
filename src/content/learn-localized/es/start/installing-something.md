@@ -19,7 +19,7 @@ The following will be exported:
   - (desktop entry) /usr/share/applications/vlc.desktop
 
 The following permissions will be granted:
-  - Display: isolated X11 compatibility display, Wayland display and compositor-mediated clipboard
+  - Display: isolated X11 compatibility display, Wayland
   - Audio: PulseAudio
   - Devices: graphics, shared memory
   - Files: xdg-videos, read only
@@ -28,7 +28,7 @@ The following permissions will be granted:
 Do you want to continue? [y/N]
 ```
 
-El prompt enumera únicamente los accesos solicitados por el paquete. Una capacidad ausente de la lista no se concede. Los permisos tipados también muestran su alcance, como la ruta exacta, el modo de acceso o la llamada permitida a un servicio de sesión.
+El prompt enumera únicamente los accesos solicitados por el package. Una capacidad ausente de la lista no se concede. Los permisos tipados también muestran su alcance, como la ruta exacta, el modo de acceso o la llamada permitida a un servicio de sesión.
 
 La decisión se toma aquí. Después, la aplicación recibe exactamente lo que indicaba la lista y no vuelve a pedir confirmación.
 
@@ -46,6 +46,6 @@ La decisión local sustituye la solicitud del autor para esta instalación. En u
 
 ## Dónde se instala
 
-Todo queda dentro del directorio personal. No hay instalación para todo el sistema, no se necesita root y no se escribe nada en `/usr`. Al eliminar un paquete se borran sus archivos de runtime y la integración con el escritorio, pero su directorio personal privado se conserva para una instalación posterior. Use `cpak remove --purge` para eliminar también los datos persistentes.
+Todo queda dentro del directorio personal. No hay instalación para todo el sistema, no se necesita root y no se escribe nada en `/usr`. Al eliminar un package se borran sus archivos runtime y la integración con el escritorio, pero su home privada se conserva para una instalación posterior. Use `cpak remove --purge` para eliminar también los datos persistentes.
 
 Ese es todo el flujo: leer una lista, aceptarla o restringirla, y eliminar el package de forma limpia cuando ya no se necesita. El resto del curso explica cómo leer bien esa lista, porque el nombre de un permiso no basta para entender lo que abre.

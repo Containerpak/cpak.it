@@ -29,8 +29,8 @@ make all
 ```bash
 go test -race ./...
 go vet ./...
-go run . gen-schema --output /tmp/manifest-v2.json
-diff -u schema/manifest-v2.json /tmp/manifest-v2.json
+go run . gen-schema --output /tmp/manifest-v3.json
+diff -u schema/manifest-v3.json /tmp/manifest-v3.json
 ```
 
 The generated schema must match the committed schema. Add tests beside changed behavior. Runtime changes must cover successful commands, failure paths, and store recovery.
@@ -43,13 +43,13 @@ The generated schema must match the committed schema. Add tests beside changed b
 
 Inspect every reported capability. Namespace, mount, Landlock, seccomp, cgroup, display, audio, init, and host bridge behavior depends on the host. Follow unit tests with a runtime check on a supported host.
 
-For a launch change, install or test a real package through the locally built cpak binary. For a package change, build the image in its GitHub workflow and test the published result through cpak.
+For a launch change, install or test a real package through the locally built cpak binary. For a manifest change, validate and test the package repository. For an image change, build it through the `Containerpak/images` workflow and test the published result through cpak.
 
 ## Work on packages
 
-Each official package has its own repository under the Containerpak organization. The package repository owns `cpak.json`, its image recipe, tests, and application-specific integration.
+Each official package has its own repository under the Containerpak organization. The package repository owns `cpak.json`, package and Store documentation, its signing workflow, and manifest-specific tests. `Containerpak/images` owns the image recipes and publishes the shared OCI images.
 
-Application-specific workarounds belong in the package repository. Shared ABI content belongs in a base image or dependency when several packages use it.
+Application metadata and permissions belong in the package repository. Runtime files and image build workarounds belong in `Containerpak/images`. Shared ABI content belongs in a base image or dependency when several packages use it.
 
 ## Work on the website
 
@@ -62,7 +62,7 @@ pnpm build
 pnpm dev
 ```
 
-Check desktop and mobile layouts for any visual change. Documentation code examples must match the current v2 CLI and schema.
+Check desktop and mobile layouts for any visual change. Documentation code examples must match the current CLI and manifest v3 schema.
 
 ## Keep changes focused
 

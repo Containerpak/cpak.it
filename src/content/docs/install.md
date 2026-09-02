@@ -1,6 +1,6 @@
 ---
 title: Install cpak
-description: Install the v2 command, check the host, and understand where cpak keeps its data.
+description: Install the current cpak runtime, check the host, and understand where cpak keeps its data.
 tags: [install, host]
 section: start
 order: 10

@@ -1,6 +1,6 @@
 ---
 title: CLI reference
-description: The current v2 commands for packages, instances, development, storage, and system integration.
+description: The current commands for packages, instances, development, storage, and system integration.
 tags: [cli, reference]
 section: operations
 order: 10
@@ -8,7 +8,7 @@ order: 10
 
 # CLI reference
 
-Run `cpak <command> --help` for the flags accepted by the installed build. The tables below describe the current v2 command surface.
+Run `cpak <command> --help` for the flags accepted by the installed build. The tables below describe the current user-facing 2.12 command surface.
 
 ## Package lifecycle
 
@@ -37,10 +37,25 @@ permissions are outside the purge scope.
 | `shell`       | Open an interactive shell in a package instance.                      |
 | `logs`        | Print or follow instance output.                                      |
 | `stop`        | Stop a running instance.                                              |
-| `service`     | Start the local cpak service.                                         |
+| `ps`          | List runtime, process, health, age, and listener state.               |
+| `status`      | Show runtime state for one package or named instance.                 |
+| `inspect`     | Return complete runtime state as JSON.                                |
+| `health`      | Check runtime health and fail when it is not ready.                   |
+| `service`     | Manage persistent application services and boot restoration.          |
 | `orchestrate` | Start several applications with ordering, health checks, and retries. |
+| `environment` | Manage named environments with persistent writable state.             |
 
 Use `--instance` on supported commands to select a named instance of the same package.
+
+`cpak environment` has its own `create`, `list`, `inspect`, `shell`, `stop`,
+`delete`, `policy`, `permissions`, `processes`, `signals`, and `signal` actions.
+Read [Persistent environments](/docs/environments) before using a distribution
+package as a mutable workspace.
+
+`cpak service` provides `enable`, `disable`, `remove`, `start`, `stop`,
+`restart`, `list`, `status`, `logs`, `setup`, and `restore`. Read [Persistent
+application services](/docs/services) for declared commands, restart policies,
+dependencies, boot adapters, environment files, and secrets.
 
 ## Package development
 
@@ -61,7 +76,7 @@ Use `--instance` on supported commands to select a named instance of the same pa
 | Command    | Purpose                                                           |
 | ---------- | ----------------------------------------------------------------- |
 | `addon`    | Inspect addons and slots, select providers, or change activation. |
-| `override` | Replace one local permission value.                               |
+| `override` | Replace one local permission value or edit the complete JSON.     |
 | `grant`    | List, manage, or revoke persistent file grants.                   |
 | `doctor`   | Report host runtime capabilities.                                 |
 | `audit`    | Check local store integrity and optionally repair it.             |
@@ -75,10 +90,11 @@ remain available for explicit addon choices. JSON output is available for
 
 ## Storage
 
-| Command | Purpose                                              |
-| ------- | ---------------------------------------------------- |
-| `dedup` | Deduplicate equal files below a selected path.       |
-| `gc`    | Report or delete unreferenced layers and cache data. |
+| Command   | Purpose                                                        |
+| --------- | -------------------------------------------------------------- |
+| `storage` | Inspect, migrate, verify, or repair the active storage driver. |
+| `dedup`   | Deduplicate equal files below a selected path.                 |
+| `gc`      | Report or delete unreferenced layers and cache data.           |
 
 Run `cpak gc --json` before `cpak gc --apply` when automating cleanup.
 
@@ -92,3 +108,23 @@ Run `cpak gc --json` before `cpak gc --apply` when automating cleanup.
 Use `cpak auth login`, `logout`, `list`, or `status` to manage private package access. Read [Private GitHub repositories and OCI registries](/docs/registry-authentication) before adding a separate token host.
 
 `cpak self-update --check` reports an available release and leaves the installed binary unchanged. Package-manager builds keep the version notice and delegate replacement to the system package manager. See [Update the cpak runtime](/docs/runtime-updates).
+
+## System integration and distribution
+
+| Command            | Purpose                                                            |
+| ------------------ | ------------------------------------------------------------------ |
+| `system`           | Install or inspect the system authority and its enforced policies. |
+| `session`          | Manage desktop and kiosk login sessions from installed packages.   |
+| `host-action`      | Request one typed operation from an allowed host provider.         |
+| `discover`         | Provide signed Store data and package actions to software centers. |
+| `verify-signature` | Verify a publisher signature against one resolved package state.   |
+
+`discover` is the machine interface used by software-center integrations. Use
+the normal `install`, `remove`, and Store interfaces for interactive package
+management. `system` and `session` may require Polkit confirmation; see
+[System integration](/docs/system-integration) and [Desktop and kiosk
+sessions](/docs/desktop-sessions).
+
+`host-action` is normally called by a package shim rather than by a person.
+Its provider, action, and arguments remain subject to the package's effective
+policy. See [Host actions](/docs/host-actions).

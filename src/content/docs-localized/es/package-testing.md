@@ -15,12 +15,12 @@ Las pruebas de paquetes cubren el manifest, la imagen, los archivos exportados, 
 cpak validate cpak.json
 ```
 
-Esto rechaza campos desconocidos, releases de manifest no válidas, entradas de permisos con formato incorrecto, campos obligatorios faltantes y valores fuera del esquema v2.
+Esto rechaza campos desconocidos, releases de manifest no válidas, entradas de permisos con formato incorrecto, campos obligatorios faltantes y valores fuera del esquema v3.
 
 Genere el esquema actual directamente desde el runtime al comparar el editor o la validación de CI:
 
 ```bash
-cpak gen-schema --output manifest-v2.json
+cpak gen-schema --output manifest-v3.json
 ```
 
 ## Resolución reproducible

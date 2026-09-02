@@ -20,14 +20,14 @@ Un alias es un acceso directo local para un origen instalado. Las actualizacione
 
 `cpak.json` es el contrato del paquete. El manifest v3 declara:
 
-- metadatos del paquete y la imagen OCI
+- metadatos del paquete y una imagen OCI fijada por digest
 - binarios exportados y entradas de escritorio
 - requerido cpak dependencias y complementos opcionales
 - comportamiento del ciclo de vida inactivo
-- Permisos de filesystem, dispositivo, socket, intermediario, red y recursos.
+- permisos de filesystem, dispositivos, servicios de escritorio, broker, red y recursos
 - artefactos verificados que deben instalarse en el momento de la instalación del paquete
 
-Los campos desconocidos y las funciones v2 no compatibles no superan la validación del manifest.
+La validación rechaza los campos desconocidos, las tags de imagen modificables y los sockets directos del host que se eliminaron.
 
 ## Imagen y layers
 

@@ -1,6 +1,6 @@
 ---
 title: Referencia CLI
-description: Los comandos v2 actuales para paquetes, instancias, desarrollo, almacenamiento e integración de sistemas.
+description: Los comandos actuales para paquetes, instancias, desarrollo, almacenamiento e integración del sistema.
 tags: [cli, reference]
 section: operations
 order: 10
@@ -8,7 +8,7 @@ order: 10
 
 # referencia CLI
 
-Ejecute `cpak <command> --help` para los indicadores aceptados por la build instalada. Las tablas siguientes describen la superficie de comando v2 actual.
+Ejecute `cpak <command> --help` para consultar las opciones admitidas por la build instalada. Las tablas siguientes describen la interfaz de usuario de línea de comandos actual de la serie 2.12.
 
 ## Ciclo de vida del paquete
 
@@ -33,10 +33,26 @@ Instale, ejecute, elimine, detenga y acepte selectores de branch, liberación o 
 | `shell`       | Abra un shell interactivo en una instancia de paquete.                         |
 | `logs`        | Imprima o siga la salida de la instancia.                                      |
 | `stop`        | Detener una instancia en ejecución.                                            |
-| `service`     | Inicie el servicio local cpak.                                                 |
+| `ps`          | Enumere runtime, proceso, salud, tiempo y puertos en escucha.                  |
+| `status`      | Muestre el estado de un paquete o de una instancia con nombre.                 |
+| `inspect`     | Devuelva el estado completo en JSON.                                           |
+| `health`      | Compruebe la salud y falle cuando el runtime no esté listo.                    |
+| `service`     | Gestione servicios de aplicación persistentes y restauración al arrancar.      |
 | `orchestrate` | Inicie varias aplicaciones con pedidos, comprobaciones de estado y reintentos. |
+| `environment` | Administre entornos con nombre y estado escribible persistente.                |
 
 Utilice `--instance` en los comandos admitidos para seleccionar una instancia con nombre del mismo paquete.
+
+`cpak environment` ofrece las acciones `create`, `list`, `inspect`, `shell`,
+`stop`, `delete`, `policy`, `permissions`, `processes`, `signals` y `signal`.
+Lea [Entornos persistentes](/docs/environments) antes de usar un paquete de
+distribución como espacio de trabajo modificable.
+
+`cpak service` proporciona las acciones `enable`, `disable`, `remove`, `start`,
+`stop`, `restart`, `list`, `status`, `logs`, `setup` y `restore`. Lea [Servicios
+de aplicación persistentes](/docs/services) para conocer comandos declarados,
+políticas de reinicio, dependencias, adaptadores de arranque, archivos
+environment y secretos.
 
 ## Desarrollo de paquetes
 
@@ -68,10 +84,11 @@ Utilice `cpak addon slots` y `cpak addon providers` para inspeccionar el estado 
 
 ## Almacenamiento
 
-| Dominio | Objetivo                                                     |
-| ------- | ------------------------------------------------------------ |
-| `dedup` | Deduplicar archivos iguales debajo de una path seleccionada. |
-| `gc`    | Informar o eliminar layers sin referencia y datos de caché.  |
+| Dominio   | Objetivo                                                            |
+| --------- | ------------------------------------------------------------------- |
+| `storage` | Inspeccione, migre, verifique o repare el driver de almacenamiento. |
+| `dedup`   | Deduplicar archivos iguales debajo de una path seleccionada.        |
+| `gc`      | Informar o eliminar layers sin referencia y datos de caché.         |
 
 Ejecute `cpak gc --json` antes de `cpak gc --apply` cuando automatice la limpieza.
 
@@ -85,3 +102,23 @@ Ejecute `cpak gc --json` antes de `cpak gc --apply` cuando automatice la limpiez
 Utilice `cpak auth login`, `logout`, `list` o `status` para administrar el acceso privado al paquete. Lea [Repositorios privados de GitHub y registros OCI](/docs/registry-authentication) antes de agregar un host de token independiente.
 
 `cpak self-update --check` informa un release disponible y deja el binario instalado sin cambios. Las builds del administrador de paquetes mantienen el aviso de release y delegan el reemplazo al administrador de paquetes del sistema. Consulte [Actualizar el runtime cpak](/docs/runtime-updates).
+
+## Integración del sistema y distribución
+
+| Dominio            | Objetivo                                                                     |
+| ------------------ | ---------------------------------------------------------------------------- |
+| `system`           | Instale o inspeccione la autoridad del sistema y sus políticas aplicadas.    |
+| `session`          | Administre sesiones de escritorio y quiosco de los paquetes instalados.      |
+| `host-action`      | Solicite una operación tipada a un provider host permitido.                  |
+| `discover`         | Proporcione datos firmados de la Store y acciones a los centros de software. |
+| `verify-signature` | Verifique la firma del publisher contra un estado de paquete resuelto.       |
+
+`discover` es la interfaz de máquina que usan las integraciones con centros de
+software. Use los comandos normales `install`, `remove` y la Store para la
+gestión interactiva. `system` y `session` pueden pedir confirmación de Polkit;
+consulte [Integración del sistema](/docs/system-integration) y [Sesiones de
+escritorio y quiosco](/docs/desktop-sessions).
+
+`host-action` suele ser llamado por un shim del paquete y no por una persona.
+El provider, la acción y los argumentos siguen sujetos a la política efectiva
+del paquete. Consulte [Acciones host](/docs/host-actions).

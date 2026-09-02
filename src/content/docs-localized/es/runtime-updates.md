@@ -5,6 +5,7 @@ tags: [updates, desktop, packaging]
 section: operations
 order: 22
 ---
+
 # Actualizar el runtime cpak
 
 cpak comprueba la última release oficial GitHub como máximo una vez al día cuando se inicia un comando. El comando solicitado continúa cuando el punto final de actualización no está disponible.
@@ -55,7 +56,7 @@ Configure `CPAK_OPTS_FILE` para probar un archivo de configuración específico.
 Cree un binario propiedad del administrador de paquetes con:
 
 ```bash
-make VERSION=v2.1.2 SELF_UPDATE_MODE=managed DIALOG_BACKEND=auto
+make VERSION=v2.10.4 SELF_UPDATE_MODE=managed DIALOG_BACKEND=auto
 ```
 
 Las builds administradas continúan verificando el inicio oficial. La CLI y el aviso de escritorio identifican la release disponible y dirigen al usuario al responsable del paquete. El reemplazo binario directo está deshabilitado.

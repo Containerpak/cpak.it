@@ -19,6 +19,9 @@ L'immagine non decide cosa può raggiungere l'applicazione. Un programma che ten
   "version": "3.2.0",
   "image": "ghcr.io/example/fotoritocco@sha256:0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef",
   "binaries": ["/usr/bin/fotoritocco"],
+  "services": {
+    "server": { "binary": "/usr/bin/fotoritocco", "arguments": ["serve"] }
+  },
   "idle_time": 0,
   "override": {
     "socketWayland": true,
@@ -26,6 +29,8 @@ L'immagine non decide cosa può raggiungere l'applicazione. Un programma che ten
   }
 }
 ```
+
+`binaries` elenca i comandi avviabili da una persona o da una voce desktop. `services` può assegnare a uno di quei binari un vettore di argomenti con nome per `cpak run --service` e la gestione dei servizi persistenti. La dichiarazione non rende il comando persistente: chi gestisce la macchina lo decide con `cpak service enable`.
 
 Considera l'override una promessa, non una semplice configurazione. cpak lo mostra riga per riga prima di scaricare il pacchetto. Ogni accesso aggiunto deve quindi essere comprensibile e giustificato.
 

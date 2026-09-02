@@ -50,11 +50,11 @@ The login command reads the package manifest, parses its image reference, and bi
 
 The credential cannot authenticate another package origin or another repository on the same registry. The Secret Service item also binds the username and every approved token host, so editing public metadata cannot retarget an existing secret.
 
-## Desktop storage
+## Credential storage
 
-Interactive login stores the secret through the desktop Secret Service D-Bus API. Public binding metadata is written to the cpak configuration directory with mode `0600`. Passwords and tokens are not written to that file.
+Interactive login uses Secret Service when the desktop provides it. On a host without D-Bus or a Secret Service provider, cpak stores the credential in its private configuration directory. The directory uses mode `0700` and each managed secret uses mode `0600`. The public binding records the managed path, not the password or token.
 
-cpak talks to Secret Service directly and keeps credential bindings separate from Docker, Podman, Buildah, and container credential-helper configuration.
+This fallback needs no keyring service. cpak keeps its bindings separate from Docker, Podman, Buildah, and container credential-helper configuration.
 
 List bindings or inspect one origin:
 

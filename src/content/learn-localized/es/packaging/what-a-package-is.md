@@ -19,6 +19,9 @@ Un archivo JSON breve junto a la imagen. Indica el nombre de la aplicación, los
   "version": "3.2.0",
   "image": "ghcr.io/example/fotoritocco@sha256:0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef",
   "binaries": ["/usr/bin/fotoritocco"],
+  "services": {
+    "server": { "binary": "/usr/bin/fotoritocco", "arguments": ["serve"] }
+  },
   "idle_time": 0,
   "override": {
     "socketWayland": true,
@@ -26,6 +29,8 @@ Un archivo JSON breve junto a la imagen. Indica el nombre de la aplicación, los
   }
 }
 ```
+
+`binaries` enumera los comandos que puede iniciar una persona o una entrada de escritorio. `services` puede asignar a uno de esos binarios un vector de argumentos con nombre para `cpak run --service` y la gestión de servicios persistentes. La declaración no hace persistente el comando; quien administra la máquina lo decide con `cpak service enable`.
 
 Lea ese override como una promesa, no como configuración. Se muestra a quien instala el package, línea por línea, antes de descargar nada. Cada línea añadida es una línea que alguien puede leer, valorar y rechazar.
 

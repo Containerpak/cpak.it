@@ -1,19 +1,20 @@
 ---
-title: Canales de inicio
+title: Canales de lanzamiento
 description: Elija builds cpak nocturnas, continuas o versionadas y comprenda lo que promete cada canal.
 tags: [releases, versions, ci]
 section: operations
 order: 60
 ---
-# Canales de inicio
+
+# Canales de lanzamiento
 
 cpak publica archivos binarios estáticos `cpak` y `cpak-storaged` Linux además de bases de instaladores de Store para `amd64` y `arm64`. Cada build publicada incluye SHA-256 sumas de verificación, un SPDX JSON SBOM y GitHub certificaciones para los binarios y SBOM.
 
 ## Continuo
 
-La [liberación continua](https://github.com/Containerpak/cpak/releases/tag/continuous) sigue a impulsos exitosos a la branch `v2`. Es la fuente de instalación actual para desarrolladores y el inicio experimental cpak.
+La [release Continuous](https://github.com/Containerpak/cpak/releases/tag/continuous) sigue los pushes correctos a la branch `v2`. Es un canal prerelease para probar cambios antes de la siguiente versión estable.
 
-Continuo recibe los cambios v2 completos antes de un inicio versionado. Lea el estado de commit y workflow antes de usarlo en datos de aplicaciones irremplazables.
+Continuous recibe los cambios terminados de la branch antes de una release versionada. Revise el commit y el estado del workflow antes de usarlo con datos de aplicaciones irremplazables.
 
 ## Nocturno
 
@@ -23,7 +24,7 @@ El inicio nocturno se produce mediante la build programada o una ejecución manu
 
 ## Lanzamientos versionados
 
-Las tags que coinciden con `v*` publican activos de release versionados y notas de release generadas. Una release versionada es la referencia que se utiliza cuando un proyecto necesita un release cpak revisable y con nombre.
+Las tags que coinciden con `v*` publican assets versionados y notas de release generadas. La última versión estable es la fuente de instalación recomendada. Fije una versión concreta cuando un proyecto necesite un runtime cpak identificable y revisable.
 
 El binario informa un identificador de desarrollo como `0.0.0-<commit>` cuando se crea desde un branch. Las builds etiquetadas informan su release de inicio.
 
@@ -43,7 +44,7 @@ El instalador verifica ambos archivos binarios de runtime para la arquitectura s
 Los empaquetadores construyen con `SELF_UPDATE_MODE=managed`. Esto mantiene el aviso de release y deshabilita el reemplazo directo:
 
 ```bash
-make VERSION=v2.1.2 SELF_UPDATE_MODE=managed
+make VERSION=v2.10.4 SELF_UPDATE_MODE=managed
 ```
 
 La release de inicio y el modo de actualización se compilan en el binario. No parchee el comando de runtime ni elimine la verificación de actualización en una receta de paquete.

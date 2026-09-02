@@ -12,9 +12,9 @@ cpak publishes static `cpak` and `cpak-storaged` Linux binaries plus Store insta
 
 ## Continuous
 
-The [continuous release](https://github.com/Containerpak/cpak/releases/tag/continuous) follows successful pushes to the `v2` branch. It is the current install source for developers and the cpak experimental launch.
+The [continuous release](https://github.com/Containerpak/cpak/releases/tag/continuous) follows successful pushes to the `v2` branch. It is a prerelease channel for testing changes before the next versioned release.
 
-Continuous receives completed v2 changes before a versioned release. Read the commit and workflow status before using it on irreplaceable application data.
+Continuous receives completed branch changes before a versioned release. Read the commit and workflow status before using it on irreplaceable application data.
 
 ## Nightly
 
@@ -24,7 +24,7 @@ Use nightly for early compatibility testing and automated coverage. Do not assum
 
 ## Versioned releases
 
-Tags matching `v*` publish versioned release assets and generated release notes. A versioned release is the reference to use when a project needs a named, reviewable cpak version.
+Tags matching `v*` publish versioned release assets and generated release notes. The latest stable versioned release is the recommended installation source. Pin a named version when a project needs a reviewable cpak runtime.
 
 The binary reports a development identifier such as `0.0.0-<commit>` when built from a branch. Tagged builds report their release version.
 
@@ -44,7 +44,7 @@ The installer verifies both runtime binaries for the selected architecture again
 Packagers build with `SELF_UPDATE_MODE=managed`. This keeps the version notice and disables direct replacement:
 
 ```bash
-make VERSION=v2.1.2 SELF_UPDATE_MODE=managed
+make VERSION=v2.10.4 SELF_UPDATE_MODE=managed
 ```
 
 The release version and update mode are compiled into the binary. Do not patch the runtime command or remove the update check in a package recipe.

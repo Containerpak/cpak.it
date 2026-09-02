@@ -164,6 +164,24 @@ export const QUESTIONS: QuizQuestion[] = [
     ],
   },
   {
+    asks: "A host has no usable systemd user manager. What happens to an enabled cpak application service?",
+    choices: [
+      {
+        text: "cpak selects cron or XDG autostart and keeps the same service definition",
+        correct: true,
+        why: "Boot activation is an adapter. The cpak service manager and application launch path do not depend on systemd or D-Bus.",
+      },
+      {
+        text: "The service is rejected because persistence requires systemd",
+        why: "systemd is one available boot adapter, not a runtime dependency.",
+      },
+      {
+        text: "The package must request hostNetwork before it can restart",
+        why: "Network permissions do not select or enable a boot adapter.",
+      },
+    ],
+  },
+  {
     asks: "Verified launch finds that a prepared checkout contradicts its recorded layer state while enforcement is off. What happens?",
     choices: [
       {

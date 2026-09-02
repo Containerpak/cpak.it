@@ -46,9 +46,27 @@ Add `--health` when each started application can answer a health command. Use `-
 
 ## Service lifecycle
 
-`cpak service` starts the local cpak service. Run it under the service manager available in the user session.
+`cpak service enable` records an application command, starts it, and installs the best available boot adapter:
 
-Keep the service in the same user environment as desktop applications so display, audio, XDG paths, and the system broker resolve the intended session.
+```bash
+cpak service enable api github.com/example/app \
+  --service server \
+  --restart on-failure \
+  --health "/usr/bin/example health"
+```
+
+The cpak service manager does not require systemd or D-Bus. It uses systemd user services, cron, or XDG autostart according to host capabilities and reports when restoration is available only after login. Read [Persistent application services](/docs/services) for boot behavior, dependencies, environment files, secrets, and lifecycle commands.
+
+Use the runtime status commands in scripts:
+
+```bash
+cpak ps --json
+cpak status github.com/example/app --instance api --json
+cpak inspect github.com/example/app --instance api
+cpak health github.com/example/app --instance api --json
+```
+
+`cpak health` returns a failing exit status when the selected runtime is stopped, unhealthy, or still starting.
 
 ## Logs and instances
 

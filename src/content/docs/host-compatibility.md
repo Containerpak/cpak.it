@@ -1,6 +1,6 @@
 ---
 title: Host compatibility
-description: Linux, architecture, kernel, filesystem, desktop, init, and GPU requirements for the v2 runtime.
+description: Linux, architecture, kernel, filesystem, desktop, init, and GPU requirements for the current runtime.
 tags: [host, compatibility, requirements]
 section: start
 order: 40
@@ -35,7 +35,7 @@ Network filesystems, existing FUSE mounts, and restricted user namespace configu
 
 ## Desktop sessions
 
-cpak can expose Wayland, isolated X11 compatibility, PulseAudio-compatible audio, accessibility, printing, Bluetooth, and selected devices. The application manifest must enable the matching resource. `displayX11` needs Xwayland on a Wayland session or Xephyr on an X11 session. `bluetooth` needs the host BlueZ service and its system bus. Packages that request neither feature do not gain those host requirements.
+cpak can expose Wayland, isolated X11 compatibility, PulseAudio-compatible audio, accessibility, printing, Bluetooth, and selected devices. The application manifest must enable the matching resource. `displayX11` needs Xwayland on a Wayland session or Xephyr on an X11 session. Bluetooth is available when the host provides BlueZ and its system bus; a missing service does not block the package launch. Packages that request neither feature do not gain those host requirements.
 
 Headless packages can omit desktop sockets. Test desktop packages on each display path they declare.
 
@@ -53,5 +53,5 @@ Seccomp is required by the runtime policy. Landlock adds path restrictions on ke
 
 DRI devices cover common Mesa-based graphics stacks. NVIDIA support resolves host userspace driver files at launch. Test driver passthrough on the target hardware and host driver version.
 
-> [!NOTE] Experimental release
-> cpak v2 is launching as an experimental distribution option. The compatibility report tells you what the runtime can prove locally; package-specific hardware coverage is documented by each package.
+> [!NOTE] Package-specific coverage
+> cpak 2.10 is the current stable release line. The compatibility report tells you what the runtime can prove locally; each package documents its own hardware requirements and tested architectures.

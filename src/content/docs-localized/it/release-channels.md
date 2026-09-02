@@ -5,15 +5,16 @@ tags: [releases, versions, ci]
 section: operations
 order: 60
 ---
+
 # Canali di rilascio
 
 cpak pubblica i binari statici `cpak` e `cpak-storaged` Linux oltre alle basi di installazione dello Store per `amd64` e `arm64`. Ogni build pubblicata include checksum SHA-256, un SPDX JSON SBOM e attestati GitHub per i file binari e SBOM.
 
 ## Continuo
 
-Il [rilascio continuo](https://github.com/Containerpak/cpak/releases/tag/continuous) segue i push riusciti al ramo `v2`. È l'attuale fonte di installazione per gli sviluppatori e l'avvio sperimentale di cpak.
+Il [rilascio Continuous](https://github.com/Containerpak/cpak/releases/tag/continuous) segue i push riusciti sul ramo `v2`. È un canale prerelease per provare le modifiche prima della successiva versione stabile.
 
-Continuous riceve le modifiche v2 completate prima di un rilascio con versione. Leggere lo commit e lo stato del flusso di lavoro prima di utilizzarlo su dati applicativi insostituibili.
+Continuous riceve le modifiche completate sul ramo prima di un rilascio con versione. Controlla il commit e lo stato del workflow prima di usarlo con dati applicativi insostituibili.
 
 ## Notte
 
@@ -23,7 +24,7 @@ Utilizzare ogni notte per test di compatibilità precoci e copertura automatizza
 
 ## Rilasci con versione
 
-I tag corrispondenti a `v*` pubblicano risorse di rilascio con versione e note di rilascio generate. Una versione con versione è il riferimento da utilizzare quando un progetto necessita di una versione cpak denominata e revisionabile.
+I tag che corrispondono a `v*` pubblicano asset con versione e note generate. L'ultima versione stabile è la sorgente di installazione consigliata. Fissa una versione specifica quando un progetto richiede un runtime cpak identificabile e revisionabile.
 
 Il binario riporta un identificatore di sviluppo come `0.0.0-<commit>` quando viene creato da un ramo. Le build contrassegnate riportano la loro versione di rilascio.
 
@@ -43,7 +44,7 @@ Il programma di installazione verifica entrambi i file binari runtime per l'arch
 I packager creano con `SELF_UPDATE_MODE=managed`. Ciò mantiene l'avviso sulla versione e disabilita la override diretta:
 
 ```bash
-make VERSION=v2.1.2 SELF_UPDATE_MODE=managed
+make VERSION=v2.10.4 SELF_UPDATE_MODE=managed
 ```
 
 La versione di rilascio e la modalità di aggiornamento sono compilate nel file binario. Non applicare patch al comando runtime né rimuovere il controllo degli aggiornamenti in una ricetta del pacchetto.

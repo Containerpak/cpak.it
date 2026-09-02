@@ -5,6 +5,7 @@ tags: [faq, concepts]
 section: project
 order: 30
 ---
+
 # Preguntas frecuentes
 
 ## ¿cpak necesita Docker o Podman?
@@ -61,4 +62,4 @@ Sí. cpak conserva la release anterior del paquete instalado para `cpak rollback
 
 ## ¿Es cpak estable?
 
-cpak v2 se lanza como una opción experimental. Se prueban los flujos principales de transacciones, sandbox, almacenamiento, paquetes, SDK y escritorio, mientras que la cobertura más amplia de hardware y distribución continúa creciendo.
+cpak 2.10 es la serie estable actual. Los flujos de transacciones, sandbox, almacenamiento, paquetes, SDK, escritorio y entornos tienen cobertura automatizada. El comportamiento relacionado con el hardware sigue dependiendo del kernel, los controladores, la sesión de escritorio y los dispositivos disponibles en el host. Ejecute `cpak doctor` antes del despliegue.

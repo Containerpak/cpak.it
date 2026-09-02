@@ -15,12 +15,12 @@ Il test del pacchetto riguarda manifest, image, file esportati, comportamento di
 cpak validate cpak.json
 ```
 
-Vengono rifiutati campi sconosciuti, versioni manifest non valide, voci di permessi non valide, campi obbligatori mancanti e valori esterni allo schema v2.
+Vengono rifiutati campi sconosciuti, versioni manifest non valide, voci di permessi non valide, campi obbligatori mancanti e valori esterni allo schema v3.
 
 Genera lo schema corrente direttamente da runtime durante il confronto dell'editor o della convalida CI:
 
 ```bash
-cpak gen-schema --output manifest-v2.json
+cpak gen-schema --output manifest-v3.json
 ```
 
 ## Risoluzione riproducibile
