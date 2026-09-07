@@ -5,6 +5,7 @@ tags: [integrity, security, sandbox]
 section: runtime
 order: 45
 ---
+
 # Lanzamiento verificado
 
 Una aplicación instalada es un conjunto de layers, una configuración y un conjunto de permisos. Todo reside en una Store que pertenece al usuario, lo que significa que cualquier cosa en la máquina que se esté ejecutando puede ser modificada por ese usuario, y hasta ahora nada se habría dado cuenta. El inicio verificado cierra eso: cpak registra qué es una aplicación cuando se instala y se niega a iniciarla cuando lo que contiene la Store ya no coincide.
@@ -77,6 +78,23 @@ cpak audit --backfill-bindings
 ```
 
 Un reabastecimiento registra lo que hay en el disco en este momento. No es verificación y el comando así lo dice.
+
+## Borrar el registro dejado por una eliminación
+
+Al eliminar una aplicación inscrita, su última generación y el estado del
+editor permanecen en el libro mayor del sistema. Esto impide instalar bajo el
+mismo origen una versión anterior o sin firmar. Si ya no se puede producir ese
+estado del editor, borre solo el registro de la eliminación antes de instalar la
+aplicación de nuevo:
+
+```bash
+cpak system clear-removal github.com/example/app
+```
+
+El comando muestra qué protección se descartará y solicita una contraseña de
+administrador. No cambia la política de confianza del host, el límite de
+permisos, la política de firmas, el nivel de aplicación ni un registro creado
+después de la eliminación.
 
 ## Lo que prueba la inscripción y lo que no
 

@@ -106,6 +106,39 @@ cpak environment signal --environment arch --pid 1234 --signal TERM
 
 The PID must belong to that environment. Supported signal names are listed by `cpak environment signals`; arbitrary numeric or unknown signals are rejected.
 
+## Export applications to the host desktop
+
+An environment can publish one of its applications to the host application
+menu. Create a JSON file with the visible name and the command to run inside the
+environment:
+
+```json
+{
+  "name": "Example",
+  "description": "Example application",
+  "command": "/usr/bin/example"
+}
+```
+
+Use the absolute `.desktop` path inside the environment as its application
+identifier:
+
+```bash
+cpak environment export-application --environment arch \
+  --application /usr/share/applications/example.desktop \
+  --application-data application.json
+cpak environment application-exports --environment arch
+```
+
+`application-exports` returns JSON. The optional `icon_png` field accepts a
+base64-encoded PNG. Remove the exported launcher without changing the
+environment:
+
+```bash
+cpak environment unexport-application --environment arch \
+  --application /usr/share/applications/example.desktop
+```
+
 ## Package-specific instructions
 
 Read the package page in the [cpak Store](/store/Distributions) before creating an environment. Distribution maintainers can publish a `STORE-README.md` beside `cpak.json` with the exact package manager, first-update command, login notes, and architecture limits for that release.

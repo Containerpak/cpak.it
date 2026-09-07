@@ -106,6 +106,38 @@ cpak environment signal --environment arch --pid 1234 --signal TERM
 
 El PID debe pertenecer a ese entorno. `cpak environment signals` enumera los nombres admitidos; se rechazan las señales numéricas arbitrarias o desconocidas.
 
+## Exporte aplicaciones al escritorio host
+
+Un entorno puede publicar una de sus aplicaciones en el menú de aplicaciones
+del host. Cree un archivo JSON con el nombre visible y el comando que se
+ejecutará dentro del entorno:
+
+```json
+{
+  "name": "Example",
+  "description": "Example application",
+  "command": "/usr/bin/example"
+}
+```
+
+Use la ruta `.desktop` absoluta dentro del entorno como identificador de la
+aplicación:
+
+```bash
+cpak environment export-application --environment arch \
+  --application /usr/share/applications/example.desktop \
+  --application-data application.json
+cpak environment application-exports --environment arch
+```
+
+`application-exports` devuelve JSON. El campo opcional `icon_png` acepta un PNG
+codificado en base64. Elimine el lanzador exportado sin modificar el entorno:
+
+```bash
+cpak environment unexport-application --environment arch \
+  --application /usr/share/applications/example.desktop
+```
+
 ## Instrucciones específicas del paquete
 
 Lea la página del paquete en la [cpak Store](/store/Distributions) antes de crear un entorno. Quien mantiene una distribución puede publicar un `STORE-README.md` junto a `cpak.json` con el gestor de paquetes, el primer comando de actualización, las notas de acceso y los límites de arquitectura exactos para esa release.

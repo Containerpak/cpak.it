@@ -62,4 +62,4 @@ Yes. cpak retains the previous installed package version for `cpak rollback`. Ap
 
 ## Is cpak stable?
 
-cpak 2.10 is the current stable release line. Transaction, sandbox, storage, package, SDK, desktop, and environment flows have automated coverage. Hardware-specific behavior still depends on the host kernel, drivers, desktop session, and available devices, so check `cpak doctor` before deployment.
+Use the latest stable release for production packages. Hardware-specific behavior depends on the host kernel, drivers, desktop session, and available devices, so run `cpak doctor` before deployment.

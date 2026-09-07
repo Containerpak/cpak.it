@@ -8,7 +8,7 @@ order: 10
 
 # Riferimento CLI
 
-Esegui `cpak <command> --help` per i flag accettati dalla build installata. Le tabelle seguenti descrivono l'attuale interfaccia utente a riga di comando della serie 2.12.
+Esegui `cpak <command> --help` per i flag accettati dalla build installata. Le tabelle seguenti descrivono l'attuale interfaccia utente a riga di comando.
 
 ## Ciclo di vita del pacchetto
 
@@ -44,7 +44,8 @@ Installa, esegui, rimuovi, arresta e accetta i selettori di ramo, rilascio o com
 Utilizza `--instance` sui comandi supportati per selezionare un'istanza denominata dello stesso pacchetto.
 
 `cpak environment` espone le azioni `create`, `list`, `inspect`, `shell`, `stop`,
-`delete`, `policy`, `permissions`, `processes`, `signals` e `signal`. Leggi
+`delete`, `policy`, `permissions`, `processes`, `signals`, `signal`,
+`application-exports`, `export-application` e `unexport-application`. Leggi
 [Environment persistenti](/docs/environments) prima di usare un pacchetto di
 distribuzione come spazio di lavoro modificabile.
 
@@ -99,9 +100,19 @@ Esegui `cpak gc --json` prima di `cpak gc --apply` quando si automatizza la puli
 | Comando       | Scopo                                                                         |
 | ------------- | ----------------------------------------------------------------------------- |
 | `auth`        | Associa l'accesso al registro a un'origine del pacchetto e al repository OCI. |
+| `completion`  | Genera le definizioni di completamento per Bash, Zsh o Fish.                  |
 | `self-update` | Verifica o installa un binario ufficiale cpak più recente.                    |
 
 Utilizza `cpak auth login`, `logout`, `list` o `status` per gestire l'accesso privato al pacchetto. Leggi [Repository GitHub e registri OCI privati](/docs/registry-authentication) prima di aggiungere un host separato per i token.
+
+Genera la definizione per la shell attiva e caricala con il normale meccanismo
+di completamento della shell:
+
+```sh
+cpak completion bash > cpak.bash
+cpak completion zsh > _cpak
+cpak completion fish > cpak.fish
+```
 
 `cpak self-update --check` segnala una versione disponibile e lascia invariato il binario installato. Le build del gestore pacchetti mantengono l'avviso sulla versione e delegano la override al gestore pacchetti di sistema. Vedere [Aggiorna cpak runtime](/docs/runtime-updates).
 
@@ -120,6 +131,10 @@ center. Per la gestione interattiva usa i normali comandi `install`, `remove` e
 lo Store. `system` e `session` possono richiedere una conferma Polkit; consulta
 [Integrazione di sistema](/docs/system-integration) e [Sessioni desktop e
 kiosk](/docs/desktop-sessions).
+
+`cpak system` offre `setup`, `remove` e `status` per l'autorità di sistema;
+azioni di lettura e modifica per enforcement, firme, attendibilità e limite dei
+permessi; e `explain` e `clear-removal` per il recupero dell'avvio verificato.
 
 `host-action` viene normalmente chiamato da uno shim del pacchetto e non da una
 persona. Provider, azione e argomenti restano soggetti alla policy effettiva del

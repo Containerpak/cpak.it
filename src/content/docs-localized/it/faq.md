@@ -62,4 +62,4 @@ SÌ. cpak mantiene la versione del pacchetto installato precedente per `cpak rol
 
 ## cpak è stabile?
 
-cpak 2.10 è l'attuale serie stabile. I flussi di transazione, sandbox, storage, pacchetti, SDK, desktop ed environment hanno una copertura automatizzata. Il comportamento legato all'hardware dipende comunque dal kernel, dai driver, dalla sessione desktop e dai dispositivi disponibili sull'host. Esegui `cpak doctor` prima del deployment.
+Usa l'ultima release stabile per i pacchetti di produzione. Il comportamento legato all'hardware dipende dal kernel, dai driver, dalla sessione desktop e dai dispositivi disponibili sull'host, quindi esegui `cpak doctor` prima del deployment.

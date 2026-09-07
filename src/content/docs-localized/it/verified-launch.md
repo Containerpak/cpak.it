@@ -5,6 +5,7 @@ tags: [integrity, security, sandbox]
 section: runtime
 order: 45
 ---
+
 # Lancio verificato
 
 Un'applicazione installata è un insieme di layer, una configurazione e un'permesso
@@ -112,6 +113,23 @@ cpak audit --backfill-bindings
 
 Un backfill registra ciò che è presente sul disco in questo momento. Non è una verifica, e il
 il comando lo dice.
+
+## Cancellare il record lasciato da una rimozione
+
+La rimozione di un'applicazione registrata conserva nel libro mastro di sistema
+l'ultima generazione e lo stato dell'editore. Questo impedisce di installare
+sotto la stessa origine una versione precedente o non firmata. Se non è più
+possibile produrre quello stato dell'editore, cancella solo il record della
+rimozione prima di reinstallare l'applicazione:
+
+```bash
+cpak system clear-removal github.com/example/app
+```
+
+Il comando mostra quale protezione verrà rimossa e richiede una password di
+amministratore. Non modifica la policy di attendibilità dell'host, il limite dei
+permessi, la policy delle firme, il livello di enforcement o un record creato
+dopo la rimozione.
 
 ## Cosa dimostra l'iscrizione e cosa no
 

@@ -54,4 +54,4 @@ Seccomp è richiesto dalla policy runtime. Landlock aggiunge restrizioni sul per
 I dispositivi DRI coprono i comuni stack grafici basati su Mesa. Il supporto NVIDIA risolve i file driver dello spazio utente host all'avvio. Testare il passthrough driver sull'hardware di destinazione e sulla versione host driver.
 
 > [!NOTE] Copertura specifica del pacchetto
-> cpak 2.10 è l'attuale serie stabile. Il report di compatibilità indica ciò che il runtime può verificare localmente; ogni pacchetto documenta i propri requisiti hardware e le architetture provate.
+> Il report di compatibilità descrive il supporto dell'host. Ogni pacchetto documenta i propri requisiti hardware e le architetture supportate.

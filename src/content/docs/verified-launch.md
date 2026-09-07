@@ -114,6 +114,22 @@ cpak audit --backfill-bindings
 A backfill records what is on disk right now. It is not verification, and the
 command says so.
 
+## Clearing the record left by a removal
+
+Removing an enrolled application keeps its last generation and publisher state
+in the system ledger. This prevents an older or unsigned replacement from being
+installed under the same origin. If that publisher state can no longer be
+produced, clear only the removal record before installing the application again:
+
+```bash
+cpak system clear-removal github.com/example/app
+```
+
+The command shows what protection will be discarded and asks for an
+administrator password. It does not change the host trust policy, permission
+ceiling, signature policy, enforcement level, or an anchor recorded after the
+removal.
+
 ## What enrolment proves, and what it does not
 
 Enrolment records what was installed, at the moment it was installed. That is

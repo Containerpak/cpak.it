@@ -62,4 +62,4 @@ Sí. cpak conserva la release anterior del paquete instalado para `cpak rollback
 
 ## ¿Es cpak estable?
 
-cpak 2.10 es la serie estable actual. Los flujos de transacciones, sandbox, almacenamiento, paquetes, SDK, escritorio y entornos tienen cobertura automatizada. El comportamiento relacionado con el hardware sigue dependiendo del kernel, los controladores, la sesión de escritorio y los dispositivos disponibles en el host. Ejecute `cpak doctor` antes del despliegue.
+Use la última versión estable para paquetes de producción. El comportamiento relacionado con el hardware depende del kernel, los controladores, la sesión de escritorio y los dispositivos disponibles en el host, así que ejecute `cpak doctor` antes del despliegue.

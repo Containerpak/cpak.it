@@ -54,4 +54,4 @@ Seccomp es requerido por la política de runtime. Landlock agrega restricciones 
 Los dispositivos DRI cubren pilas de gráficos comunes basadas en Mesa. NVIDIA el soporte resuelve los archivos del driver del espacio de usuario del host en el inicio. Pruebe la transferencia del driver en el hardware de destino y la release del driver del host.
 
 > [!NOTE] Cobertura específica del paquete
-> cpak 2.10 es la serie estable actual. El informe de compatibilidad indica lo que el runtime puede verificar localmente; cada paquete documenta sus propios requisitos de hardware y arquitecturas probadas.
+> El informe de compatibilidad describe el soporte del host. Cada paquete documenta sus propios requisitos de hardware y arquitecturas compatibles.

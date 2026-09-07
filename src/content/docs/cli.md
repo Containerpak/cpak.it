@@ -8,7 +8,7 @@ order: 10
 
 # CLI reference
 
-Run `cpak <command> --help` for the flags accepted by the installed build. The tables below describe the current user-facing 2.12 command surface.
+Run `cpak <command> --help` for the flags accepted by the installed build. The tables below describe the current user-facing command surface.
 
 ## Package lifecycle
 
@@ -48,7 +48,8 @@ permissions are outside the purge scope.
 Use `--instance` on supported commands to select a named instance of the same package.
 
 `cpak environment` has its own `create`, `list`, `inspect`, `shell`, `stop`,
-`delete`, `policy`, `permissions`, `processes`, `signals`, and `signal` actions.
+`delete`, `policy`, `permissions`, `processes`, `signals`, `signal`,
+`application-exports`, `export-application`, and `unexport-application` actions.
 Read [Persistent environments](/docs/environments) before using a distribution
 package as a mutable workspace.
 
@@ -103,9 +104,19 @@ Run `cpak gc --json` before `cpak gc --apply` when automating cleanup.
 | Command       | Purpose                                                        |
 | ------------- | -------------------------------------------------------------- |
 | `auth`        | Bind private source and registry access to one package origin. |
+| `completion`  | Generate completion definitions for Bash, Zsh, or Fish.        |
 | `self-update` | Check for or install a newer official cpak binary.             |
 
 Use `cpak auth login`, `logout`, `list`, or `status` to manage private package access. Read [Private GitHub repositories and OCI registries](/docs/registry-authentication) before adding a separate token host.
+
+Generate the definition for the active shell and load it through that shell's
+normal completion mechanism:
+
+```sh
+cpak completion bash > cpak.bash
+cpak completion zsh > _cpak
+cpak completion fish > cpak.fish
+```
 
 `cpak self-update --check` reports an available release and leaves the installed binary unchanged. Package-manager builds keep the version notice and delegate replacement to the system package manager. See [Update the cpak runtime](/docs/runtime-updates).
 
@@ -124,6 +135,10 @@ the normal `install`, `remove`, and Store interfaces for interactive package
 management. `system` and `session` may require Polkit confirmation; see
 [System integration](/docs/system-integration) and [Desktop and kiosk
 sessions](/docs/desktop-sessions).
+
+`cpak system` provides `setup`, `remove`, and `status` for the system authority;
+read and write actions for enforcement, signatures, trust, and the permission
+ceiling; and `explain` and `clear-removal` for verified-launch recovery.
 
 `host-action` is normally called by a package shim rather than by a person.
 Its provider, action, and arguments remain subject to the package's effective

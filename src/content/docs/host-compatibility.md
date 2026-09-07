@@ -54,4 +54,4 @@ Seccomp is required by the runtime policy. Landlock adds path restrictions on ke
 DRI devices cover common Mesa-based graphics stacks. NVIDIA support resolves host userspace driver files at launch. Test driver passthrough on the target hardware and host driver version.
 
 > [!NOTE] Package-specific coverage
-> cpak 2.10 is the current stable release line. The compatibility report tells you what the runtime can prove locally; each package documents its own hardware requirements and tested architectures.
+> The compatibility report describes host support. Each package documents its own hardware requirements and supported architectures.

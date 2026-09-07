@@ -26,6 +26,7 @@ Manifest v3 is the current strict JSON contract. It pins the OCI image by digest
     }
   },
   "desktop_entries": ["/usr/share/applications/example.desktop"],
+  "form_factors": ["desktop"],
   "dependencies": [],
   "addons": [],
   "idle_time": 0,
@@ -51,6 +52,7 @@ Manifest v3 is the current strict JSON contract. It pins the OCI image by digest
 | `binaries`         | Yes      | One or more absolute executable paths.                           |
 | `services`         | No       | Named application commands built from exported binaries.         |
 | `desktop_entries`  | No       | Absolute paths to `.desktop` files in the image.                 |
+| `form_factors`     | No       | Supported device shapes: desktop, phone, tablet, TV, or watch.   |
 | `sessions`         | No       | Desktop or kiosk sessions offered to a display manager.          |
 | `dependencies`     | No       | Required cpak package origins.                                   |
 | `addons`           | No       | Optional addon origins supported by this package.                |
