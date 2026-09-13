@@ -64,7 +64,9 @@ cpak audit --repair
 cpak gc --json
 ```
 
-Audit repairs active package records. Garbage collection removes unreferenced content after the record graph is consistent.
+Repair mode cleans invalid container records, removes unreferenced store data, and restricts cpak metadata directories to their owner. It leaves image contents, prepared checkouts, private application homes, and writable environment data unchanged.
+
+If audit reports that a layer or prepared checkout contradicts its recorded state, update or reinstall that package. Repair mode cannot turn the current files into a fresh registry pull. Garbage collection removes unreferenced content after the record graph is consistent.
 
 ## Desktop entry does not appear
 

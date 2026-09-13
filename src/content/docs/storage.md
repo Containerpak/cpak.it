@@ -19,9 +19,9 @@ cpak keeps immutable OCI content apart from writable application state. Cleanup 
 cpak audit
 ```
 
-Audit compares installed package records, layer references, transaction state, runtime sources, and stored files. Run it after an interrupted update, manual store move, or filesystem error.
+Audit compares installed package records, layer references, transaction state, runtime sources, and cpak-owned metadata. Run it after an interrupted update, manual store move, or filesystem error.
 
-Audit reads legacy and FVS layers in place. Migration, application launch, and downloads remain separate operations.
+Audit reads legacy and FVS layer state in place. It does not walk or change image contents, prepared checkouts, private application homes, or writable environment data. Migration, application launch, and downloads remain separate operations.
 
 Apply supported repairs explicitly:
 
@@ -29,7 +29,9 @@ Apply supported repairs explicitly:
 cpak audit --repair
 ```
 
-Read the report before repair when the store contains important application data. Repair covers cpak metadata consistency. Restore externally deleted application files from a backup.
+Read the report before repair. Repair removes unreferenced store data, cleans invalid container records, and restricts cpak metadata directories to their owner. It does not rewrite layer bindings or replace a prepared checkout that contradicts its recorded state.
+
+Update or reinstall the affected package when audit reports a layer or prepared checkout contradiction. That pulls the layer again and records the state supplied by its registry. Restore externally deleted application files from a backup.
 
 ## Garbage collection
 

@@ -1,5 +1,14 @@
 export const announcements = [
   {
+    section: "Desktop security",
+    date: "September 13, 2026",
+    published: "2026-09-13",
+    title: "X11 apps get their own private display",
+    description:
+      "cpak keeps X11 applications away from the display shared by the rest of your desktop while preserving normal windows and controlled copy and paste.",
+    href: "/announcements/x11-apps-get-their-own-display",
+  },
+  {
     section: "cpak 2.12.0",
     date: "September 2, 2026",
     published: "2026-09-02",
