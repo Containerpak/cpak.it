@@ -22,6 +22,20 @@
 		</p>
 	</div>
 
+	<aside
+		class="mb-10 flex flex-col gap-5 rounded-2xl border border-slate-200 bg-white p-6 sm:flex-row sm:items-center sm:justify-between"
+	>
+		<div class="max-w-2xl">
+			<h2 class="text-xl font-bold text-gray-900">{m.store_flathub_title()}</h2>
+			<p class="mt-1 text-pretty text-gray-600">{m.store_flathub_body()}</p>
+		</div>
+		<a
+			href="/docs/flathub"
+			class="shrink-0 self-start rounded-full bg-[#3E7BFF] px-6 py-2.5 font-semibold text-white transition hover:brightness-110 sm:self-auto"
+			>{m.store_flathub_cta()}</a
+		>
+	</aside>
+
 	<ul
 		class="grid grid-flow-row-dense auto-rows-[17rem] grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4"
 	>
