@@ -25,7 +25,7 @@
 	<aside
 		class="mb-10 flex flex-col gap-5 rounded-2xl border border-slate-200 bg-white p-6 sm:flex-row sm:items-center sm:justify-between"
 	>
-		<div class="max-w-2xl">
+		<div class="min-w-0 flex-1">
 			<h2 class="text-xl font-bold text-gray-900">{m.store_flathub_title()}</h2>
 			<p class="mt-1 text-pretty text-gray-600">{m.store_flathub_body()}</p>
 		</div>
