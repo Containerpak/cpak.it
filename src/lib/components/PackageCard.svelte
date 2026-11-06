@@ -8,10 +8,12 @@
 		icon: string;
 	};
 	export let color: string;
+	export let href = `/store/apps/${pkg.slug}`;
+	export let source = '';
 </script>
 
 <a
-	href={`/store/apps/${pkg.slug}`}
+	{href}
 	class="package-card group relative flex h-full min-h-[19rem] flex-col overflow-hidden rounded-3xl border border-slate-200 p-6 shadow-sm transition duration-300 hover:-translate-y-1 hover:shadow-xl"
 	style="--package-color: {color}; --package-soft: {color}1a;"
 >
@@ -31,7 +33,9 @@
 		/>
 
 		<div class="mt-auto pt-8">
-			{#if pkg.version}
+			{#if source}
+				<p class="mb-2 text-sm font-semibold" style="color: {color}">{source}</p>
+			{:else if pkg.version}
 				<p class="mb-2 text-sm font-semibold" style="color: {color}">
 					v{pkg.version}
 				</p>

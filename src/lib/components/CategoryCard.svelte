@@ -4,11 +4,14 @@
 		icon: string;
 		color: string;
 		count: number;
+		flathubCount?: number;
 		description: string;
 		featured: boolean;
 		appIcons: string[];
 	};
 
+	$: total = cat.count + (cat.flathubCount ?? 0);
+	$: label = `${total} package${total !== 1 ? 's' : ''}${cat.flathubCount ? '*' : ''}`;
 	$: visibleIcons = cat.appIcons.slice(0, cat.featured ? 5 : 3);
 </script>
 
@@ -42,7 +45,7 @@
 
 			{#if !cat.featured}
 				<p class="text-sm font-semibold" style="color: {cat.color}">
-					{cat.count} package{cat.count !== 1 ? 's' : ''}
+					{label}
 				</p>
 			{/if}
 		</div>
@@ -50,7 +53,7 @@
 		<div class={cat.featured ? 'mt-auto max-w-md' : 'mt-auto'}>
 			{#if cat.featured}
 				<p class="mb-2 text-sm font-semibold" style="color: {cat.color}">
-					{cat.count} package{cat.count !== 1 ? 's' : ''}
+					{label}
 				</p>
 			{/if}
 			<h2

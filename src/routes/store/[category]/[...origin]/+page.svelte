@@ -248,7 +248,8 @@
 	const next = () => (idx = (idx + 1) % slides.length);
 	const go = (i: number) => (idx = i);
 
-	const cmd = `cpak install ${data.pkg.origin}`;
+	const flathub = data.pkg.flathub ?? null;
+	const cmd = flathub ? flathub.command : `cpak install ${data.pkg.origin}`;
 	let showTooltip = false,
 		copied = false,
 		directCopied = false,
@@ -287,8 +288,12 @@
 </script>
 
 <Seo
-	title={`${data.pkg.name} for Linux - Install with cpak`}
-	description={`Install ${data.pkg.name} ${data.pkg.version} on Linux with cpak. ${data.pkg.description}`}
+	title={flathub
+		? `${data.pkg.name} for Linux - Install from Flathub with cpak`
+		: `${data.pkg.name} for Linux - Install with cpak`}
+	description={flathub
+		? `Install ${data.pkg.name} from Flathub with cpak, without Flatpak on the system. ${data.pkg.description}`
+		: `Install ${data.pkg.name} ${data.pkg.version} on Linux with cpak. ${data.pkg.description}`}
 	path={data.canonicalPath}
 	image={data.pkg.icon}
 	type="product"
@@ -329,13 +334,15 @@
 			/>
 			<div class="min-w-0">
 				<p class="mb-2 text-sm font-semibold" style="color: {data.categoryMeta.color}">
-					{data.category}
+					{data.category}{flathub ? ' · Flathub' : ''}
 				</p>
 				<h1 class="text-4xl font-extrabold text-gray-900">
 					{data.pkg.name}
-					<span class="ml-2 align-middle text-sm font-semibold text-gray-500"
-						>v{data.pkg.version}</span
-					>
+					{#if data.pkg.version}
+						<span class="ml-2 align-middle text-sm font-semibold text-gray-500"
+							>v{data.pkg.version}</span
+						>
+					{/if}
 				</h1>
 				<p class="mt-3 max-w-2xl text-lg leading-7 text-gray-600">
 					{data.pkg.description}
@@ -343,13 +350,23 @@
 			</div>
 		</div>
 		<div class="relative z-20 flex shrink-0 items-stretch">
-			<a
-				href={installerPath}
-				class="rounded-l-2xl px-5 py-3 font-semibold text-white shadow-lg transition hover:brightness-110"
-				style="background-color: {data.categoryMeta.color}"
-			>
-				Download installer
-			</a>
+			{#if flathub}
+				<button
+					on:click={copyInstall}
+					class="rounded-l-2xl px-5 py-3 font-semibold text-white shadow-lg transition hover:brightness-110"
+					style="background-color: {data.categoryMeta.color}"
+				>
+					{copied ? 'Command copied' : 'Copy install command'}
+				</button>
+			{:else}
+				<a
+					href={installerPath}
+					class="rounded-l-2xl px-5 py-3 font-semibold text-white shadow-lg transition hover:brightness-110"
+					style="background-color: {data.categoryMeta.color}"
+				>
+					Download installer
+				</a>
+			{/if}
 			<button
 				on:click={toggleDropdown}
 				class="flex items-center justify-center rounded-r-2xl border-l border-white/20 px-3 py-3 text-white shadow-lg transition hover:brightness-110"
@@ -387,6 +404,7 @@
 						</span>
 						<span class="material-symbols-outlined text-base">content_copy</span>
 					</button>
+					{#if !flathub}
 					<button
 						on:click={copyInstallerURL}
 						class="flex w-full items-center justify-between gap-4 border-b border-gray-700 px-4 py-3 text-left hover:bg-gray-700"
@@ -398,8 +416,9 @@
 						</span>
 						<span class="material-symbols-outlined text-base">link</span>
 					</button>
+					{/if}
 					<a
-						href="/docs/quick-start"
+						href={flathub ? '/docs/flathub' : '/docs/quick-start'}
 						class="block w-full rounded-b-lg bg-gray-700 py-2 text-center text-white transition hover:bg-gray-900"
 					>
 						View documentation
@@ -408,6 +427,23 @@
 			{/if}
 		</div>
 	</section>
+
+	{#if flathub}
+		<section
+			class="flex items-start gap-4 rounded-2xl border border-yellow-200 bg-yellow-50 p-5 text-sm text-yellow-900"
+		>
+			<span class="material-symbols-outlined text-xl">info</span>
+			<div>
+				<p class="font-semibold">From Flathub, not verified with cpak</p>
+				<p class="mt-1 leading-6">
+					This app comes from Flathub and has not been tested with cpak yet. cpak checks it
+					against the Flathub signing key and runs it in its own sandbox, without Flatpak on the
+					system, but some features may not work.
+					<a href="/docs/flathub" class="font-semibold underline">How Flathub apps work in cpak</a>
+				</p>
+			</div>
+		</section>
+	{/if}
 
 	{#if slides.length}
 		<section class="relative mx-auto max-w-5xl">
@@ -470,6 +506,46 @@
 		</section>
 	{/if}
 
+	{#if flathub}
+	<section class="package-surface rounded-3xl border border-slate-200 p-6 shadow-sm">
+		<h2 class="mb-5 text-xl font-semibold text-gray-900">Package details</h2>
+		<dl class="grid grid-cols-1 gap-x-10 gap-y-6 text-sm text-gray-700 sm:grid-cols-2">
+			<div class="min-w-0">
+				<dt class="text-xs font-semibold tracking-wide text-gray-500 uppercase">Application ID</dt>
+				<dd class="mt-1 min-w-0 break-words">{data.pkg.origin}</dd>
+			</div>
+			<div class="min-w-0">
+				<dt class="text-xs font-semibold tracking-wide text-gray-500 uppercase">Source</dt>
+				<dd class="mt-1 min-w-0 break-words">Flathub</dd>
+			</div>
+			{#if flathub.developer}
+				<div class="min-w-0">
+					<dt class="text-xs font-semibold tracking-wide text-gray-500 uppercase">Developer</dt>
+					<dd class="mt-1 min-w-0 break-words">{flathub.developer}</dd>
+				</div>
+			{/if}
+			{#if flathub.license}
+				<div class="min-w-0">
+					<dt class="text-xs font-semibold tracking-wide text-gray-500 uppercase">License</dt>
+					<dd class="mt-1 min-w-0 break-words">{flathub.license}</dd>
+				</div>
+			{/if}
+		</dl>
+	</section>
+
+	<section class="text-sm text-gray-500">
+		<h2 class="mb-2 text-lg font-medium text-gray-900">Links</h2>
+		<ul class="list-inside list-disc space-y-1">
+			{#each flathub.links as link}
+				<li>
+					<a href={link.href} class="underline hover:text-[#3E7BFF]" target="_blank" rel="noopener"
+						>{link.label}</a
+					>
+				</li>
+			{/each}
+		</ul>
+	</section>
+	{:else}
 	<section>
 		<div class="mb-5">
 			<h2 class="text-2xl font-semibold text-gray-900">Permissions</h2>
@@ -666,6 +742,7 @@
 			{/if}
 		</ul>
 	</section>
+	{/if}
 
 	{#if data.related.length}
 		<section>
@@ -675,7 +752,7 @@
 			<div class="mt-5 grid gap-4 sm:grid-cols-3">
 				{#each data.related as related}
 					<a
-						href={`/store/apps/${related.slug}`}
+						href={related.href ?? `/store/apps/${related.slug}`}
 						class="package-surface rounded-2xl border border-slate-200 p-5 transition hover:-translate-y-0.5 hover:shadow-lg"
 					>
 						<img src={related.icon} alt={`${related.name} icon`} class="h-12 w-12 object-contain" />

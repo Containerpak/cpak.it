@@ -8,17 +8,20 @@ import {
   packageSlug,
   storeAssetBase,
 } from "$lib/store";
+import { FLATHUB_ONLY_CATEGORIES, normalizeName } from "$lib/flathub";
 
-export const load: PageLoad = async ({ fetch, params, setHeaders }) => {
+export const load: PageLoad = async ({ data, fetch, params, setHeaders }) => {
   const store = await fetchStore(fetch);
   if (!store) error(502, "The Store catalog is temporarily unavailable");
 
-  const categoryMap = store.index[params.category];
+  const flathubOnly = FLATHUB_ONLY_CATEGORIES[params.category];
+  const categoryMap =
+    store.index[params.category] ?? (flathubOnly && data.flathub ? {} : null);
   if (!categoryMap) error(404, "Category not found");
-  const categoryMeta = store.categories[params.category] ?? {
-    icon: "inventory_2",
-    color: "#64748b",
-  };
+  const categoryMeta = store.categories[params.category] ??
+    (flathubOnly
+      ? { icon: flathubOnly.icon, color: flathubOnly.color }
+      : { icon: "inventory_2", color: "#64748b" });
 
   const packages = Object.entries(categoryMap).map(([origin, entry]) => {
     const storeBase = storeAssetBase(entry.manifest);
@@ -34,8 +37,19 @@ export const load: PageLoad = async ({ fetch, params, setHeaders }) => {
     };
   });
 
+  const cpakNames = new Set(packages.map((pkg) => normalizeName(pkg.name)));
+  const flathub = data.flathub
+    ? {
+        ...data.flathub,
+        apps: data.flathub.apps.filter(
+          (app) => !cpakNames.has(normalizeName(app.name)),
+        ),
+      }
+    : null;
+
   const description =
     CATEGORY_DESCRIPTIONS[params.category] ??
+    flathubOnly?.description ??
     `Browse ${params.category} applications packaged for cpak.`;
   const path = `/store/${encodeURIComponent(params.category)}`;
   const schema = jsonLd({
@@ -83,6 +97,7 @@ export const load: PageLoad = async ({ fetch, params, setHeaders }) => {
     categoryMeta,
     description,
     packages,
+    flathub,
     path,
     schema,
   };
